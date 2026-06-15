@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { cn } from '@/lib/utils'
+
 const questions = [
   "Is our brand actually 'us'?",
   "What does 'us' even mean?",
@@ -15,7 +17,7 @@ const HOLD_SELECTED = 700 // how long the selection highlight shows before delet
 
 type Phase = 'typing' | 'selected'
 
-export function BrandQuestions() {
+export function BrandQuestions({ className }: { className?: string }) {
   const [index, setIndex] = useState(0)
   const [charCount, setCharCount] = useState(0)
   const [phase, setPhase] = useState<Phase>('typing')
@@ -46,26 +48,27 @@ export function BrandQuestions() {
   const isSelecting = phase === 'selected'
 
   return (
-    <section className="flex min-h-[80vh] w-full items-center py-20">
-      <div className="section-shell w-full">
-        <p className="max-w-5xl font-display text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
+    <p
+      className={cn(
+        'font-display font-medium leading-tight tracking-tight text-foreground',
+        className
+      )}
+    >
+      <span
+        className={
+          isSelecting
+            ? 'box-decoration-clone rounded-[2px] bg-foreground/15'
+            : undefined
+        }
+      >
+        {shown}
+      </span>
+      {!isSelecting ? (
         <span
-          className={
-            isSelecting
-              ? 'box-decoration-clone rounded-[2px] bg-foreground/15'
-              : undefined
-          }
-        >
-          {shown}
-        </span>
-        {!isSelecting ? (
-          <span
-            aria-hidden
-            className="brand-questions-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.12em] bg-foreground align-baseline"
-          />
-        ) : null}
-        </p>
-      </div>
-    </section>
+          aria-hidden
+          className="brand-questions-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.12em] bg-foreground align-baseline"
+        />
+      ) : null}
+    </p>
   )
 }

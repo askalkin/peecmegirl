@@ -31,7 +31,11 @@ function PortfolioPage() {
 
   return (
     <main id="top" className="text-foreground">
-      <section className="section-shell flex min-h-[calc(100vh-8rem)] items-center py-20">
+      <section className="section-shell flex min-h-[calc(100vh-4rem)] flex-col justify-between py-12 md:py-16">
+        <div className="flex justify-end">
+          <BrandQuestions className="max-w-xl text-right text-2xl md:text-3xl lg:text-4xl" />
+        </div>
+
         <div className="flex w-full items-end gap-6 sm:gap-10">
           <h1 className="font-display text-5xl font-black lowercase leading-[0.95] tracking-tight text-foreground sm:text-7xl md:text-8xl lg:text-[7.5rem]">
             alina skalkina
@@ -40,12 +44,10 @@ function PortfolioPage() {
           </h1>
           <span
             aria-hidden
-            className="hidden aspect-square w-[clamp(7rem,16vw,14rem)] shrink-0 self-end rounded-full bg-muted sm:block"
+            className="hidden aspect-square w-[clamp(7rem,16vw,14rem)] shrink-0 self-end rounded-full bg-foreground sm:block"
           />
         </div>
       </section>
-
-      <BrandQuestions />
 
       <section id="work" className="scroll-mt-20">
         <div className="grid grid-cols-1 gap-px border-y border-border bg-border sm:grid-cols-2 xl:grid-cols-3">
@@ -87,7 +89,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       onMouseLeave={handleLeave}
       className="group flex flex-col bg-background transition-colors hover:bg-muted/40"
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+      <div className="relative aspect-[4/5] overflow-hidden bg-muted lg:aspect-auto lg:h-[52vh] xl:h-[56vh]">
         {media?.type === 'video' ? (
           <video
             ref={videoRef}

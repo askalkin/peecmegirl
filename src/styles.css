@@ -236,8 +236,8 @@ code {
 
 .section-shell {
   margin-inline: auto;
-  max-width: 78rem;
-  padding-inline: 1.25rem;
+  width: 90%;
+  max-width: 120rem;
 }
 
 .media-tile {
@@ -483,14 +483,3 @@ code {
   }
 }
 
-@media (min-width: 640px) {
-  .section-shell {
-    padding-inline: 1.75rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .section-shell {
-    padding-inline: 2.25rem;
-  }
-}
