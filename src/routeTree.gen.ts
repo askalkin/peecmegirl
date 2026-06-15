@@ -9,26 +9,39 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VisualDesignRouteImport } from './routes/visual-design'
 import { Route as LunieRouteImport } from './routes/lunie'
+import { Route as LunHrBrandRouteImport } from './routes/lun-hr-brand'
 import { Route as GraphicDesignRouteImport } from './routes/graphic-design'
+import { Route as FarbaRouteImport } from './routes/farba'
+import { Route as CvRouteImport } from './routes/cv'
 import { Route as ComfortMapRouteImport } from './routes/comfort-map'
 import { Route as AirQualityMapRouteImport } from './routes/air-quality-map'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
-const VisualDesignRoute = VisualDesignRouteImport.update({
-  id: '/visual-design',
-  path: '/visual-design',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LunieRoute = LunieRouteImport.update({
   id: '/lunie',
   path: '/lunie',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LunHrBrandRoute = LunHrBrandRouteImport.update({
+  id: '/lun-hr-brand',
+  path: '/lun-hr-brand',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GraphicDesignRoute = GraphicDesignRouteImport.update({
   id: '/graphic-design',
   path: '/graphic-design',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FarbaRoute = FarbaRouteImport.update({
+  id: '/farba',
+  path: '/farba',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CvRoute = CvRouteImport.update({
+  id: '/cv',
+  path: '/cv',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComfortMapRoute = ComfortMapRouteImport.update({
@@ -41,6 +54,11 @@ const AirQualityMapRoute = AirQualityMapRouteImport.update({
   path: '/air-quality-map',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -49,74 +67,88 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
   '/comfort-map': typeof ComfortMapRoute
+  '/cv': typeof CvRoute
+  '/farba': typeof FarbaRoute
   '/graphic-design': typeof GraphicDesignRoute
+  '/lun-hr-brand': typeof LunHrBrandRoute
   '/lunie': typeof LunieRoute
-  '/visual-design': typeof VisualDesignRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
   '/comfort-map': typeof ComfortMapRoute
+  '/cv': typeof CvRoute
+  '/farba': typeof FarbaRoute
   '/graphic-design': typeof GraphicDesignRoute
+  '/lun-hr-brand': typeof LunHrBrandRoute
   '/lunie': typeof LunieRoute
-  '/visual-design': typeof VisualDesignRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
   '/comfort-map': typeof ComfortMapRoute
+  '/cv': typeof CvRoute
+  '/farba': typeof FarbaRoute
   '/graphic-design': typeof GraphicDesignRoute
+  '/lun-hr-brand': typeof LunHrBrandRoute
   '/lunie': typeof LunieRoute
-  '/visual-design': typeof VisualDesignRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/air-quality-map'
     | '/comfort-map'
+    | '/cv'
+    | '/farba'
     | '/graphic-design'
+    | '/lun-hr-brand'
     | '/lunie'
-    | '/visual-design'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/air-quality-map'
     | '/comfort-map'
+    | '/cv'
+    | '/farba'
     | '/graphic-design'
+    | '/lun-hr-brand'
     | '/lunie'
-    | '/visual-design'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/air-quality-map'
     | '/comfort-map'
+    | '/cv'
+    | '/farba'
     | '/graphic-design'
+    | '/lun-hr-brand'
     | '/lunie'
-    | '/visual-design'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AirQualityMapRoute: typeof AirQualityMapRoute
   ComfortMapRoute: typeof ComfortMapRoute
+  CvRoute: typeof CvRoute
+  FarbaRoute: typeof FarbaRoute
   GraphicDesignRoute: typeof GraphicDesignRoute
+  LunHrBrandRoute: typeof LunHrBrandRoute
   LunieRoute: typeof LunieRoute
-  VisualDesignRoute: typeof VisualDesignRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/visual-design': {
-      id: '/visual-design'
-      path: '/visual-design'
-      fullPath: '/visual-design'
-      preLoaderRoute: typeof VisualDesignRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/lunie': {
       id: '/lunie'
       path: '/lunie'
@@ -124,11 +156,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LunieRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lun-hr-brand': {
+      id: '/lun-hr-brand'
+      path: '/lun-hr-brand'
+      fullPath: '/lun-hr-brand'
+      preLoaderRoute: typeof LunHrBrandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/graphic-design': {
       id: '/graphic-design'
       path: '/graphic-design'
       fullPath: '/graphic-design'
       preLoaderRoute: typeof GraphicDesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/farba': {
+      id: '/farba'
+      path: '/farba'
+      fullPath: '/farba'
+      preLoaderRoute: typeof FarbaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cv': {
+      id: '/cv'
+      path: '/cv'
+      fullPath: '/cv'
+      preLoaderRoute: typeof CvRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/comfort-map': {
@@ -145,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AirQualityMapRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -157,11 +217,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AirQualityMapRoute: AirQualityMapRoute,
   ComfortMapRoute: ComfortMapRoute,
+  CvRoute: CvRoute,
+  FarbaRoute: FarbaRoute,
   GraphicDesignRoute: GraphicDesignRoute,
+  LunHrBrandRoute: LunHrBrandRoute,
   LunieRoute: LunieRoute,
-  VisualDesignRoute: VisualDesignRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

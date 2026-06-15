@@ -47,6 +47,7 @@ export type PortfolioMediaItem = {
   src: string
   type: MediaType
   span?: 'wide' | 'tall'
+  caption?: string
 }
 
 export type PortfolioProject = {
@@ -70,14 +71,17 @@ export type PortfolioProject = {
 export const portfolioData = {
   person: {
     name: 'Alina Skalkina',
-    role: 'Digital Designer',
+    role: 'Lead Brand Product Designer',
+    heroRole: 'Brand Designer',
+    tagline:
+      'I shape brand systems that turn complex products into clear, expressive experiences across marketing, identity, and product.',
     intro:
-      'I design products, systems, and interfaces by turning ambiguous problems into clear decisions.',
+      'Lead Brand Product Designer with experience across marketing, product, and brand systems. Focused on turning complex workflows into clear, usable experiences.',
     approach:
-      'The work I want this portfolio to show starts before the UI: defining the problem, aligning teams, understanding constraints, and deciding what should be built in the first place.',
+      'Berlin, Germany',
     email: 'skalkinalina@gmail.com',
     footerTitle: 'Personal Portfolio Website',
-    footerYear: '2025',
+    footerYear: '2026',
     heroImage: '/recovered/computer.png',
     heroImageAlt: 'Recovered hero asset from the original portfolio',
     links: [
@@ -90,13 +94,18 @@ export const portfolioData = {
         label: 'LinkedIn',
       },
       {
-        href: '/recovered/Alina-Skalkina-CV-Digital-Designer.pdf',
-        label: 'Download CV',
+        href: '/cv',
+        label: 'View Current CV',
       },
+    ] satisfies PortfolioLink[],
+    sitemap: [
+      { href: '/#work', label: 'works' },
+      { href: '/about', label: 'about me' },
+      { href: '/#contact', label: 'contacts' },
     ] satisfies PortfolioLink[],
     stats: [
       { label: 'Experience', value: '6+ years' },
-      { label: 'Selected works', value: '5' },
+      { label: 'Selected works', value: '7' },
       { label: 'Skill groups', value: '3' },
     ] satisfies PortfolioStat[],
   },
@@ -127,49 +136,49 @@ export const portfolioData = {
       period: '2021 - 2025',
       title: 'Digital Designer, Independent Contractor',
       details: [
-        'Founding designer for booking platform.',
-        'Video Design for Huawei.',
-        'Visual Design for LUN.',
-        'Market Analysis and Product Strategy for UTC FILM and UI/UX Design for Malyatko',
+        'Founding designer for a booking platform.',
+        'Video design for Huawei.',
+        'Visual design for LUN.',
+        'Market analysis and product strategy for UTC FILM; UI/UX for Malyatko.',
       ],
     },
     {
       period: '2020 - 2021',
       title: 'Product Designer, LUN Misto R&D Team',
       details: [
-        'Growth Design for LUN Misto interactive Air Quality map and mobile apps and widgets, resulted in 230% growth in Monthly Page Views.',
-        'Hiring and mentoring Junior Designers',
+        'Growth design for LUN Misto Air Map, app, and widgets, contributing to +230% monthly page views.',
+        'Hired and mentored junior designers.',
       ],
     },
     {
       period: '2020',
       title: 'Lecture About Design and Frontend Integration',
       details: [
-        'Delivered lecture "Moving the button for an hour" at Taras Shevchenko National University of Kyiv',
+        'Delivered lecture "Moving the button for an hour" at Taras Shevchenko National University of Kyiv.',
       ],
     },
     {
       period: '2020',
       title: 'Visual Designer, LUN Marketing Team',
       details: [
-        'Created UI designs for marketing campaigns',
-        'Designed a B2B CRM Dashboard for efficient lead management',
+        'Created UI for marketing campaigns.',
+        'Designed a B2B CRM dashboard for lead management.',
       ],
     },
     {
       period: '2018 - 2020',
       title: 'Digital Designer, LUN HR Team',
       details: [
-        'End-to-end Product Design for HR Management platform',
-        'University student coworking brand identity',
-        'Corporate events Art Direction',
+        'End-to-end product design for an HR management platform.',
+        'Brand identity for a university student coworking hub.',
+        'Art direction for corporate events.',
       ],
     },
     {
       period: '2015 - 2019',
       title: 'Taras Shevchenko National University of Kyiv',
       details: [
-        'Faculty of Applied Physics, Nanoelectronics, and Computer Technologies. Applied Physics curicculum',
+        'Faculty of Applied Physics, Nanoelectronics, and Computer Technologies.',
       ],
     },
   ] satisfies PortfolioCareerEntry[],
@@ -232,7 +241,7 @@ export const portfolioData = {
       navigationLabel: 'Comfort Map',
       year: '2021',
       focus:
-        'How do you turn an overwhelming, data-heavy map into a decision tool people can actually use when choosing where to live?',
+        "When data isn't the problem, clarity is.",
       categories: [
         'Growth Design',
         'UX Research',
@@ -241,12 +250,16 @@ export const portfolioData = {
         'Product Strategy',
       ],
       summary: [
-        'LUN Misto Comfort Map was an R&D product designed to help people choose a neighbourhood using signals beyond listings: greenery, noise, price, air quality, kindergarten access, and other urban-comfort criteria.',
-        'The challenge was not the lack of information. It was turning a dense multi-layer product into something people could trust and act on without getting lost in the data.',
+        'LUN Misto was an urban research lab working with Taras Shevchenko National University and government bodies to build open-data infrastructure for the city.',
+        'The Comfort Map was one product of that: 20 layers of verified urban data covering noise, greenery, air quality, school access, kindergarten queues, price dynamics, and more.',
+        'The data was rigorous, but users got overwhelmed and left. The issue was not data quality. The product had not clearly decided what kind of tool it was.',
+        'Survey work and interviews with active apartment seekers in Kyiv showed a mental-model mismatch: users arrived expecting a search tool and found a research environment.',
+        'I facilitated a cross-functional workshop with R&D, marketing, and editorial teams to map the full apartment-buying journey and identify where the map should fit.',
+        'The key insight: users were not overwhelmed by the data itself, but by being asked to interpret it without a clear starting point.',
       ],
       goals:
-        'The product needed to grow acquisition, engagement, article readership, and community participation around the idea of urban comfort.',
-      role: 'Growth Design, UI/UX Design, Design System, Product Strategy',
+        'Make a research-grade urban analytics tool useful for someone choosing where to live, without losing the depth that made it credible.',
+      role: 'Growth Design, UI/UX, Design System, Product Strategy',
       liveLink: {
         href: 'https://lun.ua/misto',
         label: 'lun.ua/misto',
@@ -254,57 +267,95 @@ export const portfolioData = {
       highlights: [
         {
           value: '+60%',
-          title: 'in CSAT',
+          title: 'CSAT',
           description:
-            'Created a interactive map using open data that allows users to explore urban comfort criteria.',
-        },
-        {
-          title: 'First Lady Initiative',
-          description:
-            'Project is adopted as initiative of First Lady Olena Zelenska "Business without barriers".',
+            'CSAT improved from 20% to 80% after reframing the product entry model.',
         },
         {
           value: '+17%',
-          title: 'in conversion rate',
+          title: 'Conversion rate',
           description:
-            'We involved students of the Product Design Course in Projector Institute for UX research on comfort criteria.',
+            'Conversion increased after adding personalized comfort scoring and street-level context.',
+        },
+        {
+          value: '+230%',
+          title: 'Monthly Page Views',
+          description:
+            'Monthly Page Views grew as the tool became easier to understand and return to.',
+        },
+        {
+          title: 'DOU Award',
+          description:
+            "Best social IT initiative by Ukraine's largest IT community.",
+        },
+        {
+          title: 'First Lady initiative',
+          description:
+            'Adopted by Olena Zelenska\'s "Business without Barriers"; LUN signed the national accessibility declaration.',
+        },
+        {
+          title: 'Ministry of Culture',
+          description:
+            'Co-launched a nationwide accessibility audit for theatres, museums, and libraries with a dedicated map layer built without public funding.',
+        },
+        {
+          title: 'National technology partner',
+          description:
+            "Official technology partner of the Ministry of Regional Development's barrier-free environment program.",
+        },
+        {
+          title: 'KNU & government',
+          description:
+            'Research delivered in collaboration with Taras Shevchenko National University and government bodies.',
         },
       ],
       process: [
         {
-          title: 'Discovery',
+          title: 'Signal vs interpretation',
           description:
-            'The map has approximately 20 separate layers, our 89% Bounce Rate and 2.4-minute median Session Duration, showed users were quickly overwhelmed, despite initial engagement. We conducted a survey to validate our concerns and it revealed that our CSAT was 20%.',
+            'An 89% bounce rate showed visible friction, but the deeper issue was interpretation: users had no clear frame for turning complex data into a personal decision.',
         },
         {
-          title: 'Research',
+          title: 'Research and alignment',
           description:
-            'We received in-depth interviews from PRJCTR students with the target audience and results of testing hypotheses on users. I conducted an analysis of the collected data and developed a Value Proposition Canvas and Personas. As our project offers a unique proposition, it was necessary to create User Flow to guide users without overwhelming them with complex data. To identify key touchpoints, challenges, and retention opportunities across the full apartment-buying experience I facilitated the workshop, where we created a Customer Journey Map, aligning product goals with marketing and future integration.',
+            'Survey work plus Projector Institute interviews with active apartment seekers in Kyiv revealed a mental-model mismatch between expected search behavior and the map experience.',
         },
         {
-          title: 'Hypothesis',
+          title: 'Product decisions',
           description:
-            'Creating an interactive, minimalistic map that highlights areas of urban comfort based on universal design, health, safety, transportation, and education criteria will help residents of Kyiv to make confident decisions of neighbourhood of their dream. Displaying only positively rated comfort indicators will increase user engagement. Allowing users to search by specific streets will improve discoverability and relevance of comfort information.',
+            'Three decisions followed: a personalized comfort score as the entry point (with full layers still accessible), street-level search to anchor exploration around known places, and a frosted-glass UI direction to keep precision without a clinical tone.',
         },
         {
-          title: 'Development',
+          title: 'Outcome framing',
           description:
-            'Design System: I developed dark design system (UI components and OSM map styles) to improve experience during prolonged neighborhood comparison and article reading. Comfort scale: we created a comfort gradient for personalized maps, based on user-selected criteria. Users can also explore individual layers and research behind them. Onboarding: we simplified the user\'s experience by guiding them through complex data within the interface and providing clear instructions for sensor installation.',
+            'The comfort score did not simplify the data. It translated rigorous research into a personal frame users could act on while preserving credibility and depth.',
         },
       ],
       team: [
-        'Alina Skalkina, Product Designer',
-        'Projector institute students, Product Designers',
-        'Anna Denysenko, Project Curator',
-        'Serhii Muravjev, Software Engineer',
-        'Denys Sydilkovsky, CMO and students curator',
-        'Sasha Panasyuk, PR & Communications',
+        'Alina Skalkina',
+        'Anna Denysenko',
+        'Serhii Muravjev',
+        'Denys Sydilkovsky',
+        'PRJCTR students',
+        'Sasha Panasyuk',
       ],
       gallery: [
         {
           src: '/recovered/comfort-map-video.mp4',
           type: 'video',
           alt: 'Comfort Map walkthrough video',
+          span: 'wide',
+        },
+        {
+          src: '/recovered/comfort-map/desktop-1.png',
+          type: 'image',
+          alt: 'Comfort Map desktop screen 1',
+          span: 'wide',
+        },
+        {
+          src: '/recovered/comfort-map/desktop-2.png',
+          type: 'image',
+          alt: 'Comfort Map desktop screen 2',
           span: 'wide',
         },
         {
@@ -328,16 +379,26 @@ export const portfolioData = {
           alt: 'Comfort Map mobile screen 4',
         },
         {
-          src: '/recovered/comfort-map/desktop-1.png',
-          type: 'image',
-          alt: 'Comfort Map desktop screen 1',
+          src: '/recovered/visual-design/1.mp4',
+          type: 'video',
+          alt: 'Comfort Map campaign video 1',
           span: 'wide',
         },
         {
-          src: '/recovered/comfort-map/desktop-2.png',
-          type: 'image',
-          alt: 'Comfort Map desktop screen 2',
+          src: '/recovered/visual-design/3.mp4',
+          type: 'video',
+          alt: 'Comfort Map campaign video 2',
           span: 'wide',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-4.jpg',
+          type: 'image',
+          alt: 'Comfort Map campaign visual',
+        },
+        {
+          src: '/recovered/lun-hr-brand/lun-game-task-7.jpg',
+          type: 'image',
+          alt: 'Comfort Map challenge visual',
         },
       ],
     },
@@ -361,7 +422,7 @@ export const portfolioData = {
       ],
       goals:
         'The redesign had to grow acquisition and engagement across responsive web and widgets while raising awareness about air pollution.',
-      role: 'Growth Design, UI/UX Design',
+      role: 'Growth Design, UI/UX Design, 3D Design',
       liveLink: {
         href: 'https://lun.ua/misto/air-about_en',
         label: 'Try it here',
@@ -387,24 +448,25 @@ export const portfolioData = {
         {
           value: '+17%',
           title: 'In return visits',
-          description: 'Collaborating for Cleaner Air. Partners that are using our data.',
+          description:
+            'Return visits increased as the product became easier to read across map, widget, and mobile contexts.',
         },
       ],
       process: [
         {
           title: 'Discovery',
           description:
-            'As Kyiv ranked first in global air pollution in 2020, our aim was to provide clear, accessible air quality data to help residents protect their health.',
+            'Kyiv ranked first globally for air pollution in 2020, so people needed fast, understandable guidance, not raw metrics.',
         },
         {
           title: 'Research',
           description:
-            'We conducted a series of Product Strategy workshops to align product growth with marketing. As a result, I defined key Personas, created a Value Proposition Canvas, mapped the User Journey and analyzed User Flows and Mental Models from well-known services to design an intuitive and friction-free interface.',
+            'I ran product strategy workshops with marketing, mapped personas and journeys, and benchmarked mental models to reduce decision friction.',
         },
         {
           title: 'Development',
           description:
-            'Our network: we developed real-time air quality sensors in collaboration with National University of Kyiv and then established a network, initially in Kyiv, and then expanded to major cities across Ukraine, providing these sensors free of charge to local contributors. Tips: numbers are hard to imagine, that\'s why we providing instant visual tips. Our mascot Ficha smiles when air quality is good, growing more concerned as it worsens. This is paired with color-coded tips and recommendations (like "safe to jog" or "close windows") for clear guidance. Onboarding: I created an onboarding page for Lun Misto Air to help users understand what AQI is, how we measure it with our stations. Sensitive data: we prioritize contributor safety by never displaying the exact addresses of our stations. Users, however, will still receive personalized air quality data for their precise locations. Offline: users are now receiving notifications in cases of high air pollution even without Internet connection.',
+            'We scaled a real-time sensor network from Kyiv to major cities, added visual tips and mascot-based guidance, and built onboarding for AQI literacy. I also designed privacy-safe location handling and offline alerts for high pollution.',
         },
       ],
       team: [
@@ -418,28 +480,6 @@ export const portfolioData = {
         'Vyacheslav Boretskij, KNU Associate Professor',
         'Alexander Zagaria, Hardware engineer',
         'Andrii Antonenko, Hardware engineer',
-      ],
-      partners: [
-        {
-          name: 'IQAir',
-          src: '/recovered/lun-misto-air/logos/iq-air.png',
-        },
-        {
-          name: 'World Air Quality Index',
-          src: '/recovered/lun-misto-air/logos/World-air-quality-index.png',
-        },
-        {
-          name: 'Ministry of Ecology',
-          src: '/recovered/lun-misto-air/logos/Ministry-of-ecology.png',
-        },
-        {
-          name: 'Plume Labs',
-          src: '/recovered/lun-misto-air/logos/Plume-labs.png',
-        },
-        {
-          name: 'Air Care',
-          src: '/recovered/lun-misto-air/logos/Air-care.png',
-        },
       ],
       gallery: [
         {
@@ -517,57 +557,6 @@ export const portfolioData = {
       ],
     },
     {
-      id: 'visual-design',
-      title: 'Visual Design',
-      navigationLabel: 'Visual Design',
-      year: '2018-2025',
-      focus:
-        'How do you keep visual communication clear, distinctive, and consistent across interface, campaign, and brand work?',
-      categories: ['UI Design', 'Research'],
-      summary: [
-        'A selection of visual design work across interfaces, campaigns, and communication systems.',
-        'What connects these pieces is clarity: finding a visual direction that communicates quickly without flattening the original idea.',
-      ],
-      highlights: [],
-      process: [],
-      team: [],
-      gallery: [
-        {
-          src: '/recovered/visual-design/1.mp4',
-          type: 'video',
-          alt: 'Visual Design reel 1',
-          span: 'wide',
-        },
-        {
-          src: '/recovered/visual-design/2.mp4',
-          type: 'video',
-          alt: 'Visual Design reel 2',
-          span: 'wide',
-        },
-        {
-          src: '/recovered/visual-design/3.mp4',
-          type: 'video',
-          alt: 'Visual Design reel 3',
-          span: 'wide',
-        },
-        {
-          src: '/recovered/visual-design/4.png',
-          type: 'image',
-          alt: 'Visual Design still 1',
-        },
-        {
-          src: '/recovered/visual-design/5.png',
-          type: 'image',
-          alt: 'Visual Design still 2',
-        },
-        {
-          src: '/recovered/visual-design/6.png',
-          type: 'image',
-          alt: 'Visual Design still 3',
-        },
-      ],
-    },
-    {
       id: 'lunie',
       title: 'LUN HR System',
       navigationLabel: 'LUN HR System',
@@ -586,49 +575,49 @@ export const portfolioData = {
         {
           title: 'Day-off bookings',
           description:
-            'employees can book: vacation, day-offs, education, business trips, and sick leaves',
+            'Employees can request vacation, days off, education leave, business trips, and sick leave.',
         },
         {
           title: 'Email manager',
           description:
-            'streamlined recruitment process with email templates for candidate communication and offers',
+            'Recruitment flow with templates for candidate communication and offers.',
         },
         {
           title: 'Payroll processing',
           description:
-            'direct downloading of the data for accountants, reducing manual errors and saving valuable time',
+            'Direct exports for accountants, reducing manual errors and processing time.',
         },
         {
           title: 'Multi-user workflow',
           description:
-            'specifically designed for interdependent employees ("creative couples") to plan day-offs for these critical roles',
+            'Scheduling logic for interdependent roles to coordinate time off.',
         },
         {
           title: 'Access levels',
           description:
-            'not only enhances data security but also provides a more tailored user experience for different job functions',
+            'Role-based permissions improved security and made workflows clearer for each function.',
         },
       ],
       process: [
         {
           title: 'Discovery',
           description:
-            'The team began to scale rapidly and hire foreign specialists, so LUN needed quite specific optimization of HR Management, that wasn\'t covered with propositions on the market.',
+            'Rapid hiring and international growth exposed clear limits in off-the-shelf HR tools.',
         },
         {
           title: 'Research',
           description:
-            'I conducted a series of interviews with founders, recruiters, HR, accountants, product managers, and other representatives from various teams to define their JTBD, gains, and pains, and created two Persona Value Proposition Canvases.',
+            'I interviewed founders, HR, recruiters, accountants, and product teams, then formalized jobs-to-be-done and personas.',
         },
         {
           title: 'Hypothesis',
           description:
-            'Providing employees with intuitive time management and collaboration tools within the HRM system will improve operational efficiency and team effectiveness. Implementing a dedicated conference room booking feature will reduce scheduling problems. Providing clear visibility on teams and colleague locations will improve office navigation and internal communication. Implementing role-based access levels within the HRM system will enhance data security and provide a tailored user experience for different job functions. Introducing a multi-user workflow specifically for interdependent colleagues to plan day-offs will improve team coordination for these critical roles. Developing designed email manager for candidate communication and offers will optimize HR processes, leading to more efficency and reduce mistakes.',
+            'A unified HRM with role-based access, scheduling tools, team visibility, and recruitment communication would cut friction and improve daily operations.',
         },
         {
           title: 'Development',
           description:
-            'Designed an intuitive sitemap encompassing key sections such as Calendar, Team List, Office Map, FAQ, Account, and Admin pages with role-based access control. Developed low-fidelity prototypes, validated them through contextual inquiry and user interviews, and initiated the design implementation phase. Testing involved continuous feedback loops, in-depth user interviews, and observation of pain points and needs to validate product hypotheses, enabling us to deliver truly intuitive and user-centered solutions. Lunie: I developed Lunie, our friendly mascot and virtual assistant designed to feel like a helpful team member. As part of our HR brand strategy, Lunie supports employee well-being and helps reduce operational stress by guiding users through tasks in a conversational, approachable way. We also integrated Lunie with Slack, allowing employees to ask questions, anonymously if desired, ensuring accessible, always-on support and fostering a culture of openness and care.',
+            'I designed the core IA and flows, validated prototypes in iterative research loops, and shipped role-based interfaces across calendar, team, office map, and admin sections. I also created Lunie, an HR assistant persona later integrated with Slack support.',
         },
       ],
       team: [
@@ -701,22 +690,226 @@ export const portfolioData = {
       ],
     },
     {
+      id: 'lun-hr-brand',
+      title: 'LUN HR Brand',
+      navigationLabel: 'LUN HR Brand',
+      year: '2019',
+      focus:
+        'How do you turn hiring into a brand signal that attracts genuinely curious, technically exceptional people?',
+      categories: [
+        'Marketing Design',
+        'Employer Branding',
+        'Campaign Design',
+        'HR Brand',
+      ],
+      summary: [
+        "In Kyiv tech universities, LUN had a mythic reputation: brilliant company, nearly impossible to get into. I applied as a physics student for a designer role and got in.",
+        'The mythology was accurate, but not because of elitism. The team operated like a curiosity-driven research lab, and we needed the HR brand to communicate exactly that culture.',
+        'This was not a volume problem. LUN already had 86% HR brand recognition in its target audience. The challenge was signaling to the right people, not reaching more people.',
+      ],
+      goals:
+        'Design a recruitment campaign that functions as a filter for curiosity and technical excellence, turning the hiring process itself into the brand statement.',
+      role: 'Marketing Design',
+      highlights: [
+        {
+          value: '86% -> 99%',
+          title: 'HR brand recognition',
+          description:
+            'Brand awareness among the target hiring audience rose to 99% within the campaign period.',
+        },
+        {
+          value: '1M+',
+          title: 'global game attempts',
+          description:
+            'A Kyiv metro geo-test unexpectedly scaled worldwide with over one million attempts.',
+        },
+        {
+          title: 'Organic tech-community spread',
+          description:
+            'Ukrainian Slack communities started collaborating publicly on puzzle solutions, then global tech circles joined in.',
+        },
+        {
+          title: 'Weekly winner parties',
+          description:
+            'For several months, game finishers met the team directly in open weekly events and candid conversations.',
+        },
+      ],
+      process: [
+        {
+          title: 'The Brief',
+          description:
+            'With the CTO and AI team, we aligned on a non-traditional recruitment strategy: make the hiring process itself the proof of culture. The target was not more applications, but better-fit people.',
+        },
+        {
+          title: 'The Lun Game Experiment',
+          description:
+            'We launched code-based challenges on metro banners near major Kyiv tech universities. Each location had different puzzles and links, intended as a measurable geo-efficiency test.',
+        },
+        {
+          title: 'Unexpected Global Scale',
+          description:
+            'Within 48 hours, the experiment outgrew local media buying logic. Communities shared and iterated on solutions in public, and attempts started coming from around the world.',
+        },
+        {
+          title: 'Community as Hiring Funnel',
+          description:
+            'The game ended with weekly winner parties where people could speak directly with the team. Candidates came driven by curiosity and craft, not just job urgency.',
+        },
+        {
+          title: 'What It Proved',
+          description:
+            'Curiosity-driven culture can be communicated through product-like campaign design. The strongest brand signal was not polished assets, but a hiring experience people still remember years later.',
+        },
+      ],
+      team: [
+        'Alina Skalkina, Marketing Design',
+        'Iryna Platonova, Chief People Officer',
+        'Stas Sklyarovsky, CTO',
+        'Volodymyr Kybitsky, AI Team',
+        'Dmytro Satanovsky, AI Team',
+        'Maksym Dolynchuk, Engineer',
+      ],
+      gallery: [
+        {
+          src: '/recovered/lun-hr-brand/lun-game-metro-code.png',
+          type: 'image',
+          alt: 'LUN Game metro ad code puzzle',
+          span: 'wide',
+        },
+        {
+          src: '/recovered/lun-hr-brand/lun-game-task-1.jpg',
+          type: 'image',
+          alt: 'LUN Game challenge screen, task 1',
+        },
+        {
+          src: '/recovered/lun-hr-brand/lun-game-task-7.jpg',
+          type: 'image',
+          alt: 'LUN Game challenge screen, task 7',
+        },
+        {
+          src: '/recovered/lun-hr-brand/lun-game-chat.jpg',
+          type: 'image',
+          alt: 'Player chat message about solving LUN Game tasks',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-redesign.jpg',
+          type: 'image',
+          alt: 'LUN brand visual from campaign period',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-4.jpg',
+          type: 'image',
+          alt: 'LUN HR brand visual exploration',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-5.jpg',
+          type: 'image',
+          alt: 'LUN HR brand communication asset',
+        },
+        {
+          src: '/recovered/lun-hr-brand/educational-hub-1.jpg',
+          type: 'image',
+          alt: 'Educational hub created by LUN at Taras Shevchenko University, space view',
+        },
+        {
+          src: '/recovered/lun-hr-brand/educational-hub-2.jpg',
+          type: 'image',
+          alt: 'Educational hub created by LUN at Taras Shevchenko University, interior',
+        },
+        {
+          src: '/recovered/lun-hr-brand/educational-hub-3.jpg',
+          type: 'image',
+          alt: 'Educational hub created by LUN at Taras Shevchenko University, event scene',
+        },
+      ],
+    },
+    {
+      id: 'farba',
+      title: 'Farba',
+      navigationLabel: 'Farba',
+      year: '2025 - Ongoing',
+      focus:
+        'How do you build a themable design system that stays expressive for users and maintainable for teams?',
+      categories: [
+        'Design System',
+        'Product Strategy',
+        'Marketing Product',
+        'AI Workflow Design',
+      ],
+      summary: [
+        'Farba began as a science-lab style experiment after years of seeing themable systems blocked by technical debt and business constraints.',
+        'The goal was to prove a different model: a system that does not restrict creativity, but is still stable and low-maintenance over time.',
+        'Two breakthroughs changed the equation: OKLCH for reliable accessible palette generation, and AI-assisted implementation loops after architecture was established.',
+      ],
+      goals:
+        'Create a one-color input system where users can assemble marketing pages from templates and components while the platform guarantees coherent, accessible color and typography decisions.',
+      role: 'Design System Architecture, Product Design, AI-Integrated Workflow Design',
+      highlights: [
+        {
+          title: 'One input, full palette',
+          description:
+            'From a single chosen color, the system derives an accessible, visually coherent ramp for accents, text, hover states, and surfaces.',
+        },
+        {
+          title: 'Built on OKLCH',
+          description:
+            'Color logic is mathematically grounded and practical for real products, reducing manual contrast checks and palette guesswork.',
+        },
+        {
+          title: 'AI-assisted shipping loop',
+          description:
+            'After architecture, new feature work shifted from mockup-heavy cycles to supervised prompt-and-validate implementation.',
+        },
+        {
+          title: 'Curator-first product model',
+          description:
+            'Users pick color, templates, and components while the system handles complexity across light/dark modes and edge cases.',
+        },
+      ],
+      process: [
+        {
+          title: 'Experiment Setup',
+          description:
+            'Farba started as a deliberate R&D bet: stop waiting for ideal system conditions and test whether a themable system could be both flexible and maintainable.',
+        },
+        {
+          title: 'Architecture First',
+          description:
+            'The team invested heavily in system architecture before scaling features, so future additions would rely on durable rules instead of ad-hoc custom components.',
+        },
+        {
+          title: 'OKLCH Color Engine',
+          description:
+            'OKLCH enabled generation of complete accessible palettes from one source color, keeping outputs both perceptually coherent and WCAG-conscious across contexts.',
+        },
+        {
+          title: 'AI-Integrated Build Loop',
+          description:
+            'Once architecture stabilized, feature delivery became significantly faster: define intent, generate under developer supervision, evaluate solution quality, iterate.',
+        },
+        {
+          title: 'System as Creative Environment',
+          description:
+            'With core system problems largely solved, energy shifted from maintenance overhead to making useful, expressive experiences for portfolios, services, blogs, about pages, and booking flows.',
+        },
+      ],
+      team: ['Alina Skalkina, Product and Design System Lead'],
+      gallery: [],
+    },
+    {
       id: 'graphic-design',
-      title: 'Graphic Design',
-      navigationLabel: 'Graphic Design',
+      title: 'My playground',
+      navigationLabel: 'My playground',
       year: '2018-2025',
       focus:
-        'How do you give campaigns and brand systems a distinct point of view while keeping them legible across formats?',
+        'Design moves fast, and I’ve found that the only way to keep up is to keep playing. This is my lab for visual experiments—a place where I research tools not just to stay current, but to stay inspired.',
       categories: [
         'Brand Identity',
         'Typography',
         '3D Design',
         'Motion Design',
       ],
-      summary: [
-        'A selection of graphic design, identity, typography, motion, and 3D work across campaigns and internal initiatives.',
-        'These pieces focus on building a recognizable point of view without losing clarity when the work moves across different formats and audiences.',
-      ],
+      summary: [],
       highlights: [],
       process: [],
       team: [],
@@ -724,8 +917,10 @@ export const portfolioData = {
         {
           src: '/recovered/graphic-design.mov',
           type: 'video',
-          alt: 'Graphic Design reel',
+          alt: 'Graphic Design motion studies reel',
           span: 'wide',
+          caption:
+            'Experimental motion studies testing transitions, timing curves, and bold campaign composition.',
         },
         {
           src: '/recovered/problematic.mp4',
@@ -734,14 +929,10 @@ export const portfolioData = {
           span: 'wide',
         },
         {
-          src: '/recovered/graphic-design/A-2.jpg',
+          src: '/recovered/graphic-design/house2.gif',
           type: 'image',
-          alt: 'Graphic Design piece A-2',
-        },
-        {
-          src: '/recovered/graphic-design/I-2.jpg',
-          type: 'image',
-          alt: 'Graphic Design piece I-2',
+          alt: 'Graphic Design animated house concept',
+          span: 'wide',
         },
         {
           src: '/recovered/graphic-design/L-0.jpg',
@@ -754,54 +945,24 @@ export const portfolioData = {
           alt: 'Graphic Design piece B-1',
         },
         {
-          src: '/recovered/graphic-design/abstract.png',
-          type: 'image',
-          alt: 'Graphic Design abstract artwork',
-        },
-        {
           src: '/recovered/graphic-design/D-1.jpg',
           type: 'image',
           alt: 'Graphic Design piece D-1',
         },
         {
-          src: '/recovered/graphic-design/G-2.jpg',
+          src: '/recovered/graphic-design/I-2.jpg',
           type: 'image',
-          alt: 'Graphic Design piece G-2',
-        },
-        {
-          src: '/recovered/graphic-design/K-1.jpg',
-          type: 'image',
-          alt: 'Graphic Design piece K-1',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-5.jpg',
-          type: 'image',
-          alt: 'Graphic Design Lun 5',
-        },
-        {
-          src: '/recovered/graphic-design/house2.gif',
-          type: 'image',
-          alt: 'Graphic Design animated house asset',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-4.jpg',
-          type: 'image',
-          alt: 'Graphic Design Lun 4',
-        },
-        {
-          src: '/recovered/graphic-design/spilka-2.png',
-          type: 'image',
-          alt: 'Graphic Design Spilka asset',
-        },
-        {
-          src: '/recovered/graphic-design/lun-data-visual.png',
-          type: 'image',
-          alt: 'Graphic Design data visualization',
+          alt: 'Graphic Design piece I-2',
         },
         {
           src: '/recovered/graphic-design/Lun-redesign.jpg',
           type: 'image',
           alt: 'Graphic Design Lun redesign',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-5.jpg',
+          type: 'image',
+          alt: 'Graphic Design Lun visual 5',
         },
       ],
     },
@@ -816,4 +977,30 @@ export function getProjectById(id: PortfolioProject['id']) {
   }
 
   return project
+}
+
+function getYearMarkers(yearLabel: string) {
+  const years = yearLabel.match(/\d{4}/g)
+  if (!years?.length) {
+    return { latest: 0, earliest: 0 }
+  }
+
+  const values = years.map((value) => Number(value))
+  return {
+    latest: Math.max(...values),
+    earliest: Math.min(...values),
+  }
+}
+
+export function getProjectsNewestFirst() {
+  return [...portfolioData.projects].sort((a, b) => {
+    const markerA = getYearMarkers(a.year)
+    const markerB = getYearMarkers(b.year)
+
+    if (markerB.latest !== markerA.latest) {
+      return markerB.latest - markerA.latest
+    }
+
+    return markerB.earliest - markerA.earliest
+  })
 }

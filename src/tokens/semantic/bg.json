@@ -1,0 +1,26 @@
+{
+  "canvas": {
+    "base": "neutral.50",
+    "subtle": "neutral.100"
+  },
+  "surface": {
+    "base": "neutral.0",
+    "sunken": "neutral.100",
+    "subtle": "brand.100",
+    "interactive": "brand.200",
+    "overlay": "alpha(absolute.black, 0.82)"
+  },
+  "accent": {
+    "base": "brand.600",
+    "hover": "brand.700",
+    "active": "brand.800",
+    "subtle": "brand.100",
+    "muted": "brand.200"
+  },
+  "feedback": {
+    "danger": "feedback.danger.600",
+    "success": "feedback.success.600",
+    "warning": "feedback.warning.600",
+    "info": "feedback.info.600"
+  }
+}

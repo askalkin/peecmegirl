@@ -1,0 +1,12 @@
+{
+  "primary": "neutral.900",
+  "secondary": "neutral.700",
+  "muted": "neutral.600",
+  "subtle": "neutral.500",
+  "accent": "brand.700",
+  "onAccent": "auto(bg.accent.base)",
+  "onAccentSubtle": "brand.800",
+  "onOverlay": "absolute.white",
+  "onDanger": "auto(bg.feedback.danger)",
+  "link": "brand.700"
+}

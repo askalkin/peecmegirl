@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react'
-import { ArrowLeft, ExternalLink, Mail } from 'lucide-react'
+import { ArrowLeft, ExternalLink } from 'lucide-react'
 
 import {
-  portfolioData,
+  getProjectsNewestFirst,
   type PortfolioMediaItem,
   type PortfolioProject,
 } from '@/data/portfolio'
+import { ContactSection } from '@/components/ContactSection'
+import { SiteFooter } from '@/components/SiteFooter'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 
 import { Lightbox } from './Lightbox'
@@ -34,7 +35,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   )
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null)
 
-  const moreProjects = portfolioData.projects.filter(
+  const moreProjects = getProjectsNewestFirst().filter(
     (currentProject) => currentProject.id !== project.id
   )
 
@@ -59,38 +60,47 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   }
 
   return (
-    <main className="bg-white pb-20">
+    <main className="pb-16">
       <section className="section-shell py-12 sm:py-16">
         <a
           href="/#work"
-          className="inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-950"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
           Back to selected works
         </a>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
-          <div className="space-y-4">
-            <div className="text-sm text-zinc-500">{project.year}</div>
-            <h1 className="text-4xl font-semibold tracking-tight text-zinc-950 sm:text-5xl">
-              {project.title}
-            </h1>
-            <p className="text-sm leading-6 text-zinc-500">
-              {project.categories.join(', ')}
-            </p>
-            {project.liveLink ? (
-              <Button asChild variant="outline" className="rounded-full">
-                <a href={project.liveLink.href} target="_blank" rel="noreferrer">
-                  {project.liveLink.label}
-                  <ExternalLink className="size-4" />
-                </a>
-              </Button>
-            ) : null}
-          </div>
+        <div className="mt-10 grid gap-10 lg:grid-cols-[18rem_minmax(0,1fr)]">
+          <aside className="space-y-4 self-start lg:sticky lg:top-24">
+            <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-surface)]">
+              <p className="text-sm text-muted-foreground">{project.year}</p>
+              <h1 className="mt-3 text-3xl font-semibold tracking-tight text-card-foreground sm:text-4xl">
+                {project.title}
+              </h1>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {project.categories.map((category) => (
+                  <span
+                    key={category}
+                    className="rounded-full border border-border bg-muted/35 px-3 py-1 text-xs text-muted-foreground"
+                  >
+                    {category}
+                  </span>
+                ))}
+              </div>
+              {project.liveLink ? (
+                <Button asChild variant="outline" className="mt-5 rounded-full">
+                  <a href={project.liveLink.href} target="_blank" rel="noreferrer">
+                    {project.liveLink.label}
+                    <ExternalLink className="size-4" />
+                  </a>
+                </Button>
+              ) : null}
+            </div>
+          </aside>
 
-          <div className="space-y-10">
+          <div className="space-y-8">
             {leadVideo ? (
-              <figure className="overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-50">
+              <figure className="overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-surface)]">
                 <video
                   className="h-full w-full object-cover"
                   autoPlay
@@ -105,88 +115,106 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
               </figure>
             ) : null}
 
-            <div className="border-t border-zinc-200 pt-4">
-              <div className="text-sm text-zinc-500">Case-study focus</div>
-              <p className="mt-3 max-w-3xl text-xl leading-9 text-zinc-700">
+            <section className="rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
+              <div className="text-sm font-medium text-muted-foreground">Case-study focus</div>
+              <p className="mt-3 max-w-3xl text-xl leading-8 text-foreground/80 sm:text-2xl">
                 {project.focus}
               </p>
-            </div>
+            </section>
 
             {project.summary.length || project.goals || project.role ? (
-              <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
-                <div className="space-y-4 border-t border-zinc-200 pt-4">
-                  <div className="text-sm text-zinc-500">Context</div>
-                  {project.summary.map((paragraph) => (
-                    <p key={paragraph} className="max-w-3xl leading-8 text-zinc-600">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-                <div className="space-y-6">
-                  {project.goals ? (
-                    <div className="border-t border-zinc-200 pt-4">
-                      <div className="text-sm text-zinc-500">Problem to solve</div>
-                      <p className="mt-2 text-base leading-7 text-zinc-600">
-                        {project.goals}
+              <section className="rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
+                <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+                  <div className="space-y-3">
+                    <div className="text-sm font-medium text-muted-foreground">Context</div>
+                    {project.summary.map((paragraph) => (
+                      <p
+                        key={paragraph}
+                        className="rounded-xl border border-border/80 bg-muted/35 px-4 py-3 text-base leading-7 text-foreground/80"
+                      >
+                        {paragraph}
                       </p>
-                    </div>
-                  ) : null}
-                  {project.role ? (
-                    <div className="border-t border-zinc-200 pt-4">
-                      <div className="text-sm text-zinc-500">Role</div>
-                      <p className="mt-2 text-base leading-7 text-zinc-600">
-                        {project.role}
-                      </p>
-                    </div>
-                  ) : null}
+                    ))}
+                  </div>
+                  <div className="space-y-4">
+                    {project.goals ? (
+                      <div className="rounded-xl border border-border/80 bg-muted/35 p-4">
+                        <div className="text-sm font-medium text-muted-foreground">
+                          Problem to solve
+                        </div>
+                        <p className="mt-2 text-base leading-7 text-foreground/80">
+                          {project.goals}
+                        </p>
+                      </div>
+                    ) : null}
+                    {project.role ? (
+                      <div className="rounded-xl border border-border/80 bg-muted/35 p-4">
+                        <div className="text-sm font-medium text-muted-foreground">Role</div>
+                        <p className="mt-2 text-base leading-7 text-foreground/80">
+                          {project.role}
+                        </p>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
+              </section>
             ) : null}
 
             {project.highlights.length ? (
-              <div className="space-y-4">
-                <div className="text-sm text-zinc-500">Outcomes</div>
+              <section className="space-y-4 rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
+                <div className="text-sm font-medium text-muted-foreground">Outcomes</div>
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                   {project.highlights.map((highlight) => (
-                    <div key={`${highlight.title}-${highlight.value ?? ''}`}>
+                    <article
+                      key={`${highlight.title}-${highlight.value ?? ''}`}
+                      className="rounded-2xl border border-border bg-muted/35 p-5"
+                    >
                       {highlight.value ? (
-                        <div className="text-3xl font-semibold tracking-tight text-zinc-950">
+                        <div className="text-3xl font-semibold tracking-tight text-card-foreground">
                           {highlight.value}
                         </div>
                       ) : null}
-                      <div className="mt-2 text-sm text-zinc-500">
+                      <div className="mt-2 text-sm text-muted-foreground">
                         {highlight.title}
                       </div>
-                      <p className="mt-3 text-base leading-7 text-zinc-600">
+                      <p className="mt-3 text-base leading-7 text-foreground/75">
                         {highlight.description}
                       </p>
-                    </div>
+                    </article>
                   ))}
                 </div>
-              </div>
+              </section>
             ) : null}
 
             {project.process.length ? (
-              <div className="space-y-4">
-                <div className="text-sm text-zinc-500">How I approached it</div>
-                <div className="grid gap-8 lg:grid-cols-2">
-                  {project.process.map((step) => (
-                    <div key={step.title} className="border-t border-zinc-200 pt-4">
-                      <h2 className="text-2xl font-semibold tracking-tight text-zinc-950">
+              <section className="space-y-4 rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
+                <div className="text-sm font-medium text-muted-foreground">
+                  How I approached it
+                </div>
+                <div className="grid gap-4 lg:grid-cols-2">
+                  {project.process.map((step, index) => (
+                    <article
+                      key={step.title}
+                      className="rounded-2xl border border-border bg-muted/35 p-5"
+                    >
+                      <p className="text-xs font-medium text-muted-foreground">
+                        Step {index + 1}
+                      </p>
+                      <h2 className="mt-2 text-2xl font-semibold tracking-tight text-card-foreground">
                         {step.title}
                       </h2>
-                      <p className="mt-3 text-base leading-7 text-zinc-600">
+                      <p className="mt-3 text-base leading-7 text-foreground/80">
                         {step.description}
                       </p>
-                    </div>
+                    </article>
                   ))}
                 </div>
-              </div>
+              </section>
             ) : null}
 
             {galleryItems.length ? (
-              <div className="space-y-4">
-                <div className="text-sm text-zinc-500">Media</div>
+              <section className="space-y-4 rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
+                <div className="text-sm font-medium text-muted-foreground">Media</div>
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   {galleryItems.map((item) => (
                     <MediaTile
@@ -196,99 +224,55 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     />
                   ))}
                 </div>
-              </div>
-            ) : null}
-
-            {project.partners?.length ? (
-              <div className="space-y-4">
-                <div className="text-sm text-zinc-500">
-                  Collaborating for Cleaner Air
-                </div>
-                <div className="flex flex-wrap gap-8 border-t border-zinc-200 pt-6">
-                  {project.partners.map((partner) => (
-                    <div key={partner.name} className="flex h-10 items-center">
-                      <img
-                        src={partner.src}
-                        alt={partner.name}
-                        className="max-h-10 w-auto object-contain"
-                        loading="lazy"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              </section>
             ) : null}
 
             {project.team.length ? (
-              <div className="space-y-4">
-                <div className="text-sm text-zinc-500">Team</div>
-                <ul className="grid gap-2 sm:grid-cols-2">
+              <section className="space-y-4 rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
+                <div className="text-sm font-medium text-muted-foreground">Team</div>
+                <ul className="flex flex-wrap gap-2">
                   {project.team.map((member) => (
-                    <li key={member} className="text-base leading-7 text-zinc-600">
+                    <li
+                      key={member}
+                      className="rounded-full border border-border bg-muted/35 px-3 py-1.5 text-sm text-foreground/80"
+                    >
                       {member}
                     </li>
                   ))}
                 </ul>
-              </div>
+              </section>
             ) : null}
           </div>
         </div>
       </section>
 
       <section className="section-shell py-20">
-        <Separator className="bg-zinc-200" />
-        <div className="pt-10">
-          <h2 className="text-3xl font-semibold tracking-tight text-zinc-950">
-            More Projects
-          </h2>
-          <div className="mt-10 border-y border-zinc-200">
-            {moreProjects.map((relatedProject) => (
-              <a
-                key={relatedProject.id}
-                href={`/${relatedProject.id}`}
-                className="grid gap-3 border-b border-zinc-200 py-6 transition-colors last:border-b-0 hover:text-zinc-950 md:grid-cols-[minmax(0,1fr)_auto]"
-              >
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-semibold tracking-tight text-zinc-950">
-                    {relatedProject.title}
-                  </h3>
-                  <p className="max-w-2xl text-base leading-7 text-zinc-600">
-                    {relatedProject.focus}
-                  </p>
-                </div>
-                <div className="text-sm text-zinc-500">{relatedProject.year}</div>
-              </a>
-            ))}
-          </div>
+        <h2 className="text-3xl font-semibold tracking-tight text-foreground">
+          More Projects
+        </h2>
+        <div className="mt-8 space-y-3">
+          {moreProjects.map((relatedProject) => (
+            <a
+              key={relatedProject.id}
+              href={`/${relatedProject.id}`}
+              className="grid gap-3 rounded-2xl border border-border/80 bg-card px-5 py-6 transition-colors hover:border-foreground/30 md:grid-cols-[minmax(0,1fr)_auto] md:px-6"
+            >
+              <div className="space-y-2">
+                <h3 className="text-xl font-semibold tracking-tight text-card-foreground sm:text-2xl">
+                  {relatedProject.title}
+                </h3>
+                <p className="max-w-2xl text-base leading-7 text-foreground/80">
+                  {relatedProject.focus}
+                </p>
+              </div>
+              <div className="text-sm text-muted-foreground md:pt-1">{relatedProject.year}</div>
+            </a>
+          ))}
         </div>
       </section>
 
-      <section className="section-shell py-20">
-        <Separator className="bg-zinc-200" />
-        <div className="flex flex-col gap-8 pt-10 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
-            <h2 className="text-4xl font-semibold tracking-tight text-zinc-950">
-              {portfolioData.person.name}
-            </h2>
-            <p className="text-base leading-7 text-zinc-600">
-              {portfolioData.person.footerTitle}
-              <br />
-              &copy; {portfolioData.person.footerYear}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild variant="outline" size="lg" className="rounded-full px-6">
-              <a href={`mailto:${portfolioData.person.email}`}>
-                <Mail className="size-4" />
-                {portfolioData.person.email}
-              </a>
-            </Button>
-            <Button asChild size="lg" className="rounded-full px-6">
-              <a href="/#top">Back to home</a>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <ContactSection />
+      <SiteFooter backHref="/#top" backLabel="Back to home" />
 
       <Lightbox
         activeIndex={activeImageIndex}
@@ -308,45 +292,54 @@ function MediaTile({
   item: PortfolioMediaItem
   onImageClick: () => void
 }) {
+  const spanClass = cn(
+    item.span === 'wide' && 'sm:col-span-2 xl:col-span-2',
+    item.span === 'tall' && 'sm:row-span-2'
+  )
+
   if (item.type === 'video') {
     return (
-      <figure
-        className={cn(
-          'media-tile overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50',
-          item.span === 'wide' && 'sm:col-span-2 xl:col-span-2',
-          item.span === 'tall' && 'sm:row-span-2'
-        )}
-      >
-        <video
-          className="h-full w-full object-cover"
-          controls
-          muted
-          playsInline
-          preload="metadata"
-        >
-          <source src={item.src} />
-        </video>
+      <figure className={spanClass}>
+        <div className="group relative media-tile overflow-hidden rounded-2xl border border-border bg-card">
+          <video
+            className="h-full w-full object-cover"
+            controls
+            muted
+            playsInline
+            preload="metadata"
+          >
+            <source src={item.src} />
+          </video>
+          {item.caption ? (
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--color-overlay-scrim)] via-[var(--color-overlay-scrim-soft)] to-transparent p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              <p className="text-sm leading-6 text-[var(--color-overlay-foreground)]">{item.caption}</p>
+            </div>
+          ) : null}
+        </div>
       </figure>
     )
   }
 
   return (
-    <button
-      type="button"
-      onClick={onImageClick}
-      className={cn(
-        'media-tile overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 text-left transition-transform hover:scale-[1.01]',
-        item.span === 'wide' && 'sm:col-span-2 xl:col-span-2',
-        item.span === 'tall' && 'sm:row-span-2'
-      )}
-      aria-label={`Open ${item.alt}`}
-    >
-      <img
-        src={item.src}
-        alt={item.alt}
-        className="h-full w-full cursor-zoom-in object-cover"
-        loading="lazy"
-      />
-    </button>
+    <figure className={spanClass}>
+      <button
+        type="button"
+        onClick={onImageClick}
+        className="group relative media-tile overflow-hidden rounded-2xl border border-border bg-card text-left transition-transform hover:scale-[1.01]"
+        aria-label={`Open ${item.alt}`}
+      >
+        <img
+          src={item.src}
+          alt={item.alt}
+          className="h-full w-full cursor-zoom-in object-cover"
+          loading="lazy"
+        />
+        {item.caption ? (
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--color-overlay-scrim)] via-[var(--color-overlay-scrim-soft)] to-transparent p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <p className="text-sm leading-6 text-[var(--color-overlay-foreground)]">{item.caption}</p>
+          </div>
+        ) : null}
+      </button>
+    </figure>
   )
 }

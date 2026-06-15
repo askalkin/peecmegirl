@@ -1,0 +1,8 @@
+{
+  "primary": "{text.primary}",
+  "secondary": "{text.secondary}",
+  "muted": "{text.muted}",
+  "accent": "{text.accent}",
+  "onAccent": "{text.onAccent}",
+  "onOverlay": "{text.onOverlay}"
+}

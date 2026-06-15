@@ -1,0 +1,8 @@
+{
+  "default": "neutral.200",
+  "muted": "{bg.surface.subtle}",
+  "strong": "neutral.300",
+  "interactive": "brand.400",
+  "focus": "brand.600",
+  "inverse": "alpha(absolute.white, 0.24)"
+}

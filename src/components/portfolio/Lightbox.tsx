@@ -49,14 +49,14 @@ export function Lightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/90 px-4 py-4 sm:px-6 sm:py-6"
+      className="fixed inset-0 z-50 bg-[var(--color-overlay-scrim)] px-4 py-4 sm:px-6 sm:py-6"
       onClick={onClose}
     >
       <div
         className="mx-auto flex h-full max-w-7xl flex-col"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between text-sm text-white/70">
+        <div className="flex items-center justify-between text-sm text-[var(--color-overlay-foreground-muted)]">
           <div>
             {activeIndex + 1} / {images.length}
           </div>
@@ -64,7 +64,7 @@ export function Lightbox({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="text-white hover:bg-white/10 hover:text-white"
+            className="text-[var(--color-overlay-foreground)] hover:bg-[var(--border-inverse)] hover:text-[var(--color-overlay-foreground)]"
             aria-label="Close image gallery"
           >
             <X className="size-5" />
@@ -77,7 +77,7 @@ export function Lightbox({
               variant="ghost"
               size="icon"
               onClick={onPrevious}
-              className="absolute left-0 top-1/2 z-10 -translate-y-1/2 text-white hover:bg-white/10 hover:text-white"
+              className="absolute left-0 top-1/2 z-10 -translate-y-1/2 text-[var(--color-overlay-foreground)] hover:bg-[var(--border-inverse)] hover:text-[var(--color-overlay-foreground)]"
               aria-label="Previous image"
             >
               <ChevronLeft className="size-6" />
@@ -95,7 +95,7 @@ export function Lightbox({
               variant="ghost"
               size="icon"
               onClick={onNext}
-              className="absolute right-0 top-1/2 z-10 -translate-y-1/2 text-white hover:bg-white/10 hover:text-white"
+              className="absolute right-0 top-1/2 z-10 -translate-y-1/2 text-[var(--color-overlay-foreground)] hover:bg-[var(--border-inverse)] hover:text-[var(--color-overlay-foreground)]"
               aria-label="Next image"
             >
               <ChevronRight className="size-6" />
@@ -103,7 +103,9 @@ export function Lightbox({
           ) : null}
         </div>
 
-        <div className="text-sm text-white/70">{activeImage.alt}</div>
+        <div className="text-sm text-[var(--color-overlay-foreground-muted)]">
+          {activeImage.alt}
+        </div>
       </div>
     </div>
   )

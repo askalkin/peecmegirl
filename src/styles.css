@@ -4,12 +4,84 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url('/fonts/outfit/Outfit-Thin.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url('/fonts/outfit/Outfit-ExtraLight.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/outfit/Outfit-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/outfit/Outfit-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/outfit/Outfit-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/outfit/Outfit-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/outfit/Outfit-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/outfit/Outfit-ExtraBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/outfit/Outfit-Black.ttf') format('truetype');
+}
+
 body {
   @apply m-0;
-  font-family:
-    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(
+    --font-sans,
+    'Outfit',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif
+  );
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.55;
 }
 
 code {
@@ -17,7 +89,11 @@ code {
 }
 
 :root {
-  --background: oklch(1 0 0);
+  --font-sans: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  --font-display: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  --background: oklch(0.985 0.003 258);
   --foreground: oklch(0.211 0.01 264.53);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.211 0.01 264.53);
@@ -53,41 +129,43 @@ code {
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.141 0.005 285.823);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.141 0.005 285.823);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.21 0.006 285.885);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.17 0.015 275);
+  --foreground: oklch(0.95 0.01 275);
+  --card: oklch(0.23 0.02 275);
+  --card-foreground: oklch(0.96 0.01 275);
+  --popover: oklch(0.2 0.02 275);
+  --popover-foreground: oklch(0.96 0.01 275);
+  --primary: oklch(0.86 0.05 298);
+  --primary-foreground: oklch(0.2 0.02 275);
+  --secondary: oklch(0.28 0.02 275);
+  --secondary-foreground: oklch(0.96 0.01 275);
+  --muted: oklch(0.27 0.016 275);
+  --muted-foreground: oklch(0.78 0.02 285);
+  --accent: oklch(0.31 0.03 286);
+  --accent-foreground: oklch(0.97 0.01 275);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.274 0.006 286.033);
-  --input: oklch(0.274 0.006 286.033);
-  --ring: oklch(0.442 0.017 285.786);
+  --border: oklch(0.34 0.025 280);
+  --input: oklch(0.34 0.025 280);
+  --ring: oklch(0.64 0.07 295);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar: oklch(0.21 0.02 275);
+  --sidebar-foreground: oklch(0.96 0.01 275);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.274 0.006 286.033);
-  --sidebar-ring: oklch(0.442 0.017 285.786);
+  --sidebar-accent: oklch(0.3 0.03 286);
+  --sidebar-accent-foreground: oklch(0.97 0.01 275);
+  --sidebar-border: oklch(0.34 0.025 280);
+  --sidebar-ring: oklch(0.64 0.07 295);
 }
 
 @theme inline {
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -136,6 +214,48 @@ code {
   body {
     @apply bg-background text-foreground;
     min-height: 100vh;
+    text-wrap: pretty;
+  }
+  html[data-appearance='light'] body {
+    background-image:
+      radial-gradient(
+        circle at top left,
+        color-mix(in oklch, var(--bg-accent-subtle) 68%, transparent),
+        transparent 32%
+      ),
+      radial-gradient(
+        circle at bottom right,
+        color-mix(in oklch, var(--bg-surface-subtle) 48%, transparent),
+        transparent 30%
+      );
+    background-attachment: fixed;
+  }
+  html[data-appearance='dark'] body {
+    background-image:
+      radial-gradient(
+        circle at top,
+        color-mix(in oklch, var(--bg-accent-muted) 42%, transparent),
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at bottom right,
+        color-mix(in oklch, var(--bg-surface-subtle) 34%, transparent),
+        transparent 30%
+      );
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+    font-family: var(--font-display);
+  }
+  h1 {
+    @apply text-4xl lg:text-5xl;
+  }
+  h2 {
+    @apply text-3xl lg:text-4xl;
+  }
+  h3 {
+    @apply text-2xl lg:text-3xl;
   }
   ::selection {
     background: rgba(24, 24, 27, 0.12);
@@ -144,22 +264,206 @@ code {
 
 .section-shell {
   margin-inline: auto;
-  max-width: 72rem;
-  padding-inline: 1rem;
+  max-width: 78rem;
+  padding-inline: 1.25rem;
 }
 
 .media-tile {
-  min-height: 16rem;
+  min-height: 14rem;
+}
+
+.cv-print-meta,
+.cv-page-contact-link {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  body {
+    min-height: auto;
+    background-image: none !important;
+    font-size: 11pt;
+    line-height: 1.4;
+  }
+
+  body > header,
+  .cv-page-backlink,
+  .cv-page-actions,
+  .contact-section,
+  .cv-page footer {
+    display: none !important;
+  }
+
+  .section-shell,
+  .cv-page .section-shell {
+    max-width: none;
+    padding-inline: 0 !important;
+  }
+
+  .cv-page {
+    padding-bottom: 0 !important;
+  }
+
+  .cv-page-intro {
+    padding-top: 0 !important;
+    padding-bottom: 4mm !important;
+  }
+
+  .cv-page-hero {
+    display: block;
+    margin-top: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .cv-page-hero-copy {
+    display: block;
+  }
+
+  .cv-page-label {
+    display: none !important;
+  }
+
+  .cv-page-name {
+    margin: 0 !important;
+    font-size: 27pt !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.03em;
+    color: #111 !important;
+  }
+
+  .cv-page-summary {
+    max-width: none !important;
+    margin-top: 3mm !important;
+    font-size: 11.5pt !important;
+    line-height: 1.45 !important;
+    color: #262626 !important;
+  }
+
+  .cv-print-meta {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 2mm 4mm;
+    margin-top: 3mm;
+    font-size: 9.5pt;
+    line-height: 1.35;
+    color: #555 !important;
+  }
+
+  .cv-print-meta > * {
+    white-space: nowrap;
+  }
+
+  .cv-print-meta a {
+    color: inherit !important;
+    text-decoration: none;
+  }
+
+  .cv-page-contact {
+    display: none !important;
+  }
+
+  .cv-page-experience {
+    padding-top: 4mm !important;
+    padding-bottom: 0 !important;
+  }
+
+  .cv-page-section-title {
+    margin: 0 !important;
+    font-size: 12pt !important;
+    line-height: 1.2 !important;
+    color: #444 !important;
+  }
+
+  .cv-page-roles {
+    margin-top: 4mm !important;
+  }
+
+  .cv-role-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 0 4mm 0 !important;
+  }
+
+  .cv-role-card + .cv-role-card {
+    margin-top: 4mm !important;
+    padding-top: 4mm !important;
+    border-top: 1px solid #d9d9d9 !important;
+  }
+
+  .cv-role-header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2mm 5mm !important;
+    align-items: start;
+  }
+
+  .cv-role-title {
+    font-size: 13pt !important;
+    line-height: 1.2 !important;
+    color: #111 !important;
+  }
+
+  .cv-role-company,
+  .cv-role-period,
+  .cv-role-note,
+  .cv-role-highlight {
+    font-size: 10.25pt !important;
+    line-height: 1.4 !important;
+    color: #2b2b2b !important;
+  }
+
+  .cv-role-period {
+    text-align: right;
+    color: #575757 !important;
+  }
+
+  .cv-role-note {
+    margin-top: 2.5mm !important;
+  }
+
+  .cv-role-highlights {
+    margin-top: 2.5mm !important;
+    gap: 1.5mm !important;
+  }
+
+  .cv-role-highlight {
+    gap: 2.5mm !important;
+  }
+
+  .cv-role-bullet {
+    width: 4px !important;
+    height: 4px !important;
+    margin-top: 6px !important;
+    background: #666 !important;
+  }
 }
 
 @media (min-width: 640px) {
   .section-shell {
-    padding-inline: 1.5rem;
+    padding-inline: 1.75rem;
   }
 }
 
 @media (min-width: 1024px) {
   .section-shell {
-    padding-inline: 2rem;
+    padding-inline: 2.25rem;
   }
 }

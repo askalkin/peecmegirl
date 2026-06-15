@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import Header from '../components/Header'
+import { ThemeProvider } from '../components/theme-provider'
 
 import appCss from '../styles.css?url'
 
@@ -17,7 +18,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Alina Skalkina | Digital Designer portfolio',
+        title: 'Alina Skalkina | Lead Brand Product Designer portfolio',
       },
       {
         name: 'description',
@@ -42,8 +43,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <Header />
-        {children}
+        <ThemeProvider defaultTheme="light" storageKey="portfolio-theme">
+          <Header />
+          {children}
+        </ThemeProvider>
         <TanStackDevtools
           config={{
             position: 'bottom-right',
