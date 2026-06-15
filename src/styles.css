@@ -284,6 +284,36 @@ code {
   }
 }
 
+.hero-orb {
+  transition: transform 0.25s ease;
+}
+
+.hero-orb:hover {
+  animation: orb-jump 0.6s ease;
+}
+
+@keyframes orb-jump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-28%);
+  }
+  55% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-10%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb:hover {
+    animation: none;
+  }
+}
+
 .brand-questions-caret {
   animation: caret-blink 1s steps(1) infinite;
 }

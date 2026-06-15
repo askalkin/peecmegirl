@@ -44,7 +44,7 @@ function PortfolioPage() {
           </h1>
           <span
             aria-hidden
-            className="hidden aspect-square w-[clamp(7rem,16vw,14rem)] shrink-0 self-end rounded-full bg-foreground sm:block"
+            className="hero-orb hidden shrink-0 self-end rounded-full bg-gray-500 sm:block sm:size-[4.275rem] md:size-[5.7rem] lg:size-[7.125rem]"
           />
         </div>
       </section>
