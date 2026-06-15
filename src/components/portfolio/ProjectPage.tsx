@@ -12,11 +12,115 @@ import { cn } from '@/lib/utils'
 
 import { Lightbox } from './Lightbox'
 
+// Projects that lead with a full-bleed cinematic hero, with the project info
+// following beneath it. Everyone else shows media + info together in one view.
+const FULL_BLEED_HERO = new Set(['air-quality-map', 'huawei'])
+
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+    <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
       {children}
     </span>
+  )
+}
+
+// One calm editorial row: a quiet label on the left, content on the right.
+function Row({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <section className="grid gap-4 md:grid-cols-12 md:gap-12">
+      <div className="md:col-span-3">
+        <Label>{label}</Label>
+      </div>
+      <div className="md:col-span-9">{children}</div>
+    </section>
+  )
+}
+
+// Title, description and the data + achievements grid. Shared by both hero modes.
+function ProjectMeta({ project }: { project: PortfolioProject }) {
+  const stats = [
+    { label: 'Year', value: project.year },
+    ...project.highlights
+      .filter((highlight) => Boolean(highlight.value))
+      .map((highlight) => ({
+        label: highlight.title,
+        value: highlight.value as string,
+      })),
+  ].slice(0, 6)
+
+  return (
+    <div className="flex flex-col gap-8">
+      <a
+        href="/#work"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeft className="size-4" />
+        works
+      </a>
+
+      <div>
+        <Label>Case study</Label>
+        <h1 className="mt-4 font-display text-4xl font-bold lowercase leading-[1.02] tracking-tight text-foreground sm:text-6xl md:text-7xl">
+          {project.title}
+        </h1>
+      </div>
+
+      <p className="max-w-2xl text-lg leading-relaxed text-foreground/70 md:text-xl">
+        {project.focus}
+      </p>
+
+      <dl className="grid grid-cols-2 gap-x-8 gap-y-7">
+        {stats.map((stat) => (
+          <div key={`${stat.label}-${stat.value}`}>
+            <dt className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+              {stat.label}
+            </dt>
+            <dd className="mt-1.5 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+              {stat.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      {project.role ? (
+        <div>
+          <Label>Role</Label>
+          <p className="mt-1.5 max-w-md text-sm leading-relaxed text-foreground/80">
+            {project.role}
+          </p>
+        </div>
+      ) : null}
+
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div className="flex flex-wrap gap-2">
+          {project.categories.map((category) => (
+            <span
+              key={category}
+              className="rounded-full border border-border px-3 py-1 text-xs uppercase tracking-wide text-muted-foreground"
+            >
+              {category}
+            </span>
+          ))}
+        </div>
+        {project.liveLink ? (
+          <a
+            href={project.liveLink.href}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
+          >
+            {project.liveLink.label}
+            <ExternalLink className="size-4" />
+          </a>
+        ) : null}
+      </div>
+    </div>
   )
 }
 
@@ -50,12 +154,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
     (currentProject) => currentProject.id !== project.id
   )
 
-  const stats = [
-    { label: 'Year', value: project.year },
-    ...project.highlights
-      .filter((highlight) => Boolean(highlight.value))
-      .map((highlight) => ({ label: highlight.title, value: highlight.value as string })),
-  ].slice(0, 6)
+  const useSplitHero = !FULL_BLEED_HERO.has(project.id) && heroMedia !== null
 
   function openImage(item: PortfolioMediaItem) {
     const imageIndex = imageIndexBySrc.get(item.src)
@@ -79,12 +178,39 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
 
   return (
     <main className="text-foreground">
-      {/* Split hero — media on the left, meta + stats on the right. */}
-      <section className="grid min-h-screen lg:grid-cols-2">
-        <div className="flex items-center justify-center bg-background p-10 lg:p-16">
+      {useSplitHero ? (
+        // Media + project info together in one viewport.
+        <section className="grid min-h-screen lg:grid-cols-2">
+          <div className="flex items-center justify-center p-8 lg:p-12">
+            {heroMedia?.type === 'video' ? (
+              <video
+                className="max-h-[80vh] w-full object-contain"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+              >
+                <source src={heroMedia.src} />
+              </video>
+            ) : heroMedia ? (
+              <img
+                src={heroMedia.src}
+                alt={heroMedia.alt}
+                className="max-h-[80vh] w-full object-contain"
+              />
+            ) : null}
+          </div>
+          <div className="flex flex-col justify-center p-8 lg:border-l lg:border-border lg:p-12">
+            <ProjectMeta project={project} />
+          </div>
+        </section>
+      ) : (
+        // Full-bleed hero, then the description beneath it.
+        <>
           {heroMedia?.type === 'video' ? (
             <video
-              className="max-h-[72vh] w-full object-contain"
+              className="h-[80vh] max-h-[90vh] w-full object-cover"
               autoPlay
               loop
               muted
@@ -97,71 +223,20 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
             <img
               src={heroMedia.src}
               alt={heroMedia.alt}
-              className="max-h-[72vh] w-full object-contain"
+              className="h-[80vh] max-h-[90vh] w-full object-cover"
             />
-          ) : (
-            <div className="aspect-square w-full max-w-md bg-muted" aria-hidden />
-          )}
-        </div>
+          ) : null}
+          <section className={cn('section-shell', heroMedia ? 'py-16 md:py-24' : 'pb-16 pt-16 md:pb-24 md:pt-28')}>
+            <ProjectMeta project={project} />
+          </section>
+        </>
+      )}
 
-        <div className="flex flex-col justify-center gap-10 p-10 lg:border-l lg:border-border lg:p-16">
-          <a
-            href="/#work"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="size-4" />
-            works
-          </a>
-
-          <div>
-            <Label>Case study</Label>
-            <h1 className="mt-4 font-display text-5xl font-black lowercase leading-[0.95] tracking-tight text-foreground md:text-6xl">
-              {project.title}
-            </h1>
-          </div>
-
-          <p className="max-w-md text-lg leading-relaxed text-foreground/70">
-            {project.focus}
-          </p>
-
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-7">
-            {stats.map((stat) => (
-              <div key={`${stat.label}-${stat.value}`}>
-                <dt className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                  {stat.label}
-                </dt>
-                <dd className="mt-1.5 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-                  {stat.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            {project.liveLink ? (
-              <a
-                href={project.liveLink.href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-foreground underline-offset-4 transition-opacity hover:opacity-60"
-              >
-                {project.liveLink.label}
-                <ExternalLink className="size-4" />
-              </a>
-            ) : null}
-            <span className="text-sm text-muted-foreground">
-              {project.categories.join(' · ')}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <div className="space-y-24 px-10 py-24 lg:px-16">
-        {/* Context — asymmetric: narrative left, framing right. */}
-        {project.summary.length || project.goals || project.role ? (
-          <section className="grid gap-x-10 gap-y-10 lg:grid-cols-12">
-            <div className="space-y-5 lg:col-span-7">
-              <Label>Context</Label>
+      <div className="section-shell space-y-20 py-16 md:space-y-28 md:py-24">
+        {/* Overview — narrative, with the old process steps folded in. */}
+        {project.summary.length || project.process.length ? (
+          <Row label="Overview">
+            <div className="max-w-3xl space-y-5">
               {project.summary.map((paragraph) => (
                 <p
                   key={paragraph}
@@ -170,91 +245,54 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                   {paragraph}
                 </p>
               ))}
+              {project.process.map((step) => (
+                <p
+                  key={step.title}
+                  className="text-lg leading-relaxed text-foreground/80"
+                >
+                  <span className="font-medium text-foreground">
+                    {step.title}.
+                  </span>{' '}
+                  {step.description}
+                </p>
+              ))}
             </div>
-            <div className="space-y-8 lg:col-span-4 lg:col-start-9">
-              {project.goals ? (
-                <div>
-                  <Label>Problem to solve</Label>
-                  <p className="mt-3 text-base leading-relaxed text-foreground/80">
-                    {project.goals}
-                  </p>
-                </div>
-              ) : null}
-              {project.role ? (
-                <div>
-                  <Label>Role</Label>
-                  <p className="mt-3 text-base leading-relaxed text-foreground/80">
-                    {project.role}
-                  </p>
-                </div>
-              ) : null}
-            </div>
-          </section>
+          </Row>
         ) : null}
 
-        {/* Outcomes */}
+        {/* Outcomes — the full achievements with their descriptions. */}
         {project.highlights.length ? (
-          <section className="space-y-10">
-            <Label>Outcomes</Label>
-            <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          <Row label="Outcomes">
+            <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2">
               {project.highlights.map((highlight) => (
-                <article
-                  key={`${highlight.title}-${highlight.value ?? ''}`}
-                  className="border-t border-border pt-5"
-                >
-                  {highlight.value ? (
-                    <div className="font-display text-4xl font-black tracking-tight text-foreground">
-                      {highlight.value}
-                    </div>
-                  ) : null}
-                  <div className="mt-2 text-sm font-medium text-foreground">
+                <article key={`${highlight.title}-${highlight.value ?? ''}`}>
+                  <div className="text-base font-medium text-foreground">
+                    {highlight.value ? (
+                      <span className="mr-2 font-display font-semibold">
+                        {highlight.value}
+                      </span>
+                    ) : null}
                     {highlight.title}
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {highlight.description}
                   </p>
                 </article>
               ))}
             </div>
-          </section>
+          </Row>
         ) : null}
 
-        {/* Approach */}
-        {project.process.length ? (
-          <section className="space-y-10">
-            <Label>Approach</Label>
-            <div className="grid gap-x-10 gap-y-12 lg:grid-cols-2">
-              {project.process.map((step, index) => (
-                <article
-                  key={step.title}
-                  className="flex gap-6 border-t border-border pt-6"
-                >
-                  <span className="font-display text-2xl font-black tracking-tight text-muted-foreground/40">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <div>
-                    <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">
-                      {step.title}
-                    </h2>
-                    <p className="mt-3 text-base leading-relaxed text-foreground/80">
-                      {step.description}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        ) : null}
-
-        {/* Selected work — asymmetric media grid. */}
+        {/* Selected work — clean grid; wide items break full width for rhythm. */}
         {galleryItems.length ? (
-          <section className="space-y-10">
+          <section className="space-y-8">
             <Label>Selected work</Label>
-            <div className="grid grid-flow-row-dense gap-4 sm:grid-cols-2 lg:grid-cols-12">
+            <div className="grid items-start gap-6 md:grid-cols-2 md:gap-8">
               {galleryItems.map((item) => (
                 <MediaTile
                   key={item.src}
                   item={item}
+                  className={item.span === 'wide' ? 'md:col-span-2' : undefined}
                   onImageClick={() => openImage(item)}
                 />
               ))}
@@ -264,39 +302,17 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
 
         {/* Team */}
         {project.team.length ? (
-          <section className="space-y-6">
-            <Label>Team</Label>
-            <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-foreground/70">
+          <Row label="Team">
+            <ul className="flex flex-wrap gap-x-6 gap-y-2 text-base text-foreground/70">
               {project.team.map((member) => (
-                <li key={member} className="border-l border-border pl-3">
-                  {member}
-                </li>
+                <li key={member}>{member}</li>
               ))}
             </ul>
-          </section>
+          </Row>
         ) : null}
       </div>
 
-      {/* More projects */}
-      <section className="border-t border-border px-10 py-20 lg:px-16">
-        <Label>More projects</Label>
-        <div className="mt-6">
-          {moreProjects.map((relatedProject) => (
-            <a
-              key={relatedProject.id}
-              href={`/${relatedProject.id}`}
-              className="group flex items-baseline justify-between gap-6 border-b border-border py-6"
-            >
-              <h3 className="font-display text-3xl font-black lowercase tracking-tight text-foreground transition-opacity duration-200 group-hover:opacity-50 md:text-4xl">
-                {relatedProject.title}
-              </h3>
-              <span className="shrink-0 text-sm text-muted-foreground">
-                {relatedProject.year}
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
+      <MoreProjects projects={moreProjects} />
 
       <ContactSection />
       <SiteFooter />
@@ -312,82 +328,139 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   )
 }
 
+// First video (else first image) of a project — used for the hover preview.
+function getPreviewMedia(project: PortfolioProject) {
+  const video = project.gallery.find((item) => item.type === 'video')
+  if (video) return { type: 'video' as const, src: video.src }
+  const image = project.gallery.find((item) => item.type === 'image')
+  if (image) return { type: 'image' as const, src: image.src }
+  return null
+}
+
+// "More projects" list with a cursor-following media preview on hover.
+function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+
+  const active = activeId
+    ? projects.find((project) => project.id === activeId) ?? null
+    : null
+  const media = active ? getPreviewMedia(active) : null
+
+  return (
+    <section className="section-shell border-t border-border py-16 md:py-20">
+      <Label>More projects</Label>
+      <div className="mt-6">
+        {projects.map((relatedProject) => (
+          <a
+            key={relatedProject.id}
+            href={`/${relatedProject.id}`}
+            onMouseEnter={() => setActiveId(relatedProject.id)}
+            onMouseMove={(event) =>
+              setPosition({ x: event.clientX, y: event.clientY })
+            }
+            onMouseLeave={() =>
+              setActiveId((current) =>
+                current === relatedProject.id ? null : current
+              )
+            }
+            className="group flex items-baseline justify-between gap-6 border-b border-border py-6"
+          >
+            <h3 className="font-display text-2xl font-bold lowercase tracking-tight text-foreground transition-opacity duration-200 group-hover:opacity-50 md:text-4xl">
+              {relatedProject.title}
+            </h3>
+            <span className="shrink-0 text-sm text-muted-foreground">
+              {relatedProject.year}
+            </span>
+          </a>
+        ))}
+      </div>
+
+      {media ? (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed z-40 hidden w-64 overflow-hidden shadow-[var(--shadow-surface)] md:block"
+          style={{
+            left: position.x,
+            top: position.y,
+            transform: 'translate(-50%, -112%)',
+          }}
+        >
+          {media.type === 'video' ? (
+            <video
+              key={media.src}
+              className="block aspect-[4/3] w-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+            >
+              <source src={media.src} />
+            </video>
+          ) : (
+            <img
+              key={media.src}
+              src={media.src}
+              alt=""
+              className="block aspect-[4/3] w-full object-cover"
+            />
+          )}
+        </div>
+      ) : null}
+    </section>
+  )
+}
+
 function MediaTile({
   item,
+  className,
   onImageClick,
 }: {
   item: PortfolioMediaItem
+  className?: string
   onImageClick: () => void
 }) {
-  // Asymmetry comes from the media's own dimensions: wide items take more
-  // columns and a landscape ratio, tall items stay narrow and portrait.
-  const spanClass = cn(
-    'sm:col-span-1 lg:col-span-4',
-    item.span === 'wide' && 'sm:col-span-2 lg:col-span-8',
-    item.span === 'tall' && 'sm:col-span-1 lg:col-span-4'
-  )
-  const ratioClass =
-    item.span === 'wide'
-      ? 'aspect-[16/10]'
-      : item.span === 'tall'
-        ? 'aspect-[3/4]'
-        : 'aspect-[4/5]'
-
   if (item.type === 'video') {
     return (
-      <figure className={spanClass}>
-        <div
-          className={cn(
-            'group relative overflow-hidden bg-muted',
-            ratioClass
-          )}
+      <figure className={className}>
+        <video
+          className="block h-auto max-h-[90vh] w-full bg-muted object-contain"
+          controls
+          muted
+          playsInline
+          preload="metadata"
         >
-          <video
-            className="absolute inset-0 h-full w-full object-cover"
-            controls
-            muted
-            playsInline
-            preload="metadata"
-          >
-            <source src={item.src} />
-          </video>
-          {item.caption ? (
-            <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--color-overlay-scrim)] via-[var(--color-overlay-scrim-soft)] to-transparent p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              <p className="text-sm leading-6 text-[var(--color-overlay-foreground)]">
-                {item.caption}
-              </p>
-            </figcaption>
-          ) : null}
-        </div>
+          <source src={item.src} />
+        </video>
+        {item.caption ? (
+          <figcaption className="mt-3 text-sm leading-6 text-muted-foreground">
+            {item.caption}
+          </figcaption>
+        ) : null}
       </figure>
     )
   }
 
   return (
-    <figure className={spanClass}>
+    <figure className={className}>
       <button
         type="button"
         onClick={onImageClick}
-        className={cn(
-          'group relative block w-full overflow-hidden bg-muted text-left',
-          ratioClass
-        )}
+        className="group block w-full text-left"
         aria-label={`Open ${item.alt}`}
       >
         <img
           src={item.src}
           alt={item.alt}
-          className="absolute inset-0 h-full w-full cursor-zoom-in object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="block h-auto max-h-[90vh] w-full cursor-zoom-in bg-muted object-contain transition-opacity duration-300 group-hover:opacity-90"
           loading="lazy"
         />
-        {item.caption ? (
-          <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--color-overlay-scrim)] via-[var(--color-overlay-scrim-soft)] to-transparent p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-            <p className="text-sm leading-6 text-[var(--color-overlay-foreground)]">
-              {item.caption}
-            </p>
-          </figcaption>
-        ) : null}
       </button>
+      {item.caption ? (
+        <figcaption className="mt-3 text-sm leading-6 text-muted-foreground">
+          {item.caption}
+        </figcaption>
+      ) : null}
     </figure>
   )
 }

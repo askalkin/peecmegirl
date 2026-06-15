@@ -240,6 +240,165 @@ export const portfolioData = {
   ] satisfies PortfolioSkillGroup[],
   projects: [
     {
+      id: 'alty-rebranding',
+      title: 'Alty Rebranding',
+      navigationLabel: 'Alty Rebranding',
+      year: '2026',
+      businessSize: 'Startup',
+      workType: 'Brand Design',
+      categories: [
+        'Brand Identity',
+        'Design System',
+        'Visual Communication',
+      ],
+      focus:
+        'How do you give a B2B product company a brand that scales across teams without losing coherence?',
+      summary: [
+        'Led a team of designers in rebuilding Alty\'s B2B brand from the identity foundations up.',
+        'Engineered a token-based design-system architecture so the brand stays coherent as the company and its surfaces scale.',
+      ],
+      goals:
+        'Establish a scalable, token-driven brand identity that works across product, marketing, and B2B communication.',
+      role: 'Lead Brand Product Designer',
+      highlights: [],
+      process: [],
+      team: ['Alina Skalkina, Lead Brand Product Designer'],
+      gallery: [],
+    },
+    {
+      id: 'alty-website',
+      title: 'Alty Website',
+      navigationLabel: 'Alty Website',
+      year: '2026',
+      businessSize: 'Startup',
+      workType: 'Web Design',
+      categories: ['Web Design', 'UI/UX Design', 'Brand'],
+      focus:
+        'Translating the rebrand into a living website that feels like the brand in motion.',
+      summary: [
+        'Designed the Alty marketing website as the first full expression of the new brand system.',
+        'Carried the token-based design system into responsive web layouts, components, and content patterns.',
+      ],
+      goals:
+        'Ship a brand-accurate, maintainable website that marketing can extend without breaking coherence.',
+      role: 'Lead Brand Product Designer',
+      highlights: [],
+      process: [],
+      team: ['Alina Skalkina, Lead Brand Product Designer'],
+      gallery: [],
+    },
+    {
+      id: 'alty-assets',
+      title: 'Alty Assets',
+      navigationLabel: 'Alty Assets',
+      year: '2026',
+      businessSize: 'Startup',
+      workType: 'Marketing Design',
+      categories: ['Design System', 'Marketing Design', 'Templates'],
+      focus:
+        'How do you let non-designers produce on-brand assets without a designer in the loop?',
+      summary: [
+        'Built modular asset constructors in Figma for social media and B2B presentations.',
+        'Designed the system so nontechnical stakeholders can assemble coherent, on-brand assets themselves.',
+      ],
+      goals:
+        'Reduce design bottlenecks by turning recurring asset work into a system anyone on the team can use.',
+      role: 'Lead Brand Product Designer',
+      highlights: [],
+      process: [],
+      team: ['Alina Skalkina, Lead Brand Product Designer'],
+      gallery: [],
+    },
+    {
+      id: 'huawei',
+      title: 'Huawei',
+      navigationLabel: 'Huawei',
+      year: '2023',
+      businessSize: 'Enterprise',
+      workType: 'Motion Design',
+      categories: ['Motion Design', '3D Design', 'Video'],
+      focus:
+        'Crafting video and motion work for a global consumer-electronics brand.',
+      summary: [
+        'Created video and motion design for Huawei as an independent contractor.',
+        'Worked within enterprise brand guidelines while bringing a distinct visual and motion language.',
+      ],
+      role: 'Motion / Video Design',
+      highlights: [],
+      process: [],
+      team: ['Alina Skalkina, Motion Designer'],
+      gallery: [],
+    },
+    {
+      id: 'design-engineering-course',
+      title: 'Design Engineering Course',
+      navigationLabel: 'Design Engineering Course',
+      year: '2025',
+      businessSize: 'Education',
+      workType: 'Design Engineering',
+      categories: [
+        'Design Engineering',
+        'Education',
+        'Design Systems',
+        'AI Workflows',
+      ],
+      focus:
+        'How do you teach designers to think and build like engineers, and ship real, coherent interfaces?',
+      summary: [
+        'A course that bridges design and engineering, taking designers from Figma to working, maintainable front-end.',
+        'Built around real workflows: design tokens, component thinking, design systems, and AI-assisted implementation loops.',
+      ],
+      goals:
+        'Help designers ship production-ready interfaces and collaborate fluently with engineering.',
+      role: 'Curriculum Design, Teaching',
+      highlights: [],
+      process: [],
+      team: ['Alina Skalkina, Author and Instructor'],
+      gallery: [],
+    },
+    {
+      id: 'lun-assets',
+      title: 'LUN Assets',
+      navigationLabel: 'LUN Assets',
+      year: '2020',
+      businessSize: 'Scale-up',
+      workType: 'Marketing Design',
+      categories: [
+        'Marketing Design',
+        'Brand Assets',
+        'Social Media',
+        'Illustration',
+      ],
+      focus:
+        'A growing library of campaign assets that kept LUN recognisable across every channel.',
+      summary: [
+        'A collection of marketing and brand assets made for LUN across social media, print, and merch.',
+        'Built to stay coherent and on-brand while moving fast across many channels and campaigns.',
+      ],
+      role: 'Marketing Design, Illustration',
+      highlights: [],
+      process: [],
+      team: ['Alina Skalkina, Marketing Designer'],
+      gallery: [
+        {
+          src: '/recovered/graphic-design/Lun-redesign.jpg',
+          type: 'image',
+          alt: 'LUN "Try 3D buildings on the map" campaign asset',
+          span: 'wide',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-5.jpg',
+          type: 'image',
+          alt: 'LUN illustrated social campaign asset',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-4.jpg',
+          type: 'image',
+          alt: 'LUN branded sticker set',
+        },
+      ],
+    },
+    {
       id: 'comfort-map',
       title: 'Comfort Map',
       navigationLabel: 'Comfort Map',
@@ -395,11 +554,6 @@ export const portfolioData = {
           type: 'video',
           alt: 'Comfort Map campaign video 2',
           span: 'wide',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-4.jpg',
-          type: 'image',
-          alt: 'Comfort Map campaign visual',
         },
         {
           src: '/recovered/lun-hr-brand/lun-game-task-7.jpg',
@@ -783,6 +937,12 @@ export const portfolioData = {
       ],
       gallery: [
         {
+          src: '/recovered/lun-hr-brand/educational-hub-3.jpg',
+          type: 'image',
+          alt: 'LUN HR brand event with the team and candidates',
+          span: 'wide',
+        },
+        {
           src: '/recovered/lun-hr-brand/lun-game-metro-code.png',
           type: 'image',
           alt: 'LUN Game metro ad code puzzle',
@@ -804,21 +964,6 @@ export const portfolioData = {
           alt: 'Player chat message about solving LUN Game tasks',
         },
         {
-          src: '/recovered/graphic-design/Lun-redesign.jpg',
-          type: 'image',
-          alt: 'LUN brand visual from campaign period',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-4.jpg',
-          type: 'image',
-          alt: 'LUN HR brand visual exploration',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-5.jpg',
-          type: 'image',
-          alt: 'LUN HR brand communication asset',
-        },
-        {
           src: '/recovered/lun-hr-brand/educational-hub-1.jpg',
           type: 'image',
           alt: 'Educational hub created by LUN at Taras Shevchenko University, space view',
@@ -829,9 +974,26 @@ export const portfolioData = {
           alt: 'Educational hub created by LUN at Taras Shevchenko University, interior',
         },
         {
-          src: '/recovered/lun-hr-brand/educational-hub-3.jpg',
+          src: '/recovered/lun-hr-brand/lunoteka-laptop.jpg',
           type: 'image',
-          alt: 'Educational hub created by LUN at Taras Shevchenko University, event scene',
+          alt: 'Laptop with a ЛУНОТЕКА branded sticker',
+          span: 'wide',
+        },
+        {
+          src: '/recovered/lun-hr-brand/lunoteka-award.jpg',
+          type: 'image',
+          alt: 'ЛУНОТЕКА award moment with the team and a winner',
+        },
+        {
+          src: '/recovered/lun-hr-brand/lunoteka-event.jpg',
+          type: 'image',
+          alt: 'Crowd at a ЛУНОТЕКА event in front of the brand wall',
+        },
+        {
+          src: '/recovered/lun-hr-brand/lunoteka-space.jpg',
+          type: 'image',
+          alt: 'ЛУНОТЕКА educational hub interior with bookshelves and lounge',
+          span: 'wide',
         },
       ],
     },

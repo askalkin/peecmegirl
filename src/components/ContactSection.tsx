@@ -12,9 +12,9 @@ export function ContactSection({ id }: { id?: string }) {
   return (
     <section
       id={id}
-      className="contact-section flex min-h-screen w-full scroll-mt-20 flex-col justify-center p-20"
+      className="contact-section flex min-h-screen w-full scroll-mt-20 flex-col justify-center py-20"
     >
-      <div className="flex items-end justify-between gap-8">
+      <div className="section-shell flex w-full items-end justify-between gap-8">
         <ul className="flex flex-col gap-1">
           {links.map((link) => (
             <li key={link.label}>

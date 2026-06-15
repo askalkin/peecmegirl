@@ -216,34 +216,6 @@ code {
     min-height: 100vh;
     text-wrap: pretty;
   }
-  html[data-appearance='light'] body {
-    background-image:
-      radial-gradient(
-        circle at top left,
-        color-mix(in oklch, var(--bg-accent-subtle) 68%, transparent),
-        transparent 32%
-      ),
-      radial-gradient(
-        circle at bottom right,
-        color-mix(in oklch, var(--bg-surface-subtle) 48%, transparent),
-        transparent 30%
-      );
-    background-attachment: fixed;
-  }
-  html[data-appearance='dark'] body {
-    background-image:
-      radial-gradient(
-        circle at top,
-        color-mix(in oklch, var(--bg-accent-muted) 42%, transparent),
-        transparent 40%
-      ),
-      radial-gradient(
-        circle at bottom right,
-        color-mix(in oklch, var(--bg-surface-subtle) 34%, transparent),
-        transparent 30%
-      );
-    background-attachment: fixed;
-  }
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight;
     font-family: var(--font-display);

@@ -1,9 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ArrowLeft, Download, Mail } from 'lucide-react'
+import { ArrowLeft, Download } from 'lucide-react'
 
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
-import { Button } from '@/components/ui/button'
 import { portfolioData } from '@/data/portfolio'
 
 type CvRole = {
@@ -93,25 +92,25 @@ function CvPage() {
   const [, linkedInLink] = portfolioData.person.links
 
   return (
-    <main className="cv-page pb-20">
-      <section className="section-shell cv-page-intro py-12 sm:py-16">
+    <main className="cv-page text-foreground">
+      <section className="section-shell cv-page-intro py-16 md:py-24">
         <a
           href="/#top"
           className="cv-page-backlink inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          Back to home
+          back home
         </a>
 
-        <div className="cv-page-hero mt-10 grid gap-8 rounded-3xl border border-border/80 bg-card p-7 shadow-[var(--shadow-surface)] sm:p-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-          <div className="cv-page-hero-copy space-y-5">
-            <p className="cv-page-label text-sm font-medium text-muted-foreground">
+        <div className="cv-page-hero mt-12 grid gap-10 md:grid-cols-12 md:gap-12">
+          <div className="cv-page-hero-copy space-y-6 md:col-span-8">
+            <p className="cv-page-label text-xs uppercase tracking-[0.18em] text-muted-foreground">
               Curriculum vitae
             </p>
-            <h1 className="cv-page-name text-4xl font-semibold tracking-tight text-card-foreground sm:text-5xl">
+            <h1 className="cv-page-name font-display text-5xl font-bold tracking-tight text-foreground md:text-6xl">
               {portfolioData.person.name}
             </h1>
-            <p className="cv-page-summary max-w-3xl text-lg leading-8 text-foreground/80">
+            <p className="cv-page-summary max-w-2xl text-lg leading-relaxed text-foreground/80">
               Lead Brand Product Designer with experience across marketing,
               product, and brand systems. Focused on turning complex workflows
               into clear, usable experiences.
@@ -128,11 +127,13 @@ function CvPage() {
             </div>
           </div>
 
-          <div className="cv-page-contact space-y-5 rounded-2xl border border-border bg-muted/35 p-6">
-            <div className="text-sm font-medium text-muted-foreground">Contact</div>
+          <div className="cv-page-contact space-y-4 md:col-span-4 md:col-start-9 md:border-l md:border-border md:pl-10">
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+              Contact
+            </p>
             <a
               href={`mailto:${portfolioData.person.email}`}
-              className="block text-base font-medium text-card-foreground transition-colors hover:text-foreground/75"
+              className="block text-base text-foreground transition-opacity hover:opacity-60"
             >
               {portfolioData.person.email}
             </a>
@@ -140,79 +141,83 @@ function CvPage() {
               href={linkedInLink.href}
               target="_blank"
               rel="noreferrer"
-              className="cv-page-contact-link hidden text-sm text-muted-foreground"
+              className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               {linkedInLink.href.replace('https://', '')}
             </a>
-            <div className="cv-page-actions flex flex-wrap gap-3 pt-2">
-              <Button asChild variant="outline" className="rounded-full">
-                <a
-                  href={`mailto:${portfolioData.person.email}`}
-                  aria-label="Email Alina Skalkina"
-                >
-                  <Mail className="size-4" />
-                  Email
-                </a>
-              </Button>
-              <Button asChild className="rounded-full">
-                <a
-                  href="/recovered/Alina-Skalkina-CV-Lead-Brand-Product-Designer.pdf"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Download className="size-4" />
-                  Download CV
-                </a>
-              </Button>
+            <div className="cv-page-actions flex flex-wrap gap-x-6 gap-y-2 pt-2 text-sm">
+              <a
+                href={`mailto:${portfolioData.person.email}`}
+                className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
+                aria-label="Email Alina Skalkina"
+              >
+                Email
+              </a>
+              <a
+                href="/recovered/Alina-Skalkina-CV-Lead-Brand-Product-Designer.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
+              >
+                <Download className="size-4" />
+                Download CV
+              </a>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section-shell cv-page-experience py-20">
-        <h2 className="cv-page-section-title text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          Experience
-        </h2>
-        <div className="cv-page-roles mt-8 space-y-3">
-          {cvRoles.map((role) => (
-            <article
-              key={`${role.title}-${role.company}-${role.period}`}
-              className="cv-role-card rounded-2xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-7"
-            >
-              <div className="cv-role-header flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="cv-role-copy space-y-2">
-                  <h3 className="cv-role-title text-2xl font-semibold tracking-tight text-card-foreground">
-                    {role.title}
-                  </h3>
-                  <p className="cv-role-company text-base text-foreground/80">
-                    {role.company}
-                  </p>
-                </div>
-                <div className="cv-role-period text-sm text-muted-foreground sm:text-right">
+      <section className="section-shell cv-page-experience pb-20 md:pb-28">
+        <div className="grid gap-4 md:grid-cols-12 md:gap-12">
+          <div className="md:col-span-3">
+            <h2 className="cv-page-section-title text-xs uppercase tracking-[0.18em] text-muted-foreground">
+              Experience
+            </h2>
+          </div>
+          <div className="cv-page-roles md:col-span-9">
+            {cvRoles.map((role) => (
+              <article
+                key={`${role.title}-${role.company}-${role.period}`}
+                className="cv-role-card grid gap-3 border-t border-border py-8 md:grid-cols-[11rem_1fr] md:gap-10"
+              >
+                <div className="cv-role-period text-sm text-muted-foreground">
                   <div>{role.period}</div>
-                  {role.location ? <div>{role.location}</div> : null}
+                  {role.location ? (
+                    <div className="mt-1">{role.location}</div>
+                  ) : null}
                 </div>
-              </div>
 
-              {role.note ? (
-                <p className="cv-role-note mt-5 text-base leading-7 text-foreground/80">
-                  {role.note}
-                </p>
-              ) : null}
+                <div>
+                  <div className="cv-role-header">
+                    <h3 className="cv-role-title font-display text-xl font-bold tracking-tight text-foreground md:text-2xl">
+                      {role.title}
+                    </h3>
+                    <p className="cv-role-company mt-1 text-base text-foreground/70">
+                      {role.company}
+                    </p>
+                  </div>
 
-              <ul className="cv-role-highlights mt-5 space-y-3">
-                {role.highlights.map((highlight) => (
-                  <li
-                    key={highlight}
-                    className="cv-role-highlight flex gap-3 text-base leading-7 text-foreground/80"
-                  >
-                    <span className="cv-role-bullet mt-3 inline-block size-1.5 shrink-0 rounded-full bg-muted-foreground/65" />
-                    <span>{highlight}</span>
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
+                  {role.note ? (
+                    <p className="cv-role-note mt-4 max-w-2xl text-base leading-relaxed text-foreground/80">
+                      {role.note}
+                    </p>
+                  ) : null}
+
+                  <ul className="cv-role-highlights mt-4 space-y-2.5">
+                    {role.highlights.map((highlight) => (
+                      <li
+                        key={highlight}
+                        className="cv-role-highlight flex max-w-2xl gap-3 text-base leading-relaxed text-foreground/80"
+                      >
+                        <span className="cv-role-bullet mt-2.5 inline-block size-1 shrink-0 rounded-full bg-muted-foreground/60" />
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

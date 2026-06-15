@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Download } from 'lucide-react'
 
 import { portfolioData } from '@/data/portfolio'
 import { SiteFooter } from '@/components/SiteFooter'
@@ -99,18 +100,24 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="flex min-h-screen w-full p-20">
-        <div className="grid w-full flex-1 gap-4 lg:grid-cols-2">
-          <div className="flex flex-col justify-between border border-border bg-background p-8 md:p-10">
-            <span className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
-              cv
-            </span>
+      <section className="w-full">
+        <div className="grid w-full lg:grid-cols-2 lg:items-start">
+          <div className="flex min-h-[60vh] flex-col justify-between gap-12 bg-background p-8 md:p-12 lg:sticky lg:top-0 lg:h-screen lg:min-h-screen">
+            <a
+              href="/recovered/Alina-Skalkina-CV-Lead-Brand-Product-Designer.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex w-fit items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-80"
+            >
+              <Download className="size-4" />
+              Download CV
+            </a>
             <h2 className="font-display text-5xl font-black lowercase leading-[0.95] tracking-tight text-foreground md:text-6xl">
               my experience
             </h2>
           </div>
 
-          <div className="bg-foreground p-8 text-background md:p-10">
+          <div className="bg-foreground p-8 text-background md:p-12">
             <table className="w-full border-collapse text-left">
               <thead>
                 <tr className="text-xs font-medium uppercase tracking-widest text-background/50">

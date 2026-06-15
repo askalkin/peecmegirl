@@ -11,10 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LunieRouteImport } from './routes/lunie'
 import { Route as LunHrBrandRouteImport } from './routes/lun-hr-brand'
+import { Route as LunAssetsRouteImport } from './routes/lun-assets'
+import { Route as HuaweiRouteImport } from './routes/huawei'
 import { Route as GraphicDesignRouteImport } from './routes/graphic-design'
 import { Route as FarbaRouteImport } from './routes/farba'
+import { Route as DesignEngineeringCourseRouteImport } from './routes/design-engineering-course'
 import { Route as CvRouteImport } from './routes/cv'
 import { Route as ComfortMapRouteImport } from './routes/comfort-map'
+import { Route as AltyWebsiteRouteImport } from './routes/alty-website'
+import { Route as AltyRebrandingRouteImport } from './routes/alty-rebranding'
+import { Route as AltyAssetsRouteImport } from './routes/alty-assets'
 import { Route as AirQualityMapRouteImport } from './routes/air-quality-map'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +35,16 @@ const LunHrBrandRoute = LunHrBrandRouteImport.update({
   path: '/lun-hr-brand',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LunAssetsRoute = LunAssetsRouteImport.update({
+  id: '/lun-assets',
+  path: '/lun-assets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HuaweiRoute = HuaweiRouteImport.update({
+  id: '/huawei',
+  path: '/huawei',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GraphicDesignRoute = GraphicDesignRouteImport.update({
   id: '/graphic-design',
   path: '/graphic-design',
@@ -39,6 +55,11 @@ const FarbaRoute = FarbaRouteImport.update({
   path: '/farba',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DesignEngineeringCourseRoute = DesignEngineeringCourseRouteImport.update({
+  id: '/design-engineering-course',
+  path: '/design-engineering-course',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CvRoute = CvRouteImport.update({
   id: '/cv',
   path: '/cv',
@@ -47,6 +68,21 @@ const CvRoute = CvRouteImport.update({
 const ComfortMapRoute = ComfortMapRouteImport.update({
   id: '/comfort-map',
   path: '/comfort-map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AltyWebsiteRoute = AltyWebsiteRouteImport.update({
+  id: '/alty-website',
+  path: '/alty-website',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AltyRebrandingRoute = AltyRebrandingRouteImport.update({
+  id: '/alty-rebranding',
+  path: '/alty-rebranding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AltyAssetsRoute = AltyAssetsRouteImport.update({
+  id: '/alty-assets',
+  path: '/alty-assets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AirQualityMapRoute = AirQualityMapRouteImport.update({
@@ -69,10 +105,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
+  '/alty-assets': typeof AltyAssetsRoute
+  '/alty-rebranding': typeof AltyRebrandingRoute
+  '/alty-website': typeof AltyWebsiteRoute
   '/comfort-map': typeof ComfortMapRoute
   '/cv': typeof CvRoute
+  '/design-engineering-course': typeof DesignEngineeringCourseRoute
   '/farba': typeof FarbaRoute
   '/graphic-design': typeof GraphicDesignRoute
+  '/huawei': typeof HuaweiRoute
+  '/lun-assets': typeof LunAssetsRoute
   '/lun-hr-brand': typeof LunHrBrandRoute
   '/lunie': typeof LunieRoute
 }
@@ -80,10 +122,16 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
+  '/alty-assets': typeof AltyAssetsRoute
+  '/alty-rebranding': typeof AltyRebrandingRoute
+  '/alty-website': typeof AltyWebsiteRoute
   '/comfort-map': typeof ComfortMapRoute
   '/cv': typeof CvRoute
+  '/design-engineering-course': typeof DesignEngineeringCourseRoute
   '/farba': typeof FarbaRoute
   '/graphic-design': typeof GraphicDesignRoute
+  '/huawei': typeof HuaweiRoute
+  '/lun-assets': typeof LunAssetsRoute
   '/lun-hr-brand': typeof LunHrBrandRoute
   '/lunie': typeof LunieRoute
 }
@@ -92,10 +140,16 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
+  '/alty-assets': typeof AltyAssetsRoute
+  '/alty-rebranding': typeof AltyRebrandingRoute
+  '/alty-website': typeof AltyWebsiteRoute
   '/comfort-map': typeof ComfortMapRoute
   '/cv': typeof CvRoute
+  '/design-engineering-course': typeof DesignEngineeringCourseRoute
   '/farba': typeof FarbaRoute
   '/graphic-design': typeof GraphicDesignRoute
+  '/huawei': typeof HuaweiRoute
+  '/lun-assets': typeof LunAssetsRoute
   '/lun-hr-brand': typeof LunHrBrandRoute
   '/lunie': typeof LunieRoute
 }
@@ -105,10 +159,16 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/air-quality-map'
+    | '/alty-assets'
+    | '/alty-rebranding'
+    | '/alty-website'
     | '/comfort-map'
     | '/cv'
+    | '/design-engineering-course'
     | '/farba'
     | '/graphic-design'
+    | '/huawei'
+    | '/lun-assets'
     | '/lun-hr-brand'
     | '/lunie'
   fileRoutesByTo: FileRoutesByTo
@@ -116,10 +176,16 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/air-quality-map'
+    | '/alty-assets'
+    | '/alty-rebranding'
+    | '/alty-website'
     | '/comfort-map'
     | '/cv'
+    | '/design-engineering-course'
     | '/farba'
     | '/graphic-design'
+    | '/huawei'
+    | '/lun-assets'
     | '/lun-hr-brand'
     | '/lunie'
   id:
@@ -127,10 +193,16 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/air-quality-map'
+    | '/alty-assets'
+    | '/alty-rebranding'
+    | '/alty-website'
     | '/comfort-map'
     | '/cv'
+    | '/design-engineering-course'
     | '/farba'
     | '/graphic-design'
+    | '/huawei'
+    | '/lun-assets'
     | '/lun-hr-brand'
     | '/lunie'
   fileRoutesById: FileRoutesById
@@ -139,10 +211,16 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AirQualityMapRoute: typeof AirQualityMapRoute
+  AltyAssetsRoute: typeof AltyAssetsRoute
+  AltyRebrandingRoute: typeof AltyRebrandingRoute
+  AltyWebsiteRoute: typeof AltyWebsiteRoute
   ComfortMapRoute: typeof ComfortMapRoute
   CvRoute: typeof CvRoute
+  DesignEngineeringCourseRoute: typeof DesignEngineeringCourseRoute
   FarbaRoute: typeof FarbaRoute
   GraphicDesignRoute: typeof GraphicDesignRoute
+  HuaweiRoute: typeof HuaweiRoute
+  LunAssetsRoute: typeof LunAssetsRoute
   LunHrBrandRoute: typeof LunHrBrandRoute
   LunieRoute: typeof LunieRoute
 }
@@ -163,6 +241,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LunHrBrandRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lun-assets': {
+      id: '/lun-assets'
+      path: '/lun-assets'
+      fullPath: '/lun-assets'
+      preLoaderRoute: typeof LunAssetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/huawei': {
+      id: '/huawei'
+      path: '/huawei'
+      fullPath: '/huawei'
+      preLoaderRoute: typeof HuaweiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/graphic-design': {
       id: '/graphic-design'
       path: '/graphic-design'
@@ -177,6 +269,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FarbaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/design-engineering-course': {
+      id: '/design-engineering-course'
+      path: '/design-engineering-course'
+      fullPath: '/design-engineering-course'
+      preLoaderRoute: typeof DesignEngineeringCourseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cv': {
       id: '/cv'
       path: '/cv'
@@ -189,6 +288,27 @@ declare module '@tanstack/react-router' {
       path: '/comfort-map'
       fullPath: '/comfort-map'
       preLoaderRoute: typeof ComfortMapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alty-website': {
+      id: '/alty-website'
+      path: '/alty-website'
+      fullPath: '/alty-website'
+      preLoaderRoute: typeof AltyWebsiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alty-rebranding': {
+      id: '/alty-rebranding'
+      path: '/alty-rebranding'
+      fullPath: '/alty-rebranding'
+      preLoaderRoute: typeof AltyRebrandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alty-assets': {
+      id: '/alty-assets'
+      path: '/alty-assets'
+      fullPath: '/alty-assets'
+      preLoaderRoute: typeof AltyAssetsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/air-quality-map': {
@@ -219,10 +339,16 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AirQualityMapRoute: AirQualityMapRoute,
+  AltyAssetsRoute: AltyAssetsRoute,
+  AltyRebrandingRoute: AltyRebrandingRoute,
+  AltyWebsiteRoute: AltyWebsiteRoute,
   ComfortMapRoute: ComfortMapRoute,
   CvRoute: CvRoute,
+  DesignEngineeringCourseRoute: DesignEngineeringCourseRoute,
   FarbaRoute: FarbaRoute,
   GraphicDesignRoute: GraphicDesignRoute,
+  HuaweiRoute: HuaweiRoute,
+  LunAssetsRoute: LunAssetsRoute,
   LunHrBrandRoute: LunHrBrandRoute,
   LunieRoute: LunieRoute,
 }

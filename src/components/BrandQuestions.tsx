@@ -46,8 +46,9 @@ export function BrandQuestions() {
   const isSelecting = phase === 'selected'
 
   return (
-    <section className="flex min-h-[80vh] w-full items-center p-20">
-      <p className="max-w-5xl font-display text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
+    <section className="flex min-h-[80vh] w-full items-center py-20">
+      <div className="section-shell w-full">
+        <p className="max-w-5xl font-display text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
         <span
           className={
             isSelecting
@@ -63,7 +64,8 @@ export function BrandQuestions() {
             className="brand-questions-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.12em] bg-foreground align-baseline"
           />
         ) : null}
-      </p>
+        </p>
+      </div>
     </section>
   )
 }
