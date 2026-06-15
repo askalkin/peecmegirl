@@ -8,19 +8,24 @@ import {
 } from '@/data/portfolio'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 import { Lightbox } from './Lightbox'
+
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+      {children}
+    </span>
+  )
+}
 
 export function ProjectPage({ project }: { project: PortfolioProject }) {
   const leadVideo =
     project.gallery.find(
       (item): item is PortfolioMediaItem & { type: 'video' } => item.type === 'video'
     ) ?? null
-  const galleryItems = leadVideo
-    ? project.gallery.filter((item) => item.src !== leadVideo.src)
-    : project.gallery
+
   const imageItems = useMemo(
     () =>
       project.gallery.filter(
@@ -29,6 +34,12 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       ),
     [project.gallery]
   )
+
+  const heroMedia = leadVideo ?? imageItems[0] ?? null
+  const galleryItems = project.gallery.filter(
+    (item) => item.src !== heroMedia?.src
+  )
+
   const imageIndexBySrc = useMemo(
     () => new Map(imageItems.map((item, index) => [item.src, index])),
     [imageItems]
@@ -38,6 +49,13 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   const moreProjects = getProjectsNewestFirst().filter(
     (currentProject) => currentProject.id !== project.id
   )
+
+  const stats = [
+    { label: 'Year', value: project.year },
+    ...project.highlights
+      .filter((highlight) => Boolean(highlight.value))
+      .map((highlight) => ({ label: highlight.title, value: highlight.value as string })),
+  ].slice(0, 6)
 
   function openImage(item: PortfolioMediaItem) {
     const imageIndex = imageIndexBySrc.get(item.src)
@@ -60,219 +78,228 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   }
 
   return (
-    <main className="pb-16">
-      <section className="section-shell py-12 sm:py-16">
-        <a
-          href="/#work"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
-          Back to selected works
-        </a>
+    <main className="text-foreground">
+      {/* Split hero — media on the left, meta + stats on the right. */}
+      <section className="grid min-h-screen lg:grid-cols-2">
+        <div className="flex items-center justify-center bg-background p-10 lg:p-16">
+          {heroMedia?.type === 'video' ? (
+            <video
+              className="max-h-[72vh] w-full object-contain"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+            >
+              <source src={heroMedia.src} />
+            </video>
+          ) : heroMedia ? (
+            <img
+              src={heroMedia.src}
+              alt={heroMedia.alt}
+              className="max-h-[72vh] w-full object-contain"
+            />
+          ) : (
+            <div className="aspect-square w-full max-w-md bg-muted" aria-hidden />
+          )}
+        </div>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[18rem_minmax(0,1fr)]">
-          <aside className="space-y-4 self-start lg:sticky lg:top-24">
-            <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-surface)]">
-              <p className="text-sm text-muted-foreground">{project.year}</p>
-              <h1 className="mt-3 text-3xl font-semibold tracking-tight text-card-foreground sm:text-4xl">
-                {project.title}
-              </h1>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {project.categories.map((category) => (
-                  <span
-                    key={category}
-                    className="rounded-full border border-border bg-muted/35 px-3 py-1 text-xs text-muted-foreground"
-                  >
-                    {category}
-                  </span>
-                ))}
+        <div className="flex flex-col justify-center gap-10 p-10 lg:border-l lg:border-border lg:p-16">
+          <a
+            href="/#work"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="size-4" />
+            works
+          </a>
+
+          <div>
+            <Label>Case study</Label>
+            <h1 className="mt-4 font-display text-5xl font-black lowercase leading-[0.95] tracking-tight text-foreground md:text-6xl">
+              {project.title}
+            </h1>
+          </div>
+
+          <p className="max-w-md text-lg leading-relaxed text-foreground/70">
+            {project.focus}
+          </p>
+
+          <dl className="grid grid-cols-2 gap-x-8 gap-y-7">
+            {stats.map((stat) => (
+              <div key={`${stat.label}-${stat.value}`}>
+                <dt className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                  {stat.label}
+                </dt>
+                <dd className="mt-1.5 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+                  {stat.value}
+                </dd>
               </div>
-              {project.liveLink ? (
-                <Button asChild variant="outline" className="mt-5 rounded-full">
-                  <a href={project.liveLink.href} target="_blank" rel="noreferrer">
-                    {project.liveLink.label}
-                    <ExternalLink className="size-4" />
-                  </a>
-                </Button>
-              ) : null}
-            </div>
-          </aside>
+            ))}
+          </dl>
 
-          <div className="space-y-8">
-            {leadVideo ? (
-              <figure className="overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-surface)]">
-                <video
-                  className="h-full w-full object-cover"
-                  autoPlay
-                  controls
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                >
-                  <source src={leadVideo.src} />
-                </video>
-              </figure>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            {project.liveLink ? (
+              <a
+                href={project.liveLink.href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-foreground underline-offset-4 transition-opacity hover:opacity-60"
+              >
+                {project.liveLink.label}
+                <ExternalLink className="size-4" />
+              </a>
             ) : null}
-
-            <section className="rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
-              <div className="text-sm font-medium text-muted-foreground">Case-study focus</div>
-              <p className="mt-3 max-w-3xl text-xl leading-8 text-foreground/80 sm:text-2xl">
-                {project.focus}
-              </p>
-            </section>
-
-            {project.summary.length || project.goals || project.role ? (
-              <section className="rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
-                <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
-                  <div className="space-y-3">
-                    <div className="text-sm font-medium text-muted-foreground">Context</div>
-                    {project.summary.map((paragraph) => (
-                      <p
-                        key={paragraph}
-                        className="rounded-xl border border-border/80 bg-muted/35 px-4 py-3 text-base leading-7 text-foreground/80"
-                      >
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                  <div className="space-y-4">
-                    {project.goals ? (
-                      <div className="rounded-xl border border-border/80 bg-muted/35 p-4">
-                        <div className="text-sm font-medium text-muted-foreground">
-                          Problem to solve
-                        </div>
-                        <p className="mt-2 text-base leading-7 text-foreground/80">
-                          {project.goals}
-                        </p>
-                      </div>
-                    ) : null}
-                    {project.role ? (
-                      <div className="rounded-xl border border-border/80 bg-muted/35 p-4">
-                        <div className="text-sm font-medium text-muted-foreground">Role</div>
-                        <p className="mt-2 text-base leading-7 text-foreground/80">
-                          {project.role}
-                        </p>
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              </section>
-            ) : null}
-
-            {project.highlights.length ? (
-              <section className="space-y-4 rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
-                <div className="text-sm font-medium text-muted-foreground">Outcomes</div>
-                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                  {project.highlights.map((highlight) => (
-                    <article
-                      key={`${highlight.title}-${highlight.value ?? ''}`}
-                      className="rounded-2xl border border-border bg-muted/35 p-5"
-                    >
-                      {highlight.value ? (
-                        <div className="text-3xl font-semibold tracking-tight text-card-foreground">
-                          {highlight.value}
-                        </div>
-                      ) : null}
-                      <div className="mt-2 text-sm text-muted-foreground">
-                        {highlight.title}
-                      </div>
-                      <p className="mt-3 text-base leading-7 text-foreground/75">
-                        {highlight.description}
-                      </p>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {project.process.length ? (
-              <section className="space-y-4 rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
-                <div className="text-sm font-medium text-muted-foreground">
-                  How I approached it
-                </div>
-                <div className="grid gap-4 lg:grid-cols-2">
-                  {project.process.map((step, index) => (
-                    <article
-                      key={step.title}
-                      className="rounded-2xl border border-border bg-muted/35 p-5"
-                    >
-                      <p className="text-xs font-medium text-muted-foreground">
-                        Step {index + 1}
-                      </p>
-                      <h2 className="mt-2 text-2xl font-semibold tracking-tight text-card-foreground">
-                        {step.title}
-                      </h2>
-                      <p className="mt-3 text-base leading-7 text-foreground/80">
-                        {step.description}
-                      </p>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {galleryItems.length ? (
-              <section className="space-y-4 rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
-                <div className="text-sm font-medium text-muted-foreground">Media</div>
-                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                  {galleryItems.map((item) => (
-                    <MediaTile
-                      key={item.src}
-                      item={item}
-                      onImageClick={() => openImage(item)}
-                    />
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {project.team.length ? (
-              <section className="space-y-4 rounded-3xl border border-border/80 bg-card p-6 shadow-[var(--shadow-surface)] sm:p-8">
-                <div className="text-sm font-medium text-muted-foreground">Team</div>
-                <ul className="flex flex-wrap gap-2">
-                  {project.team.map((member) => (
-                    <li
-                      key={member}
-                      className="rounded-full border border-border bg-muted/35 px-3 py-1.5 text-sm text-foreground/80"
-                    >
-                      {member}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
+            <span className="text-sm text-muted-foreground">
+              {project.categories.join(' · ')}
+            </span>
           </div>
         </div>
       </section>
 
-      <section className="section-shell py-20">
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground">
-          More Projects
-        </h2>
-        <div className="mt-8 space-y-3">
+      <div className="space-y-24 px-10 py-24 lg:px-16">
+        {/* Context — asymmetric: narrative left, framing right. */}
+        {project.summary.length || project.goals || project.role ? (
+          <section className="grid gap-x-10 gap-y-10 lg:grid-cols-12">
+            <div className="space-y-5 lg:col-span-7">
+              <Label>Context</Label>
+              {project.summary.map((paragraph) => (
+                <p
+                  key={paragraph}
+                  className="text-lg leading-relaxed text-foreground/80"
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+            <div className="space-y-8 lg:col-span-4 lg:col-start-9">
+              {project.goals ? (
+                <div>
+                  <Label>Problem to solve</Label>
+                  <p className="mt-3 text-base leading-relaxed text-foreground/80">
+                    {project.goals}
+                  </p>
+                </div>
+              ) : null}
+              {project.role ? (
+                <div>
+                  <Label>Role</Label>
+                  <p className="mt-3 text-base leading-relaxed text-foreground/80">
+                    {project.role}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
+
+        {/* Outcomes */}
+        {project.highlights.length ? (
+          <section className="space-y-10">
+            <Label>Outcomes</Label>
+            <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+              {project.highlights.map((highlight) => (
+                <article
+                  key={`${highlight.title}-${highlight.value ?? ''}`}
+                  className="border-t border-border pt-5"
+                >
+                  {highlight.value ? (
+                    <div className="font-display text-4xl font-black tracking-tight text-foreground">
+                      {highlight.value}
+                    </div>
+                  ) : null}
+                  <div className="mt-2 text-sm font-medium text-foreground">
+                    {highlight.title}
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {highlight.description}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {/* Approach */}
+        {project.process.length ? (
+          <section className="space-y-10">
+            <Label>Approach</Label>
+            <div className="grid gap-x-10 gap-y-12 lg:grid-cols-2">
+              {project.process.map((step, index) => (
+                <article
+                  key={step.title}
+                  className="flex gap-6 border-t border-border pt-6"
+                >
+                  <span className="font-display text-2xl font-black tracking-tight text-muted-foreground/40">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <div>
+                    <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">
+                      {step.title}
+                    </h2>
+                    <p className="mt-3 text-base leading-relaxed text-foreground/80">
+                      {step.description}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {/* Selected work — asymmetric media grid. */}
+        {galleryItems.length ? (
+          <section className="space-y-10">
+            <Label>Selected work</Label>
+            <div className="grid grid-flow-row-dense gap-4 sm:grid-cols-2 lg:grid-cols-12">
+              {galleryItems.map((item) => (
+                <MediaTile
+                  key={item.src}
+                  item={item}
+                  onImageClick={() => openImage(item)}
+                />
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {/* Team */}
+        {project.team.length ? (
+          <section className="space-y-6">
+            <Label>Team</Label>
+            <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-foreground/70">
+              {project.team.map((member) => (
+                <li key={member} className="border-l border-border pl-3">
+                  {member}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+      </div>
+
+      {/* More projects */}
+      <section className="border-t border-border px-10 py-20 lg:px-16">
+        <Label>More projects</Label>
+        <div className="mt-6">
           {moreProjects.map((relatedProject) => (
             <a
               key={relatedProject.id}
               href={`/${relatedProject.id}`}
-              className="grid gap-3 rounded-2xl border border-border/80 bg-card px-5 py-6 transition-colors hover:border-foreground/30 md:grid-cols-[minmax(0,1fr)_auto] md:px-6"
+              className="group flex items-baseline justify-between gap-6 border-b border-border py-6"
             >
-              <div className="space-y-2">
-                <h3 className="text-xl font-semibold tracking-tight text-card-foreground sm:text-2xl">
-                  {relatedProject.title}
-                </h3>
-                <p className="max-w-2xl text-base leading-7 text-foreground/80">
-                  {relatedProject.focus}
-                </p>
-              </div>
-              <div className="text-sm text-muted-foreground md:pt-1">{relatedProject.year}</div>
+              <h3 className="font-display text-3xl font-black lowercase tracking-tight text-foreground transition-opacity duration-200 group-hover:opacity-50 md:text-4xl">
+                {relatedProject.title}
+              </h3>
+              <span className="shrink-0 text-sm text-muted-foreground">
+                {relatedProject.year}
+              </span>
             </a>
           ))}
         </div>
       </section>
 
       <ContactSection />
-      <SiteFooter backHref="/#top" backLabel="Back to home" />
+      <SiteFooter />
 
       <Lightbox
         activeIndex={activeImageIndex}
@@ -292,17 +319,31 @@ function MediaTile({
   item: PortfolioMediaItem
   onImageClick: () => void
 }) {
+  // Asymmetry comes from the media's own dimensions: wide items take more
+  // columns and a landscape ratio, tall items stay narrow and portrait.
   const spanClass = cn(
-    item.span === 'wide' && 'sm:col-span-2 xl:col-span-2',
-    item.span === 'tall' && 'sm:row-span-2'
+    'sm:col-span-1 lg:col-span-4',
+    item.span === 'wide' && 'sm:col-span-2 lg:col-span-8',
+    item.span === 'tall' && 'sm:col-span-1 lg:col-span-4'
   )
+  const ratioClass =
+    item.span === 'wide'
+      ? 'aspect-[16/10]'
+      : item.span === 'tall'
+        ? 'aspect-[3/4]'
+        : 'aspect-[4/5]'
 
   if (item.type === 'video') {
     return (
       <figure className={spanClass}>
-        <div className="group relative media-tile overflow-hidden rounded-2xl border border-border bg-card">
+        <div
+          className={cn(
+            'group relative overflow-hidden bg-muted',
+            ratioClass
+          )}
+        >
           <video
-            className="h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
             controls
             muted
             playsInline
@@ -311,9 +352,11 @@ function MediaTile({
             <source src={item.src} />
           </video>
           {item.caption ? (
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--color-overlay-scrim)] via-[var(--color-overlay-scrim-soft)] to-transparent p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              <p className="text-sm leading-6 text-[var(--color-overlay-foreground)]">{item.caption}</p>
-            </div>
+            <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--color-overlay-scrim)] via-[var(--color-overlay-scrim-soft)] to-transparent p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              <p className="text-sm leading-6 text-[var(--color-overlay-foreground)]">
+                {item.caption}
+              </p>
+            </figcaption>
           ) : null}
         </div>
       </figure>
@@ -325,19 +368,24 @@ function MediaTile({
       <button
         type="button"
         onClick={onImageClick}
-        className="group relative media-tile overflow-hidden rounded-2xl border border-border bg-card text-left transition-transform hover:scale-[1.01]"
+        className={cn(
+          'group relative block w-full overflow-hidden bg-muted text-left',
+          ratioClass
+        )}
         aria-label={`Open ${item.alt}`}
       >
         <img
           src={item.src}
           alt={item.alt}
-          className="h-full w-full cursor-zoom-in object-cover"
+          className="absolute inset-0 h-full w-full cursor-zoom-in object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           loading="lazy"
         />
         {item.caption ? (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--color-overlay-scrim)] via-[var(--color-overlay-scrim-soft)] to-transparent p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-            <p className="text-sm leading-6 text-[var(--color-overlay-foreground)]">{item.caption}</p>
-          </div>
+          <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--color-overlay-scrim)] via-[var(--color-overlay-scrim-soft)] to-transparent p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <p className="text-sm leading-6 text-[var(--color-overlay-foreground)]">
+              {item.caption}
+            </p>
+          </figcaption>
         ) : null}
       </button>
     </figure>

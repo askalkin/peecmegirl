@@ -1,12 +1,13 @@
+import { useRef } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
 import {
   getProjectsNewestFirst,
   type PortfolioProject,
 } from '@/data/portfolio'
+import { BrandQuestions } from '@/components/BrandQuestions'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
-import { SiteNav } from '@/components/SiteNav'
 
 export const Route = createFileRoute('/')({ component: PortfolioPage })
 
@@ -39,43 +40,58 @@ function PortfolioPage() {
           </h1>
           <span
             aria-hidden
-            className="mb-[0.12em] hidden aspect-square w-[14vw] max-w-40 shrink-0 rounded-full bg-muted sm:block"
+            className="hidden aspect-square w-[clamp(7rem,16vw,14rem)] shrink-0 self-end rounded-full bg-muted sm:block"
           />
         </div>
       </section>
 
+      <BrandQuestions />
+
       <section id="work" className="scroll-mt-20">
-        <div className="grid grid-cols-1 gap-px border-y border-border bg-border md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-px border-y border-border bg-border sm:grid-cols-2 xl:grid-cols-3">
           {sortedProjects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       </section>
 
-      <div className="py-16 md:py-20">
-        <SiteNav />
-      </div>
-
       <ContactSection id="contact" />
 
-      <SiteFooter backHref="#top" backLabel="back to top" />
+      <SiteFooter />
     </main>
   )
 }
 
 function ProjectCard({ project }: { project: PortfolioProject }) {
   const media = getCardMedia(project)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const handleEnter = () => {
+    videoRef.current?.play().catch(() => {})
+  }
+
+  const handleLeave = () => {
+    const video = videoRef.current
+    if (video) {
+      video.pause()
+      video.currentTime = 0
+    }
+  }
+
+  const labels = [project.workType, project.businessSize].filter(Boolean)
 
   return (
     <a
       href={`/${project.id}`}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
       className="group flex flex-col bg-background transition-colors hover:bg-muted/40"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
         {media?.type === 'video' ? (
           <video
-            className="absolute inset-0 h-full w-full object-cover grayscale transition-transform duration-700 group-hover:scale-[1.04]"
-            autoPlay
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-[1.04] group-hover:grayscale-0"
             loop
             muted
             playsInline
@@ -88,9 +104,22 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
           <img
             src={media.src}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover grayscale transition-transform duration-700 group-hover:scale-[1.04]"
+            className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-[1.04] group-hover:grayscale-0"
             loading="lazy"
           />
+        ) : null}
+
+        {labels.length > 0 ? (
+          <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+            {labels.map((label) => (
+              <span
+                key={label}
+                className="rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-foreground backdrop-blur-sm"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
         ) : null}
       </div>
 

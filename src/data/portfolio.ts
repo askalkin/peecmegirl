@@ -56,6 +56,10 @@ export type PortfolioProject = {
   navigationLabel: string
   year: string
   categories: string[]
+  /** Size of the business the work was made for (e.g. Startup, Scale-up, Enterprise). */
+  businessSize?: string
+  /** Primary type of work (e.g. Brand Design, Growth Design). */
+  workType?: string
   focus: string
   summary: string[]
   goals?: string
@@ -240,6 +244,8 @@ export const portfolioData = {
       title: 'Comfort Map',
       navigationLabel: 'Comfort Map',
       year: '2021',
+      businessSize: 'Enterprise',
+      workType: 'Growth Design',
       focus:
         "When data isn't the problem, clarity is.",
       categories: [
@@ -407,6 +413,8 @@ export const portfolioData = {
       title: 'Air quality map',
       navigationLabel: 'Air quality map',
       year: '2020',
+      businessSize: 'Scale-up',
+      workType: 'Growth Design',
       focus:
         'How do you make an invisible environmental problem understandable quickly enough that people change behaviour?',
       categories: [
@@ -561,6 +569,8 @@ export const portfolioData = {
       title: 'LUN HR System',
       navigationLabel: 'LUN HR System',
       year: '2018',
+      businessSize: 'Scale-up',
+      workType: 'Product Design',
       focus:
         'How do you turn fragmented internal operations into a system multiple roles can rely on without adding more overhead?',
       categories: ['Product Design', 'E2E', 'Design System'],
@@ -694,6 +704,8 @@ export const portfolioData = {
       title: 'LUN HR Brand',
       navigationLabel: 'LUN HR Brand',
       year: '2019',
+      businessSize: 'Scale-up',
+      workType: 'Brand Design',
       focus:
         'How do you turn hiring into a brand signal that attracts genuinely curious, technically exceptional people?',
       categories: [
@@ -828,6 +840,8 @@ export const portfolioData = {
       title: 'Farba',
       navigationLabel: 'Farba',
       year: '2025 - Ongoing',
+      businessSize: 'Startup',
+      workType: 'Design System',
       focus:
         'How do you build a themable design system that stays expressive for users and maintainable for teams?',
       categories: [
@@ -901,6 +915,8 @@ export const portfolioData = {
       title: 'My playground',
       navigationLabel: 'My playground',
       year: '2018-2025',
+      businessSize: 'Personal',
+      workType: 'Visual Design',
       focus:
         'Design moves fast, and I’ve found that the only way to keep up is to keep playing. This is my lab for visual experiments—a place where I research tools not just to stay current, but to stay inspired.',
       categories: [

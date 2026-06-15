@@ -12,7 +12,7 @@ export function ContactSection({ id }: { id?: string }) {
   return (
     <section
       id={id}
-      className="contact-section section-shell scroll-mt-20 py-20 md:py-28"
+      className="contact-section flex min-h-screen w-full scroll-mt-20 flex-col justify-center p-20"
     >
       <div className="flex items-end justify-between gap-8">
         <ul className="flex flex-col gap-1">
@@ -32,17 +32,22 @@ export function ContactSection({ id }: { id?: string }) {
 
         <svg
           aria-hidden
-          viewBox="0 0 200 200"
-          className="hidden h-32 w-32 shrink-0 text-foreground md:block lg:h-44 lg:w-44"
+          viewBox="0 0 423 555"
+          className="hidden h-44 w-auto shrink-0 self-end text-foreground md:block lg:h-56"
         >
           {/* filled half-disc */}
-          <path d="M120 0 A100 100 0 0 1 120 200 Z" fill="currentColor" />
+          <path
+            d="M268.625 0.686326C353.4 49.9426 382.38 158.544 333.326 243.509C284.272 328.474 175.729 357.678 90.6841 308.888L268.625 0.686326Z"
+            fill="currentColor"
+            stroke="currentColor"
+          />
           {/* outlined right triangle */}
           <path
-            d="M10 60 L10 190 L140 190 Z"
+            d="M1.00329 242L361.267 554H1L1.00329 242Z"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="2"
+            strokeLinejoin="round"
           />
         </svg>
       </div>

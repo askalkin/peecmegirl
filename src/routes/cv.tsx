@@ -217,7 +217,7 @@ function CvPage() {
       </section>
 
       <ContactSection />
-      <SiteFooter backHref="/#top" backLabel="Back to home" />
+      <SiteFooter />
     </main>
   )
 }
