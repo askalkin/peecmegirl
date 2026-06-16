@@ -104,7 +104,7 @@ export const portfolioData = {
     ] satisfies PortfolioLink[],
     sitemap: [
       { href: '/#work', label: 'works' },
-      { href: '/about', label: 'about me' },
+      { href: '/#about', label: 'about me' },
       { href: '/#contact', label: 'contacts' },
     ] satisfies PortfolioLink[],
     stats: [
@@ -296,10 +296,10 @@ export const portfolioData = {
       workType: 'Marketing Design',
       categories: ['Design System', 'Marketing Design', 'Templates'],
       focus:
-        'How do you let non-designers produce on-brand assets without a designer in the loop?',
+        'How do you let non‑designers produce on‑brand assets without a designer in the loop?',
       summary: [
         'Built modular asset constructors in Figma for social media and B2B presentations.',
-        'Designed the system so nontechnical stakeholders can assemble coherent, on-brand assets themselves.',
+        'Designed the system so nontechnical stakeholders can assemble coherent, on‑brand assets themselves.',
       ],
       goals:
         'Reduce design bottlenecks by turning recurring asset work into a system anyone on the team can use.',
@@ -373,7 +373,7 @@ export const portfolioData = {
         'A growing library of campaign assets that kept LUN recognisable across every channel.',
       summary: [
         'A collection of marketing and brand assets made for LUN across social media, print, and merch.',
-        'Built to stay coherent and on-brand while moving fast across many channels and campaigns.',
+        'Built to stay coherent and on‑brand while moving fast across many channels and campaigns.',
       ],
       role: 'Marketing Design, Illustration',
       highlights: [],

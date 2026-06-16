@@ -5,6 +5,7 @@ import {
   getProjectsNewestFirst,
   type PortfolioProject,
 } from '@/data/portfolio'
+import { AboutContent } from '@/components/AboutContent'
 import { BrandQuestions } from '@/components/BrandQuestions'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
@@ -31,21 +32,22 @@ function PortfolioPage() {
 
   return (
     <main id="top" className="text-foreground">
-      <section className="section-shell flex min-h-[calc(100vh-4rem)] flex-col justify-between py-12 md:py-16">
-        <div className="flex justify-end">
-          <BrandQuestions className="max-w-xl text-right text-2xl md:text-3xl lg:text-4xl" />
+      <section className="section-shell relative flex h-[calc(100vh-4rem)] flex-col justify-end py-12 md:py-16">
+        {/* Absolutely positioned so the typing text never shifts the layout. */}
+        <div className="absolute inset-x-0 top-12 flex justify-start sm:justify-end md:top-16">
+          <BrandQuestions className="max-w-full text-balance text-left lowercase text-5xl sm:text-right md:text-6xl lg:max-w-2xl lg:text-7xl" />
         </div>
 
-        <div className="flex w-full items-end gap-6 sm:gap-10">
-          <h1 className="font-display text-5xl font-black lowercase leading-[0.95] tracking-tight text-foreground sm:text-7xl md:text-8xl lg:text-[7.5rem]">
+        <div className="flex w-full flex-col items-start gap-5 sm:flex-row sm:items-end sm:gap-6">
+          <span
+            aria-hidden
+            className="hero-orb size-[clamp(2.5rem,8vw,8.5rem)] shrink-0 rounded-full bg-foreground sm:order-2"
+          />
+          <h1 className="font-display text-[clamp(2.75rem,10vw,11rem)] font-black lowercase leading-[0.95] tracking-tight text-foreground sm:order-1">
             alina skalkina
             <br />
             brand designer
           </h1>
-          <span
-            aria-hidden
-            className="hero-orb hidden shrink-0 self-end rounded-full bg-gray-500 sm:block sm:size-[4.275rem] md:size-[5.7rem] lg:size-[7.125rem]"
-          />
         </div>
       </section>
 
@@ -56,6 +58,10 @@ function PortfolioPage() {
           ))}
         </div>
       </section>
+
+      <div id="about" className="scroll-mt-24">
+        <AboutContent />
+      </div>
 
       <ContactSection id="contact" />
 
@@ -126,9 +132,14 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       </div>
 
       <div className="px-4 py-4">
-        <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
-          {project.title}
-        </h3>
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
+            {project.title}
+          </h3>
+          <span className="shrink-0 text-sm text-muted-foreground">
+            {project.year}
+          </span>
+        </div>
         <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
           {project.focus}
         </p>

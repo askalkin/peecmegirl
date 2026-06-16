@@ -18,7 +18,36 @@ export function ContactSection({ id }: { id?: string }) {
     >
       <ContactFigures />
 
-      <div className="section-shell relative z-10 flex w-full">
+      <div className="section-shell relative z-10 flex w-full flex-col gap-6">
+        {/* Static figures on mobile (cursor interaction needs a pointer). */}
+        <div
+          aria-hidden
+          className="flex items-end gap-4 text-foreground md:hidden"
+        >
+          <svg
+            viewBox="0 241 363 314"
+            className="h-[clamp(2.75rem,10.5vw,11rem)] w-auto"
+          >
+            <path
+              d="M1.00329 242L361.267 554H1L1.00329 242Z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <svg
+            viewBox="90 0 293 359"
+            className="h-[clamp(2.75rem,10.5vw,11rem)] w-auto"
+          >
+            <path
+              d="M268.625 0.686326C353.4 49.9426 382.38 158.544 333.326 243.509C284.272 328.474 175.729 357.678 90.6841 308.888L268.625 0.686326Z"
+              fill="currentColor"
+              stroke="currentColor"
+            />
+          </svg>
+        </div>
+
         <ul className="flex flex-col gap-1">
           {links.map((link) => (
             <li key={link.label}>
@@ -26,7 +55,7 @@ export function ContactSection({ id }: { id?: string }) {
                 href={link.href}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noreferrer' : undefined}
-                className="font-display text-5xl font-black lowercase leading-[0.95] tracking-tight text-foreground transition-opacity duration-200 hover:opacity-50 sm:text-7xl md:text-8xl lg:text-[7.5rem]"
+                className="font-display text-[clamp(2.75rem,10vw,11rem)] font-black lowercase leading-[0.95] tracking-tight text-foreground transition-opacity duration-200 hover:opacity-50"
               >
                 {link.label}
               </a>
@@ -39,8 +68,8 @@ export function ContactSection({ id }: { id?: string }) {
 }
 
 // Half-disc + triangle. They sit still in their original composition until the
-// cursor comes near, then they're pushed around, bounce off the section edges,
-// and collide with each other before friction settles them.
+// cursor comes near, then they behave like real objects: gravity, spin, bouncy
+// collisions with the section edges and with each other.
 function ContactFigures() {
   const containerRef = useRef<HTMLDivElement>(null)
   const discRef = useRef<HTMLDivElement>(null)
@@ -61,9 +90,26 @@ function ContactFigures() {
       vy: number
       w: number
       h: number
+      radius: number
+      boundRadius: number
+      angle: number
+      spin: number
     }
-    const disc: Figure = { el: discEl, x: 0, y: 0, vx: 0, vy: 0, w: 0, h: 0 }
-    const triangle: Figure = { el: triangleEl, x: 0, y: 0, vx: 0, vy: 0, w: 0, h: 0 }
+    const make = (el: HTMLDivElement): Figure => ({
+      el,
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      w: 0,
+      h: 0,
+      radius: 0,
+      boundRadius: 0,
+      angle: 0,
+      spin: 0,
+    })
+    const disc = make(discEl)
+    const triangle = make(triangleEl)
     const figures = [disc, triangle]
 
     let width = 0
@@ -72,16 +118,21 @@ function ContactFigures() {
 
     // Frame-6 geometry (viewBox 423 x 555): the disc occupies x[90..383] y[0..358],
     // the triangle x[1..361] y[242..554]. Recreate that composition, anchored right.
+    // 1.3x smaller than before -> composition spans ~0.29 of the width.
     const measure = (resetPositions: boolean) => {
       width = container.clientWidth
       height = container.clientHeight
-      const unit = (0.38 * width) / 423
+      const unit = (0.29 * width) / 423
       discEl.style.width = `${293 * unit}px`
       triangleEl.style.width = `${360 * unit}px`
       disc.w = discEl.offsetWidth
       disc.h = discEl.offsetHeight
+      disc.radius = Math.min(disc.w, disc.h) * 0.5
+      disc.boundRadius = Math.hypot(disc.w, disc.h) / 2
       triangle.w = triangleEl.offsetWidth
       triangle.h = triangleEl.offsetHeight
+      triangle.radius = Math.min(triangle.w, triangle.h) * 0.46
+      triangle.boundRadius = Math.hypot(triangle.w, triangle.h) / 2
 
       if (resetPositions) {
         const originX = 0.96 * width - 383 * unit
@@ -90,8 +141,8 @@ function ContactFigures() {
         disc.y = originY
         triangle.x = originX + 1 * unit
         triangle.y = originY + 242 * unit
-        disc.vx = disc.vy = triangle.vx = triangle.vy = 0
         for (const figure of figures) {
+          figure.vx = figure.vy = figure.spin = figure.angle = 0
           figure.el.style.transform = `translate(${figure.x}px, ${figure.y}px)`
         }
       }
@@ -114,11 +165,16 @@ function ContactFigures() {
     window.addEventListener('pointermove', onPointerMove)
     window.addEventListener('resize', onResize)
 
-    const REPEL_RADIUS = 280
-    const REPEL_FORCE = 1.1
-    const FRICTION = 0.99
-    const MAX_SPEED = 12
-    const STOP_SPEED = 0.05
+    const GRAVITY = 0.18
+    const AIR = 0.984
+    const SPIN_FRICTION = 0.94
+    const RESTITUTION = 0.6 // bounciness off walls
+    const GROUND_FRICTION = 0.88
+    const REST_SPEED = 0.7
+    const REPEL_RADIUS = 260
+    const REPEL_FORCE = 0.8
+    const MAX_SPEED = 7.5
+    const MAX_SPIN = 0.045 // rad/frame — keeps rotation slow and soft
 
     const center = (figure: Figure) => ({
       x: figure.x + figure.w / 2,
@@ -128,12 +184,10 @@ function ContactFigures() {
     const collide = () => {
       const a = center(disc)
       const b = center(triangle)
-      const ra = Math.min(disc.w, disc.h) * 0.5
-      const rb = Math.min(triangle.w, triangle.h) * 0.45
       let dx = b.x - a.x
       let dy = b.y - a.y
       let distance = Math.hypot(dx, dy)
-      const minDistance = ra + rb
+      const minDistance = disc.radius + triangle.radius
       if (distance === 0) {
         dx = 1
         dy = 0
@@ -147,13 +201,22 @@ function ContactFigures() {
         disc.y -= ny * overlap
         triangle.x += nx * overlap
         triangle.y += ny * overlap
-        // Equal-mass elastic response: swap velocity components along the normal.
+
         const approach = (disc.vx - triangle.vx) * nx + (disc.vy - triangle.vy) * ny
         if (approach > 0) {
-          disc.vx -= approach * nx
-          disc.vy -= approach * ny
-          triangle.vx += approach * nx
-          triangle.vy += approach * ny
+          // Equal-mass bouncy response along the normal.
+          const impulse = approach * RESTITUTION
+          disc.vx -= impulse * nx
+          disc.vy -= impulse * ny
+          triangle.vx += impulse * nx
+          triangle.vy += impulse * ny
+          // Tangential slip imparts spin, like real objects scraping past.
+          const tx = -ny
+          const ty = nx
+          const tangential =
+            (disc.vx - triangle.vx) * tx + (disc.vy - triangle.vy) * ty
+          disc.spin += (tangential / disc.radius) * 0.12
+          triangle.spin -= (tangential / triangle.radius) * 0.12
         }
       }
     }
@@ -183,13 +246,13 @@ function ContactFigures() {
               const strength = (1 - distance / REPEL_RADIUS) * REPEL_FORCE
               figure.vx += (dx / distance) * strength
               figure.vy += (dy / distance) * strength
+              figure.spin += (dy / distance) * strength * 0.015
             }
           }
 
-          figure.vx *= FRICTION
-          figure.vy *= FRICTION
-          if (Math.abs(figure.vx) < STOP_SPEED) figure.vx = 0
-          if (Math.abs(figure.vy) < STOP_SPEED) figure.vy = 0
+          figure.vy += GRAVITY
+          figure.vx *= AIR
+          figure.vy *= AIR
 
           const speed = Math.hypot(figure.vx, figure.vy)
           if (speed > MAX_SPEED) {
@@ -199,30 +262,49 @@ function ContactFigures() {
 
           figure.x += figure.vx
           figure.y += figure.vy
+          figure.spin *= SPIN_FRICTION
+          figure.spin = Math.max(-MAX_SPIN, Math.min(MAX_SPIN, figure.spin))
+          figure.angle += figure.spin
         }
 
         collide()
 
         for (const figure of figures) {
-          // Keep the figures clear of the left-aligned contact links.
-          const minX = width * 0.45
-          const maxX = Math.max(minX, width - figure.w)
-          const maxY = Math.max(0, height - figure.h)
-          if (figure.x < minX) {
-            figure.x = minX
-            figure.vx = Math.abs(figure.vx)
-          } else if (figure.x > maxX) {
-            figure.x = maxX
-            figure.vx = -Math.abs(figure.vx)
+          // Bounce on the figure's circumscribed circle so rotation never
+          // pushes a corner past the edge (no cropping). Edges of the section
+          // (full screen width) are the bounce surfaces.
+          const r = figure.boundRadius
+          const minLeftX = r - figure.w / 2
+          const maxLeftX = width - r - figure.w / 2
+          const minTopY = r - figure.h / 2
+          const maxBottomY = height - r - figure.h / 2
+
+          if (figure.x < minLeftX) {
+            figure.x = minLeftX
+            figure.vx = Math.abs(figure.vx) * RESTITUTION
+            figure.spin += (figure.vy / figure.radius) * 0.15
+          } else if (figure.x > maxLeftX) {
+            figure.x = maxLeftX
+            figure.vx = -Math.abs(figure.vx) * RESTITUTION
+            figure.spin -= (figure.vy / figure.radius) * 0.15
           }
-          if (figure.y < 0) {
-            figure.y = 0
-            figure.vy = Math.abs(figure.vy)
-          } else if (figure.y > maxY) {
-            figure.y = maxY
-            figure.vy = -Math.abs(figure.vy)
+
+          if (figure.y < minTopY) {
+            figure.y = minTopY
+            figure.vy = Math.abs(figure.vy) * RESTITUTION
+          } else if (figure.y > maxBottomY) {
+            figure.y = maxBottomY
+            // Bounce, or settle and roll along the floor.
+            if (Math.abs(figure.vy) > REST_SPEED) {
+              figure.vy = -Math.abs(figure.vy) * RESTITUTION
+            } else {
+              figure.vy = 0
+            }
+            figure.vx *= GROUND_FRICTION
+            figure.spin = (figure.vx / figure.radius) * 0.4
           }
-          figure.el.style.transform = `translate(${figure.x}px, ${figure.y}px)`
+
+          figure.el.style.transform = `translate(${figure.x}px, ${figure.y}px) rotate(${figure.angle}rad)`
         }
       }
 

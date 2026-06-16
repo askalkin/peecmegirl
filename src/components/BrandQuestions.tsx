@@ -5,10 +5,10 @@ import { cn } from '@/lib/utils'
 const questions = [
   "Is our brand actually 'us'?",
   "What does 'us' even mean?",
-  "How do we differentiate in the market while staying true to that 'us'?",
-  'Is this identity actually scalable?',
-  'How should it evolve as we grow?',
-  'How do we scale our visual identity into a system that non-designers can actually use, so the brand always feels coherent?',
+  'How do we scale?',
+  'How do we differentiate in the market?',
+  'How should we communicate our growth?',
+  'How will non‑designers use this?',
 ]
 
 const TYPING_SPEED = 45 // ms per character
