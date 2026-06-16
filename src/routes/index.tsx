@@ -59,7 +59,7 @@ function PortfolioPage() {
         </div>
       </section>
 
-      <div id="about" className="scroll-mt-24">
+      <div id="about" className="scroll-mt-24 md:mt-16 lg:mt-24">
         <AboutContent />
       </div>
 

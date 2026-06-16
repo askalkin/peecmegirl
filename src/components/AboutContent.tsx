@@ -1,4 +1,5 @@
-import { ArrowDown } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowDown, Minus, Plus } from 'lucide-react'
 
 import { cvRoles } from '@/data/cv'
 
@@ -31,55 +32,75 @@ function PhotoMarquee({
   )
 }
 
-export function AboutContent() {
+function DownloadCvLink() {
   return (
-    <>
-      {/* CV — full-bleed; sticky left panel, full experience scrolls on the right. */}
-      <section className="w-full">
-        <div className="grid w-full lg:grid-cols-2 lg:items-start">
-          <div className="flex min-h-screen flex-col justify-between gap-12 p-8 md:p-12 lg:sticky lg:top-0">
-            <a
-              href="/recovered/Alina-Skalkina-CV-Lead-Brand-Product-Designer.pdf"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex w-fit items-center gap-2 border-b border-foreground pb-1 text-sm font-medium text-foreground transition-opacity hover:opacity-60"
+    <a
+      href="/recovered/Alina-Skalkina-CV-Lead-Brand-Product-Designer.pdf"
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex w-fit items-center gap-2 border-b border-foreground pb-1 text-sm font-medium text-foreground transition-opacity hover:opacity-60"
+    >
+      Download CV
+      <ArrowDown className="size-4" />
+    </a>
+  )
+}
+
+// Expandable, swiss-style experience list.
+function ExperienceList() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0)
+
+  return (
+    <div className="mt-10">
+      {cvRoles.map((role, index) => {
+        const isOpen = openIndex === index
+        return (
+          <div
+            key={`${role.title}-${role.company}-${role.period}`}
+            className="border-t border-border last:border-b"
+          >
+            <button
+              type="button"
+              onClick={() => setOpenIndex(isOpen ? null : index)}
+              aria-expanded={isOpen}
+              className="flex w-full items-start justify-between gap-6 py-6 text-left"
             >
-              Download CV
-              <ArrowDown className="size-4" />
-            </a>
-            <h2 className="font-display text-5xl font-black lowercase leading-[0.95] tracking-tight text-foreground md:text-6xl">
-              my experience
-            </h2>
-          </div>
-
-          <div className="border-t border-border bg-background p-8 text-foreground md:p-12 lg:border-l lg:border-t-0">
-            {cvRoles.map((role) => (
-              <article
-                key={`${role.title}-${role.company}-${role.period}`}
-                className="grid gap-3 border-t border-border py-8 first:border-t-0 first:pt-0 md:grid-cols-[10rem_1fr] md:gap-8"
-              >
-                <div className="text-sm text-muted-foreground">
-                  <div className="whitespace-nowrap">{role.period}</div>
-                  {role.location ? (
-                    <div className="mt-1">{role.location}</div>
-                  ) : null}
-                </div>
-
-                <div>
-                  <h3 className="font-display text-xl font-bold tracking-tight text-foreground md:text-2xl">
+              <div className="grid flex-1 gap-1 md:grid-cols-[9rem_1fr] md:items-baseline md:gap-8">
+                <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  {role.period}
+                </span>
+                <span className="flex flex-wrap items-baseline gap-x-3">
+                  <span className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
                     {role.title}
-                  </h3>
-                  <p className="mt-1 text-base text-foreground/70">
+                  </span>
+                  <span className="text-sm text-muted-foreground">
                     {role.company}
-                  </p>
+                  </span>
+                </span>
+              </div>
+              <span className="mt-1.5 shrink-0 text-muted-foreground">
+                {isOpen ? <Minus className="size-5" /> : <Plus className="size-5" />}
+              </span>
+            </button>
 
+            <div
+              className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+                isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div className="pb-8 md:pl-[calc(9rem+2rem)]">
+                  {role.location ? (
+                    <p className="mb-3 text-sm uppercase tracking-wide text-muted-foreground">
+                      {role.location}
+                    </p>
+                  ) : null}
                   {role.note ? (
-                    <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
+                    <p className="mb-3 max-w-2xl text-sm leading-relaxed text-foreground/80">
                       {role.note}
                     </p>
                   ) : null}
-
-                  <ul className="mt-4 space-y-2.5">
+                  <ul className="space-y-2.5">
                     {role.highlights.map((highlight) => (
                       <li
                         key={highlight}
@@ -91,9 +112,32 @@ export function AboutContent() {
                     ))}
                   </ul>
                 </div>
-              </article>
-            ))}
+              </div>
+            </div>
           </div>
+        )
+      })}
+    </div>
+  )
+}
+
+export function AboutContent() {
+  return (
+    <>
+      <section className="grid w-full lg:grid-cols-2">
+        {/* "my experience" sticks to the bottom-left through the CV section. */}
+        <div className="p-8 md:p-12">
+          <h2 className="font-display text-5xl font-black lowercase leading-[0.95] tracking-tight text-foreground md:text-6xl lg:sticky lg:bottom-12">
+            my experience
+          </h2>
+        </div>
+
+        {/* Download top-right of the list, then the expandable CV. */}
+        <div className="border-t border-border p-8 md:p-12 lg:border-l lg:border-t-0">
+          <div className="flex justify-end">
+            <DownloadCvLink />
+          </div>
+          <ExperienceList />
         </div>
       </section>
 
