@@ -18,36 +18,7 @@ export function ContactSection({ id }: { id?: string }) {
     >
       <ContactFigures />
 
-      <div className="section-shell relative z-10 flex w-full flex-col gap-6">
-        {/* Static figures on mobile (cursor interaction needs a pointer). */}
-        <div
-          aria-hidden
-          className="flex items-end gap-4 text-foreground md:hidden"
-        >
-          <svg
-            viewBox="0 241 363 314"
-            className="h-[clamp(2.75rem,10.5vw,11rem)] w-auto"
-          >
-            <path
-              d="M1.00329 242L361.267 554H1L1.00329 242Z"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <svg
-            viewBox="90 0 293 359"
-            className="h-[clamp(2.75rem,10.5vw,11rem)] w-auto"
-          >
-            <path
-              d="M268.625 0.686326C353.4 49.9426 382.38 158.544 333.326 243.509C284.272 328.474 175.729 357.678 90.6841 308.888L268.625 0.686326Z"
-              fill="currentColor"
-              stroke="currentColor"
-            />
-          </svg>
-        </div>
-
+      <div className="section-shell relative z-10 flex w-full flex-col gap-10">
         <ul className="flex flex-col gap-1">
           {links.map((link) => (
             <li key={link.label}>
@@ -62,6 +33,30 @@ export function ContactSection({ id }: { id?: string }) {
             </li>
           ))}
         </ul>
+
+        {/* Static figures on mobile (cursor interaction needs a pointer):
+            beneath the links, ~80% of the width, left-aligned, not cropped. */}
+        <div
+          aria-hidden
+          className="flex w-[80vw] max-w-full items-end gap-3 self-start text-foreground md:hidden"
+        >
+          <svg viewBox="0 241 363 314" className="h-auto w-[55%]">
+            <path
+              d="M1.00329 242L361.267 554H1L1.00329 242Z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <svg viewBox="90 0 293 359" className="h-auto w-[42%]">
+            <path
+              d="M268.625 0.686326C353.4 49.9426 382.38 158.544 333.326 243.509C284.272 328.474 175.729 357.678 90.6841 308.888L268.625 0.686326Z"
+              fill="currentColor"
+              stroke="currentColor"
+            />
+          </svg>
+        </div>
       </div>
     </section>
   )

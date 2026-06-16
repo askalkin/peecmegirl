@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
+// Each question carries explicit line breaks ("\n") so it always reads as two
+// rows on lg/xl. The breaks are also where the line wraps on smaller screens.
 const questions = [
-  "Is our brand actually 'us'?",
-  "What does 'us' even mean?",
-  'How do we scale?',
-  'How do we differentiate in the market?',
-  'How should we communicate our growth?',
-  'How will non‑designers use this?',
+  "Is our brand\nactually 'us'?",
+  "What does 'us'\neven mean?",
+  'How do we\nscale?',
+  'How do we differentiate\nin the market?',
+  'How should we\ncommunicate our growth?',
+  'How will non‑designers\nuse this?',
 ]
 
 const TYPING_SPEED = 45 // ms per character
@@ -44,31 +46,52 @@ export function BrandQuestions({ className }: { className?: string }) {
     return () => clearTimeout(timer)
   }, [phase, charCount, current])
 
-  const shown = current.slice(0, charCount)
   const isSelecting = phase === 'selected'
+  const lines = current.split('\n')
+
+  let consumed = 0
 
   return (
     <p
       className={cn(
-        'font-display font-medium leading-tight tracking-tight text-foreground',
+        'flex flex-col font-display font-medium leading-tight tracking-tight text-foreground',
         className
       )}
     >
-      <span
-        className={
-          isSelecting
-            ? 'box-decoration-clone rounded-[2px] bg-foreground/15'
-            : undefined
-        }
-      >
-        {shown}
-      </span>
-      {!isSelecting ? (
-        <span
-          aria-hidden
-          className="brand-questions-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.12em] bg-foreground align-baseline"
-        />
-      ) : null}
+      {lines.map((line, lineIndex) => {
+        const start = consumed
+        // +1 accounts for the "\n" separator between lines.
+        consumed += line.length + 1
+
+        const typedInLine = Math.max(0, Math.min(line.length, charCount - start))
+        const opaque = line.slice(0, typedInLine)
+        const rest = line.slice(typedInLine)
+        const caretHere =
+          !isSelecting && charCount >= start && charCount <= start + line.length
+
+        return (
+          <span key={lineIndex} className="block lg:whitespace-nowrap">
+            {/* The full line is always laid out — the untyped part is just
+                transparent — so typing never reflows the text. */}
+            <span
+              className={
+                isSelecting
+                  ? 'box-decoration-clone rounded-[2px] bg-foreground/15'
+                  : undefined
+              }
+            >
+              {opaque}
+            </span>
+            {caretHere ? (
+              <span
+                aria-hidden
+                className="brand-questions-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.12em] bg-foreground align-baseline"
+              />
+            ) : null}
+            <span className="text-transparent">{rest}</span>
+          </span>
+        )
+      })}
     </p>
   )
 }

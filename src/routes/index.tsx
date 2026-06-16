@@ -35,7 +35,7 @@ function PortfolioPage() {
       <section className="section-shell relative flex h-[calc(100vh-4rem)] flex-col justify-end py-12 md:py-16">
         {/* Absolutely positioned so the typing text never shifts the layout. */}
         <div className="absolute inset-x-0 top-12 flex justify-start sm:justify-end md:top-16">
-          <BrandQuestions className="max-w-full text-balance text-left lowercase text-5xl sm:text-right md:text-6xl lg:max-w-2xl lg:text-7xl" />
+          <BrandQuestions className="max-w-full text-left lowercase text-5xl sm:text-right md:text-6xl lg:max-w-none lg:text-7xl" />
         </div>
 
         <div className="flex w-full flex-col items-start gap-5 sm:flex-row sm:items-end sm:gap-6">
