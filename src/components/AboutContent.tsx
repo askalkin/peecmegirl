@@ -21,7 +21,7 @@ function PhotoMarquee({
           <div
             key={index}
             aria-hidden
-            className="flex aspect-[4/3] w-[clamp(16rem,30vw,30rem)] shrink-0 items-center justify-center rounded-2xl border border-border/60 bg-muted text-xs font-medium uppercase tracking-wide text-muted-foreground"
+            className="flex aspect-[4/3] w-[clamp(16rem,30vw,30rem)] shrink-0 items-center justify-center bg-muted text-xs font-medium uppercase tracking-wide text-muted-foreground"
           >
             Photo
           </div>
@@ -98,7 +98,7 @@ export function AboutContent() {
       </section>
 
       <section className="py-20 md:py-28">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col">
           <PhotoMarquee direction="left" count={5} />
           <PhotoMarquee direction="right" count={5} />
         </div>
