@@ -33,10 +33,10 @@ export default function Header() {
         <a
           href="/"
           className={cn(
-            'inline-flex shrink-0 rounded-full border px-4 py-2 font-display text-xs font-bold lowercase tracking-tight shadow-sm backdrop-blur-md transition-colors duration-300 sm:px-5 sm:py-2.5 sm:text-sm',
+            'inline-flex shrink-0 rounded-full border px-4 py-2 font-display text-xs font-bold lowercase tracking-tight shadow-sm backdrop-blur-md transition-all duration-300 sm:px-5 sm:py-2.5 sm:text-sm',
             heroActive
               ? 'border-foreground bg-foreground text-background'
-              : 'border-border/60 bg-background/55 text-foreground hover:opacity-60'
+              : 'border-border/60 bg-background/55 text-foreground hover:bg-background/40 hover:shadow-lg hover:backdrop-blur-xl'
           )}
         >
           alina skalkina

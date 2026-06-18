@@ -598,7 +598,8 @@ export const portfolioData = {
             '5k active users on IOS widget, 4 stars rating in App Store, offline notification system in case of poor air quality.',
         },
         {
-          title: 'Cleaner Air',
+          value: '-33%',
+          title: 'Cleaner air',
           description:
             'In 2022 on average concentration of the PM2.5 in Ukraine fell by 33% compared to 2021.',
         },
@@ -611,19 +612,19 @@ export const portfolioData = {
       ],
       process: [
         {
-          title: 'Discovery',
+          title: 'Translating invisible data into instant guidance',
           description:
-            'Kyiv ranked first globally for air pollution in 2020, so people needed fast, understandable guidance, not raw metrics.',
+            'Kyiv ranked first globally for air pollution in 2020, so the challenge was turning raw AQI metrics into fast, understandable guidance people could act on at a glance.',
         },
         {
-          title: 'Research',
+          title: 'Scaling a real-time sensor network',
           description:
-            'I ran product strategy workshops with marketing, mapped personas and journeys, and benchmarked mental models to reduce decision friction.',
+            'Growing a live sensor network from Kyiv to 20+ cities while keeping the readings legible across map, widget, and mobile contexts.',
         },
         {
-          title: 'Development',
+          title: 'Designing for behaviour change',
           description:
-            'We scaled a real-time sensor network from Kyiv to major cities, added visual tips and mascot-based guidance, and built onboarding for AQI literacy. I also designed privacy-safe location handling and offline alerts for high pollution.',
+            'Building mascot-based guidance, color-coded tips, and AQI-literacy onboarding — plus privacy-safe location handling and offline alerts for high pollution.',
         },
       ],
       team: [

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ExternalLink } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 
 import {
   getProjectsNewestFirst,
@@ -109,11 +109,11 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                 ? `${project.title}, ${project.company}`
                 : project.title}
             </span>
-            <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               {roleTags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-xs lowercase tracking-wide text-muted-foreground"
+                  className="rounded-full border border-border px-3 py-0.5 text-sm lowercase text-muted-foreground"
                 >
                   {tag}
                 </span>
@@ -141,10 +141,10 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     href={project.liveLink.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
+                    className="inline-flex items-center gap-2 text-base font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60 md:text-lg"
                   >
                     {project.liveLink.label}
-                    <ExternalLink className="size-4" />
+                    <ArrowUpRight className="size-5" />
                   </a>
                 ) : null}
               </div>

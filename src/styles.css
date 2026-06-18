@@ -261,6 +261,10 @@ code {
   animation-name: marquee-right;
 }
 
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
 @keyframes marquee-left {
   from {
     transform: translateX(0);

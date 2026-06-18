@@ -1,8 +1,58 @@
-import { useState } from 'react'
+import { useRef, useState, type MouseEvent } from 'react'
 import { ArrowDown, ChevronDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { cvRoles } from '@/data/cv'
+
+// A marquee photo card with cursor tilt, a moving glare, and a hover flip.
+function TiltCard() {
+  const tiltRef = useRef<HTMLDivElement>(null)
+  const [tilt, setTilt] = useState('')
+  const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 })
+
+  const handleMove = (event: MouseEvent<HTMLDivElement>) => {
+    const el = tiltRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const px = (event.clientX - rect.left) / rect.width
+    const py = (event.clientY - rect.top) / rect.height
+    setTilt(`rotateX(${(0.5 - py) * 14}deg) rotateY(${(px - 0.5) * 14}deg)`)
+    setGlare({ x: px * 100, y: py * 100, opacity: 0.5 })
+  }
+
+  const handleLeave = () => {
+    setTilt('')
+    setGlare((current) => ({ ...current, opacity: 0 }))
+  }
+
+  return (
+    <div aria-hidden className="shrink-0 [perspective:1200px]">
+      <div
+        ref={tiltRef}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+        className="group/card transition-transform duration-200 ease-out [transform-style:preserve-3d]"
+        style={{ transform: tilt }}
+      >
+        <div className="relative aspect-[4/3] w-[clamp(16rem,30vw,30rem)] transition-transform duration-700 [transform-style:preserve-3d] group-hover/card:[transform:rotateY(180deg)]">
+          <div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-muted text-xs font-medium uppercase tracking-wide text-muted-foreground [backface-visibility:hidden]">
+            Photo
+            <span
+              className="pointer-events-none absolute inset-0 transition-opacity duration-200"
+              style={{
+                opacity: glare.opacity,
+                background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.7), transparent 55%)`,
+              }}
+            />
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center bg-foreground text-xs font-medium uppercase tracking-wide text-background [backface-visibility:hidden] [transform:rotateY(180deg)]">
+            Photo
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 // Self-scrolling photo strip. `direction` sets the travel direction.
 function PhotoMarquee({
@@ -20,13 +70,7 @@ function PhotoMarquee({
         className={`marquee-track ${direction === 'right' ? 'marquee-track--reverse' : ''}`}
       >
         {[...items, ...items].map((_, index) => (
-          <div
-            key={index}
-            aria-hidden
-            className="flex aspect-[4/3] w-[clamp(16rem,30vw,30rem)] shrink-0 items-center justify-center bg-muted text-xs font-medium uppercase tracking-wide text-muted-foreground"
-          >
-            Photo
-          </div>
+          <TiltCard key={index} />
         ))}
       </div>
     </div>
