@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ArrowLeft, ExternalLink } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 
 import {
   getProjectsNewestFirst,
@@ -12,10 +12,6 @@ import { cn } from '@/lib/utils'
 
 import { Lightbox } from './Lightbox'
 
-// Projects that lead with a full-bleed cinematic hero, with the project info
-// following beneath it. Everyone else shows media + info together in one view.
-const FULL_BLEED_HERO = new Set(['air-quality-map', 'huawei'])
-
 function Label({ children }: { children: React.ReactNode }) {
   return (
     <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -24,112 +20,7 @@ function Label({ children }: { children: React.ReactNode }) {
   )
 }
 
-// One calm editorial row: a quiet label on the left, content on the right.
-function Row({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactNode
-}) {
-  return (
-    <section className="grid gap-4 md:grid-cols-12 md:gap-12">
-      <div className="md:col-span-3">
-        <Label>{label}</Label>
-      </div>
-      <div className="md:col-span-9">{children}</div>
-    </section>
-  )
-}
-
-// Title, description and the data + achievements grid. Shared by both hero modes.
-function ProjectMeta({ project }: { project: PortfolioProject }) {
-  const stats = [
-    { label: 'Year', value: project.year },
-    ...project.highlights
-      .filter((highlight) => Boolean(highlight.value))
-      .map((highlight) => ({
-        label: highlight.title,
-        value: highlight.value as string,
-      })),
-  ].slice(0, 6)
-
-  return (
-    <div className="flex flex-col gap-8">
-      <a
-        href="/#work"
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        works
-      </a>
-
-      <div>
-        <Label>Case study</Label>
-        <h1 className="mt-4 font-display text-4xl font-bold lowercase leading-[1.02] tracking-tight text-foreground sm:text-6xl md:text-7xl">
-          {project.title}
-        </h1>
-      </div>
-
-      <p className="max-w-2xl text-lg leading-relaxed text-foreground/70 md:text-xl">
-        {project.focus}
-      </p>
-
-      <dl className="grid grid-cols-2 gap-x-8 gap-y-7">
-        {stats.map((stat) => (
-          <div key={`${stat.label}-${stat.value}`}>
-            <dt className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-              {stat.label}
-            </dt>
-            <dd className="mt-1.5 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-              {stat.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
-
-      {project.role ? (
-        <div>
-          <Label>Role</Label>
-          <p className="mt-1.5 max-w-md text-sm leading-relaxed text-foreground/80">
-            {project.role}
-          </p>
-        </div>
-      ) : null}
-
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-        <div className="flex flex-wrap gap-2">
-          {project.categories.map((category) => (
-            <span
-              key={category}
-              className="rounded-full border border-border px-3 py-1 text-xs uppercase tracking-wide text-muted-foreground"
-            >
-              {category}
-            </span>
-          ))}
-        </div>
-        {project.liveLink ? (
-          <a
-            href={project.liveLink.href}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
-          >
-            {project.liveLink.label}
-            <ExternalLink className="size-4" />
-          </a>
-        ) : null}
-      </div>
-    </div>
-  )
-}
-
 export function ProjectPage({ project }: { project: PortfolioProject }) {
-  const leadVideo =
-    project.gallery.find(
-      (item): item is PortfolioMediaItem & { type: 'video' } => item.type === 'video'
-    ) ?? null
-
   const imageItems = useMemo(
     () =>
       project.gallery.filter(
@@ -139,6 +30,11 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
     [project.gallery]
   )
 
+  const leadVideo =
+    project.gallery.find(
+      (item): item is PortfolioMediaItem & { type: 'video' } =>
+        item.type === 'video'
+    ) ?? null
   const heroMedia = leadVideo ?? imageItems[0] ?? null
   const galleryItems = project.gallery.filter(
     (item) => item.src !== heroMedia?.src
@@ -154,7 +50,9 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
     (currentProject) => currentProject.id !== project.id
   )
 
-  const useSplitHero = !FULL_BLEED_HERO.has(project.id) && heroMedia !== null
+  const roleTags = project.role
+    ? project.role.split(',').map((part) => part.trim())
+    : []
 
   function openImage(item: PortfolioMediaItem) {
     const imageIndex = imageIndexBySrc.get(item.src)
@@ -178,39 +76,12 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
 
   return (
     <main className="text-foreground">
-      {useSplitHero ? (
-        // Media + project info together in one viewport.
-        <section className="grid min-h-screen lg:grid-cols-2">
-          <div className="flex items-center justify-center p-8 lg:p-12">
-            {heroMedia?.type === 'video' ? (
-              <video
-                className="max-h-[80vh] w-full object-contain"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-              >
-                <source src={heroMedia.src} />
-              </video>
-            ) : heroMedia ? (
-              <img
-                src={heroMedia.src}
-                alt={heroMedia.alt}
-                className="max-h-[80vh] w-full object-contain"
-              />
-            ) : null}
-          </div>
-          <div className="flex flex-col justify-center p-8 lg:border-l lg:border-border lg:p-12">
-            <ProjectMeta project={project} />
-          </div>
-        </section>
-      ) : (
-        // Full-bleed hero, then the description beneath it.
-        <>
-          {heroMedia?.type === 'video' ? (
+      {heroMedia ? (
+        // Hero media — first section; ~68vh leaves the title visible on load.
+        <section>
+          {heroMedia.type === 'video' ? (
             <video
-              className="h-[80vh] max-h-[90vh] w-full object-cover"
+              className="h-[68vh] w-full object-cover"
               autoPlay
               loop
               muted
@@ -219,96 +90,153 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
             >
               <source src={heroMedia.src} />
             </video>
-          ) : heroMedia ? (
+          ) : (
             <img
               src={heroMedia.src}
               alt={heroMedia.alt}
-              className="h-[80vh] max-h-[90vh] w-full object-cover"
+              className="h-[68vh] w-full object-cover"
             />
-          ) : null}
-          <section className={cn('section-shell', heroMedia ? 'py-16 md:py-24' : 'pb-16 pt-16 md:pb-24 md:pt-28')}>
-            <ProjectMeta project={project} />
-          </section>
-        </>
-      )}
+          )}
+        </section>
+      ) : null}
 
-      <div className="section-shell space-y-20 py-16 md:space-y-28 md:py-24">
-        {/* Overview — narrative, with the old process steps folded in. */}
-        {project.summary.length || project.process.length ? (
-          <Row label="Overview">
-            <div className="max-w-3xl space-y-5">
-              {project.summary.map((paragraph) => (
-                <p
-                  key={paragraph}
-                  className="text-lg leading-relaxed text-foreground/80"
+      <div className="section-shell space-y-16 py-12 md:space-y-24 md:py-16">
+        {/* Description — name, role labels, the hook, and the situation/task. */}
+        <header>
+          <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+            <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+              {project.company
+                ? `${project.title}, ${project.company}`
+                : project.title}
+            </span>
+            <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+              {roleTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs lowercase tracking-wide text-muted-foreground"
                 >
-                  {paragraph}
-                </p>
+                  {tag}
+                </span>
               ))}
-              {project.process.map((step) => (
-                <p
-                  key={step.title}
-                  className="text-lg leading-relaxed text-foreground/80"
-                >
-                  <span className="font-medium text-foreground">
-                    {step.title}.
-                  </span>{' '}
-                  {step.description}
-                </p>
-              ))}
+              <span className="text-sm text-muted-foreground">{project.year}</span>
             </div>
-          </Row>
-        ) : null}
+          </div>
 
-        {/* Outcomes — the full achievements with their descriptions. */}
+          <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-12">
+            <h1 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground md:text-4xl">
+              {project.focus}
+            </h1>
+            {project.summary.length || project.liveLink ? (
+              <div className="max-w-xl space-y-5">
+                {project.summary.map((paragraph) => (
+                  <p
+                    key={paragraph}
+                    className="text-base leading-relaxed text-foreground/80 md:text-lg"
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+                {project.liveLink ? (
+                  <a
+                    href={project.liveLink.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
+                  >
+                    {project.liveLink.label}
+                    <ExternalLink className="size-4" />
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </header>
+
+        {/* Outcomes — results dashboard. */}
         {project.highlights.length ? (
-          <Row label="Outcomes">
-            <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2">
-              {project.highlights.map((highlight) => (
-                <article key={`${highlight.title}-${highlight.value ?? ''}`}>
-                  <div className="text-base font-medium text-foreground">
-                    {highlight.value ? (
-                      <span className="mr-2 font-display font-semibold">
-                        {highlight.value}
-                      </span>
-                    ) : null}
+          <section className="space-y-8">
+            <Label>Outcomes</Label>
+            <div className="grid grid-cols-1 border-t border-border sm:grid-cols-2 lg:grid-cols-4">
+              {project.highlights.map((highlight, index) => (
+                <div
+                  key={`${highlight.title}-${highlight.value ?? ''}`}
+                  className={cn(
+                    'flex flex-col border-border py-8 lg:px-8 lg:first:pl-0',
+                    index > 0 && 'border-t lg:border-l lg:border-t-0'
+                  )}
+                >
+                  {highlight.value ? (
+                    <div className="font-display text-4xl font-black tracking-tight text-foreground md:text-5xl">
+                      {highlight.value}
+                    </div>
+                  ) : null}
+                  <div className="mt-3 text-sm font-semibold text-foreground">
                     {highlight.title}
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {highlight.description}
                   </p>
-                </article>
+                </div>
               ))}
             </div>
-          </Row>
+          </section>
         ) : null}
+      </div>
 
-        {/* Selected work — clean grid; wide items break full width for rhythm. */}
-        {galleryItems.length ? (
-          <section className="space-y-8">
-            <Label>Selected work</Label>
-            <div className="grid items-start gap-6 md:grid-cols-2 md:gap-8">
-              {galleryItems.map((item) => (
-                <MediaTile
-                  key={item.src}
-                  item={item}
-                  className={item.span === 'wide' ? 'md:col-span-2' : undefined}
-                  onImageClick={() => openImage(item)}
-                />
+      {/* Visuals — full-width masonry; media keeps its proportions. */}
+      {galleryItems.length ? (
+        <section className="w-full pb-16 md:pb-24">
+          <div className="columns-1 gap-2 sm:columns-2 md:gap-3 lg:columns-3">
+            {galleryItems.map((item) => (
+              <MasonryTile
+                key={item.src}
+                item={item}
+                onImageClick={() => openImage(item)}
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <div className="section-shell space-y-20 pb-16 md:space-y-28 md:pb-24">
+        {/* Challenges — the approach / actions, as its own heading. */}
+        {project.process.length ? (
+          <section className="space-y-10">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+              Challenges
+            </h2>
+            <div className="space-y-10">
+              {project.process.map((step, index) => (
+                <article
+                  key={step.title}
+                  className="grid gap-2 border-t border-border pt-6 md:grid-cols-[3rem_1fr] md:gap-8"
+                >
+                  <span className="text-sm tabular-nums text-muted-foreground">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl">
+                      {step.title}
+                    </h3>
+                    <p className="mt-3 max-w-2xl text-base leading-relaxed text-foreground/80">
+                      {step.description}
+                    </p>
+                  </div>
+                </article>
               ))}
             </div>
           </section>
         ) : null}
 
-        {/* Team */}
         {project.team.length ? (
-          <Row label="Team">
-            <ul className="flex flex-wrap gap-x-6 gap-y-2 text-base text-foreground/70">
+          <section className="space-y-5">
+            <Label>shout-out to my team!</Label>
+            <ul className="flex flex-wrap gap-x-8 gap-y-2 text-base text-foreground/70">
               {project.team.map((member) => (
                 <li key={member}>{member}</li>
               ))}
             </ul>
-          </Row>
+          </section>
         ) : null}
       </div>
 
@@ -411,56 +339,46 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
   )
 }
 
-function MediaTile({
+function MasonryTile({
   item,
-  className,
   onImageClick,
 }: {
   item: PortfolioMediaItem
-  className?: string
   onImageClick: () => void
 }) {
   if (item.type === 'video') {
     return (
-      <figure className={className}>
+      <figure className="mb-2 break-inside-avoid md:mb-3">
         <video
-          className="block h-auto max-h-[90vh] w-full bg-muted object-contain"
-          controls
+          className="block h-auto w-full bg-muted"
+          autoPlay
+          loop
           muted
           playsInline
           preload="metadata"
+          aria-label={item.alt}
         >
           <source src={item.src} />
         </video>
-        {item.caption ? (
-          <figcaption className="mt-3 text-sm leading-6 text-muted-foreground">
-            {item.caption}
-          </figcaption>
-        ) : null}
       </figure>
     )
   }
 
   return (
-    <figure className={className}>
+    <figure className="mb-2 break-inside-avoid md:mb-3">
       <button
         type="button"
         onClick={onImageClick}
-        className="group block w-full text-left"
         aria-label={`Open ${item.alt}`}
+        className="group block w-full"
       >
         <img
           src={item.src}
           alt={item.alt}
-          className="block h-auto max-h-[90vh] w-full cursor-zoom-in bg-muted object-contain transition-opacity duration-300 group-hover:opacity-90"
           loading="lazy"
+          className="block h-auto w-full cursor-zoom-in bg-muted transition-opacity duration-300 group-hover:opacity-90"
         />
       </button>
-      {item.caption ? (
-        <figcaption className="mt-3 text-sm leading-6 text-muted-foreground">
-          {item.caption}
-        </figcaption>
-      ) : null}
     </figure>
   )
 }

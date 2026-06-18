@@ -1,6 +1,13 @@
 export type CvRole = {
   title: string
   company: string
+  /** Country shown next to the company in the experience list label. */
+  country: string
+  /** Short description of the company, shown when a role is expanded. */
+  companyAbout: string
+  /** Years-only label for the experience list (e.g. "2023 – 2025"). */
+  years: string
+  /** Full month/year range, used on the printable /cv page. */
   period: string
   location?: string
   highlights: string[]
@@ -10,7 +17,11 @@ export type CvRole = {
 export const cvRoles: CvRole[] = [
   {
     title: 'Lead Brand Designer',
-    company: 'Alty · Full-time',
+    company: 'Alty',
+    country: 'USA',
+    companyAbout:
+      'A software company building B2B digital products and platforms for international clients.',
+    years: '2026 —',
     period: 'Feb 2026 - Present',
     location: 'USA, Remote',
     highlights: [
@@ -24,7 +35,11 @@ export const cvRoles: CvRole[] = [
   },
   {
     title: 'Founding Designer',
-    company: 'Farba Booking · Self-employed',
+    company: 'Farba Booking',
+    country: 'Germany',
+    companyAbout:
+      'An early-stage booking platform, shaped from concept to MVP.',
+    years: '2025 —',
     period: 'Jun 2025 - Present',
     location: 'Berlin, Germany',
     highlights: [
@@ -34,7 +49,11 @@ export const cvRoles: CvRole[] = [
   },
   {
     title: 'Brand Designer',
-    company: 'LUN · Contract',
+    company: 'LUN',
+    country: 'Ukraine',
+    companyAbout:
+      "One of Ukraine's largest real-estate and proptech platforms.",
+    years: '2023 – 2025',
     period: 'May 2023 - Nov 2025',
     location: 'Kyiv, Remote',
     highlights: [
@@ -44,7 +63,11 @@ export const cvRoles: CvRole[] = [
   },
   {
     title: 'Brand Designer',
-    company: 'UTC FILM Creative Agency · Contract',
+    company: 'UTC FILM Creative Agency',
+    country: 'Ukraine',
+    companyAbout:
+      'A creative agency producing brand campaigns and video content.',
+    years: '2021 – 2025',
     period: 'Aug 2021 - May 2025',
     location: 'Kyiv, Remote',
     highlights: [
@@ -55,7 +78,11 @@ export const cvRoles: CvRole[] = [
   },
   {
     title: 'Growth Designer, Marketing Designer',
-    company: 'LUN · Full-time',
+    company: 'LUN',
+    country: 'Ukraine',
+    companyAbout:
+      "One of Ukraine's largest real-estate and proptech platforms.",
+    years: '2018 – 2021',
     period: 'Jul 2018 - Jul 2021',
     location: 'Kyiv',
     note: 'Collaborated with designers, developers, marketers, analysts, product managers, and founders across 10 countries.',

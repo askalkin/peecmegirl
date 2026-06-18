@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { ArrowDown, Minus, Plus } from 'lucide-react'
+import { ArrowDown, ChevronDown } from 'lucide-react'
 
+import { cn } from '@/lib/utils'
 import { cvRoles } from '@/data/cv'
 
 // Self-scrolling photo strip. `direction` sets the travel direction.
@@ -65,22 +66,25 @@ function ExperienceList() {
               aria-expanded={isOpen}
               className="flex w-full items-start justify-between gap-6 py-6 text-left"
             >
-              <div className="grid flex-1 gap-1 md:grid-cols-[9rem_1fr] md:items-baseline md:gap-8">
-                <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                  {role.period}
+              <div className="grid flex-1 gap-2 md:grid-cols-[7rem_1fr] md:gap-8">
+                <span className="pt-1 text-sm tabular-nums text-muted-foreground">
+                  {role.years}
                 </span>
-                <span className="flex flex-wrap items-baseline gap-x-3">
-                  <span className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-                    {role.title}
+                <span>
+                  <span className="block text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    {role.company}, {role.country}
                   </span>
-                  <span className="text-sm text-muted-foreground">
-                    {role.company}
+                  <span className="mt-1 block font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+                    {role.title}
                   </span>
                 </span>
               </div>
-              <span className="mt-1.5 shrink-0 text-muted-foreground">
-                {isOpen ? <Minus className="size-5" /> : <Plus className="size-5" />}
-              </span>
+              <ChevronDown
+                className={cn(
+                  'mt-1.5 size-5 shrink-0 text-muted-foreground transition-transform duration-300',
+                  isOpen && 'rotate-180'
+                )}
+              />
             </button>
 
             <div
@@ -89,12 +93,10 @@ function ExperienceList() {
               }`}
             >
               <div className="overflow-hidden">
-                <div className="pb-8 md:pl-[calc(9rem+2rem)]">
-                  {role.location ? (
-                    <p className="mb-3 text-sm uppercase tracking-wide text-muted-foreground">
-                      {role.location}
-                    </p>
-                  ) : null}
+                <div className="pb-8 md:pl-[calc(7rem+2rem)]">
+                  <p className="mb-5 max-w-2xl text-base leading-relaxed text-foreground/80">
+                    {role.companyAbout}
+                  </p>
                   {role.note ? (
                     <p className="mb-3 max-w-2xl text-sm leading-relaxed text-foreground/80">
                       {role.note}
@@ -104,7 +106,7 @@ function ExperienceList() {
                     {role.highlights.map((highlight) => (
                       <li
                         key={highlight}
-                        className="flex max-w-2xl gap-3 text-sm leading-relaxed text-foreground/80"
+                        className="flex max-w-2xl gap-3 text-sm leading-relaxed text-foreground/70"
                       >
                         <span className="mt-2 inline-block size-1 shrink-0 rounded-full bg-muted-foreground/60" />
                         <span>{highlight}</span>

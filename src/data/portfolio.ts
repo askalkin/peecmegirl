@@ -56,6 +56,8 @@ export type PortfolioProject = {
   navigationLabel: string
   year: string
   categories: string[]
+  /** Company the work was made for, shown in the case-study label. */
+  company?: string
   /** Size of the business the work was made for (e.g. Startup, Scale-up, Enterprise). */
   businessSize?: string
   /** Primary type of work (e.g. Brand Design, Growth Design). */
@@ -288,25 +290,23 @@ export const portfolioData = {
       gallery: [],
     },
     {
-      id: 'alty-assets',
-      title: 'Alty Assets',
-      navigationLabel: 'Alty Assets',
+      id: 'ar-apartment-tour',
+      title: 'AR Apartment Tour',
+      navigationLabel: 'AR Apartment Tour',
       year: '2026',
+      company: 'Alty',
       businessSize: 'Startup',
-      workType: 'Marketing Design',
-      categories: ['Design System', 'Marketing Design', 'Templates'],
-      focus:
-        'How do you let non‑designers produce on‑brand assets without a designer in the loop?',
+      workType: 'Product Design',
+      categories: ['AR / 3D', 'Product Design', 'Proptech'],
+      focus: 'A walkable apartment tour, before it exists.',
       summary: [
-        'Built modular asset constructors in Figma for social media and B2B presentations.',
-        'Designed the system so nontechnical stakeholders can assemble coherent, on‑brand assets themselves.',
+        'I led the 3D visual prototyping for a new B2B2C apartment tour feature. Partnering with an external vendor and our internal engineering team, I established the visual standards for the 3D environments. I collaborated with our Head of AI on core 3D mechanics, bridging the gap between design and technical execution.',
+        'Because the platform served millions of end-users, performance was a critical business requirement. I focused heavily on optimizing the 3D assets, ensuring we delivered a high-end, reliable product for our B2B clients that performed flawlessly at scale and helped them reflect a premium brand experience.',
       ],
-      goals:
-        'Reduce design bottlenecks by turning recurring asset work into a system anyone on the team can use.',
-      role: 'Lead Brand Product Designer',
+      role: 'Product Design, 3D / AR',
       highlights: [],
       process: [],
-      team: ['Alina Skalkina, Lead Brand Product Designer'],
+      team: ['Alina Skalkina, Product Designer'],
       gallery: [],
     },
     {
@@ -314,14 +314,14 @@ export const portfolioData = {
       title: 'Huawei',
       navigationLabel: 'Huawei',
       year: '2023',
+      company: 'Huawei',
       businessSize: 'Enterprise',
       workType: 'Motion Design',
       categories: ['Motion Design', '3D Design', 'Video'],
-      focus:
-        'Crafting video and motion work for a global consumer-electronics brand.',
+      focus: 'The hidden infrastructure powering Ukraine’s resilience.',
       summary: [
-        'Created video and motion design for Huawei as an independent contractor.',
-        'Worked within enterprise brand guidelines while bringing a distinct visual and motion language.',
+        'When communication is a lifeline, the unseen backbone of the network is everything. We crafted a strategic narrative to show that Huawei is much more than a device manufacturer in Ukraine.',
+        'By highlighting 25 years of telecom infrastructure development—which now keeps the country connected under fire—alongside their eco-initiatives and inclusivity programs, we shifted the focus to their role as an essential, resilient partner.',
       ],
       role: 'Motion / Video Design',
       highlights: [],
@@ -403,10 +403,10 @@ export const portfolioData = {
       title: 'Comfort Map',
       navigationLabel: 'Comfort Map',
       year: '2021',
+      company: 'LUN',
       businessSize: 'Enterprise',
       workType: 'Growth Design',
-      focus:
-        "When data isn't the problem, clarity is.",
+      focus: 'Can apartment hunting build an inclusive city?',
       categories: [
         'Growth Design',
         'UX Research',
@@ -555,11 +555,6 @@ export const portfolioData = {
           alt: 'Comfort Map campaign video 2',
           span: 'wide',
         },
-        {
-          src: '/recovered/lun-hr-brand/lun-game-task-7.jpg',
-          type: 'image',
-          alt: 'Comfort Map challenge visual',
-        },
       ],
     },
     {
@@ -567,10 +562,10 @@ export const portfolioData = {
       title: 'Air quality map',
       navigationLabel: 'Air quality map',
       year: '2020',
+      company: 'LUN',
       businessSize: 'Scale-up',
       workType: 'Growth Design',
-      focus:
-        'How do you make an invisible environmental problem understandable quickly enough that people change behaviour?',
+      focus: 'Turn invisible air data into visible action.',
       categories: [
         'Growth Design',
         '3D Design',
@@ -678,27 +673,8 @@ export const portfolioData = {
         {
           src: '/recovered/lun-misto-air/jpg/air-1.jpg',
           type: 'image',
-          alt: 'Air Quality widget 1',
-        },
-        {
-          src: '/recovered/lun-misto-air/jpg/air-2.jpg',
-          type: 'image',
-          alt: 'Air Quality widget 2',
-        },
-        {
-          src: '/recovered/lun-misto-air/jpg/air-3.jpg',
-          type: 'image',
-          alt: 'Air Quality widget 3',
-        },
-        {
-          src: '/recovered/lun-misto-air/jpg/air-4.jpg',
-          type: 'image',
-          alt: 'Air Quality widget 4',
-        },
-        {
-          src: '/recovered/lun-misto-air/jpg/air-5.jpg',
-          type: 'image',
-          alt: 'Air Quality widget 5',
+          alt: 'Air Quality NOW widget — unhealthy air, mascot guidance',
+          span: 'tall',
         },
         {
           src: '/recovered/lun-misto-air/jpg/watch.jpg',
@@ -723,10 +699,11 @@ export const portfolioData = {
       title: 'LUN HR System',
       navigationLabel: 'LUN HR System',
       year: '2018',
+      company: 'LUN',
       businessSize: 'Scale-up',
       workType: 'Product Design',
       focus:
-        'How do you turn fragmented internal operations into a system multiple roles can rely on without adding more overhead?',
+        'How we reduced operational cognitive load with a custom HR OS.',
       categories: ['Product Design', 'E2E', 'Design System'],
       summary: [
         'Lunie was an internal HR management system for LUN, a fast-scaling proptech company operating across multiple brands and countries.',
@@ -858,10 +835,10 @@ export const portfolioData = {
       title: 'LUN HR Brand',
       navigationLabel: 'LUN HR Brand',
       year: '2019',
+      company: 'LUN',
       businessSize: 'Scale-up',
       workType: 'Brand Design',
-      focus:
-        'How do you turn hiring into a brand signal that attracts genuinely curious, technically exceptional people?',
+      focus: 'The hiring game that built a community.',
       categories: [
         'Marketing Design',
         'Employer Branding',
@@ -869,62 +846,56 @@ export const portfolioData = {
         'HR Brand',
       ],
       summary: [
-        "In Kyiv tech universities, LUN had a mythic reputation: brilliant company, nearly impossible to get into. I applied as a physics student for a designer role and got in.",
-        'The mythology was accurate, but not because of elitism. The team operated like a curiosity-driven research lab, and we needed the HR brand to communicate exactly that culture.',
-        'This was not a volume problem. LUN already had 86% HR brand recognition in its target audience. The challenge was signaling to the right people, not reaching more people.',
+        'LUN already had a mythic, research-lab reputation among Kyiv’s tech universities and 86% brand awareness. We didn’t need standard recruitment ads to get more applications; we needed a filter to attract genuinely curious, technically exceptional people.',
+        'We made our internal culture public by developing a multi-level hiring game, building physical spaces for the tech community to gather, and working directly with academia to build the next generation of innovators.',
       ],
       goals:
         'Design a recruitment campaign that functions as a filter for curiosity and technical excellence, turning the hiring process itself into the brand statement.',
       role: 'Marketing Design',
       highlights: [
         {
-          value: '86% -> 99%',
-          title: 'HR brand recognition',
-          description:
-            'Brand awareness among the target hiring audience rose to 99% within the campaign period.',
-        },
-        {
           value: '1M+',
-          title: 'global game attempts',
+          title: 'Global game attempts',
           description:
-            'A Kyiv metro geo-test unexpectedly scaled worldwide with over one million attempts.',
+            'The metro banners drove traffic to the game, which unexpectedly went viral globally. Only the top percentile who beat every level reached the final stage: a direct meeting with the team at our weekly open parties.',
         },
         {
-          title: 'Organic tech-community spread',
+          value: '86% → 99%',
+          title: 'Target recognition',
           description:
-            'Ukrainian Slack communities started collaborating publicly on puzzle solutions, then global tech circles joined in.',
+            'Saturated the target engineering market entirely without using a single traditional corporate hiring ad.',
         },
         {
-          title: 'Weekly winner parties',
+          title: 'Physical IT infrastructure',
           description:
-            'For several months, game finishers met the team directly in open weekly events and candid conversations.',
+            'Built and launched two major IT hubs, establishing a physical center of gravity that accelerated the growth of the local tech industry.',
         },
       ],
       process: [
         {
-          title: 'The Brief',
+          title: 'Building a gamified hiring funnel',
           description:
-            'With the CTO and AI team, we aligned on a non-traditional recruitment strategy: make the hiring process itself the proof of culture. The target was not more applications, but better-fit people.',
+            'Developing a custom, multi-level web game to filter out casual applicants and attract only those driven by pure curiosity.',
         },
         {
-          title: 'The Lun Game Experiment',
+          title: 'A/B testing the physical world',
           description:
-            'We launched code-based challenges on metro banners near major Kyiv tech universities. Each location had different puzzles and links, intended as a measurable geo-efficiency test.',
+            "Placing raw code on physical metro banners to act as entry links to the game, allowing us to A/B test the HR brand's geo-efficiency across different stations.",
         },
         {
-          title: 'Unexpected Global Scale',
+          title: 'Managing accidental viral scale',
           description:
-            'Within 48 hours, the experiment outgrew local media buying logic. Communities shared and iterated on solutions in public, and attempts started coming from around the world.',
+            'Keeping servers running and mobilizing our SMM team and colleagues to field a massive flood of game inquiries when a local Kyiv ad test unexpectedly exploded globally with over one million attempts.',
         },
         {
-          title: 'Community as Hiring Funnel',
+          title: 'Turning company culture into a physical community',
           description:
-            'The game ended with weekly winner parties where people could speak directly with the team. Candidates came driven by curiosity and craft, not just job urgency.',
+            'Designing and building two major IT hubs and hosting events to give the Ukrainian tech industry actual physical spaces to gather outside of work.',
         },
         {
-          title: 'What It Proved',
+          title: 'Integrating with traditional academia',
           description:
-            'Curiosity-driven culture can be communicated through product-like campaign design. The strongest brand signal was not polished assets, but a hiring experience people still remember years later.',
+            'Navigating the heavy bureaucracy of a traditional institution (KNU University) to fundamentally change their curriculum and successfully open a brand-new Urbanist faculty.',
         },
       ],
       team: [
@@ -1002,10 +973,10 @@ export const portfolioData = {
       title: 'Farba',
       navigationLabel: 'Farba',
       year: '2025 - Ongoing',
+      company: 'Farba',
       businessSize: 'Startup',
       workType: 'Design System',
-      focus:
-        'How do you build a themable design system that stays expressive for users and maintainable for teams?',
+      focus: 'Can strict architecture unlock infinite creativity?',
       categories: [
         'Design System',
         'Product Strategy',
@@ -1069,7 +1040,12 @@ export const portfolioData = {
             'With core system problems largely solved, energy shifted from maintenance overhead to making useful, expressive experiences for portfolios, services, blogs, about pages, and booking flows.',
         },
       ],
-      team: ['Alina Skalkina, Product and Design System Lead'],
+      team: [
+        'Alina Skalkina, Product and Design System Lead',
+        'Maksym Dolynchuk, CTO',
+        'ay_seed',
+        'Viki Berg',
+      ],
       gallery: [],
     },
     {

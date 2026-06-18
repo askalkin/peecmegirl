@@ -3,9 +3,9 @@ import { createFileRoute } from '@tanstack/react-router'
 import { getProjectById } from '@/data/portfolio'
 import { ProjectPage } from '@/components/portfolio/ProjectPage'
 
-const project = getProjectById('alty-assets')
+const project = getProjectById('ar-apartment-tour')
 
-export const Route = createFileRoute('/alty-assets')({
+export const Route = createFileRoute('/ar-apartment-tour')({
   head: () => ({
     meta: [
       {
@@ -13,9 +13,9 @@ export const Route = createFileRoute('/alty-assets')({
       },
     ],
   }),
-  component: AltyAssetsPage,
+  component: ArApartmentTourPage,
 })
 
-function AltyAssetsPage() {
+function ArApartmentTourPage() {
   return <ProjectPage project={project} />
 }

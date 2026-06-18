@@ -18,9 +18,9 @@ import { Route as FarbaRouteImport } from './routes/farba'
 import { Route as DesignEngineeringCourseRouteImport } from './routes/design-engineering-course'
 import { Route as CvRouteImport } from './routes/cv'
 import { Route as ComfortMapRouteImport } from './routes/comfort-map'
+import { Route as ArApartmentTourRouteImport } from './routes/ar-apartment-tour'
 import { Route as AltyWebsiteRouteImport } from './routes/alty-website'
 import { Route as AltyRebrandingRouteImport } from './routes/alty-rebranding'
-import { Route as AltyAssetsRouteImport } from './routes/alty-assets'
 import { Route as AirQualityMapRouteImport } from './routes/air-quality-map'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -70,6 +70,11 @@ const ComfortMapRoute = ComfortMapRouteImport.update({
   path: '/comfort-map',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArApartmentTourRoute = ArApartmentTourRouteImport.update({
+  id: '/ar-apartment-tour',
+  path: '/ar-apartment-tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AltyWebsiteRoute = AltyWebsiteRouteImport.update({
   id: '/alty-website',
   path: '/alty-website',
@@ -78,11 +83,6 @@ const AltyWebsiteRoute = AltyWebsiteRouteImport.update({
 const AltyRebrandingRoute = AltyRebrandingRouteImport.update({
   id: '/alty-rebranding',
   path: '/alty-rebranding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AltyAssetsRoute = AltyAssetsRouteImport.update({
-  id: '/alty-assets',
-  path: '/alty-assets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AirQualityMapRoute = AirQualityMapRouteImport.update({
@@ -105,9 +105,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
-  '/alty-assets': typeof AltyAssetsRoute
   '/alty-rebranding': typeof AltyRebrandingRoute
   '/alty-website': typeof AltyWebsiteRoute
+  '/ar-apartment-tour': typeof ArApartmentTourRoute
   '/comfort-map': typeof ComfortMapRoute
   '/cv': typeof CvRoute
   '/design-engineering-course': typeof DesignEngineeringCourseRoute
@@ -122,9 +122,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
-  '/alty-assets': typeof AltyAssetsRoute
   '/alty-rebranding': typeof AltyRebrandingRoute
   '/alty-website': typeof AltyWebsiteRoute
+  '/ar-apartment-tour': typeof ArApartmentTourRoute
   '/comfort-map': typeof ComfortMapRoute
   '/cv': typeof CvRoute
   '/design-engineering-course': typeof DesignEngineeringCourseRoute
@@ -140,9 +140,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
-  '/alty-assets': typeof AltyAssetsRoute
   '/alty-rebranding': typeof AltyRebrandingRoute
   '/alty-website': typeof AltyWebsiteRoute
+  '/ar-apartment-tour': typeof ArApartmentTourRoute
   '/comfort-map': typeof ComfortMapRoute
   '/cv': typeof CvRoute
   '/design-engineering-course': typeof DesignEngineeringCourseRoute
@@ -159,9 +159,9 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/air-quality-map'
-    | '/alty-assets'
     | '/alty-rebranding'
     | '/alty-website'
+    | '/ar-apartment-tour'
     | '/comfort-map'
     | '/cv'
     | '/design-engineering-course'
@@ -176,9 +176,9 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/air-quality-map'
-    | '/alty-assets'
     | '/alty-rebranding'
     | '/alty-website'
+    | '/ar-apartment-tour'
     | '/comfort-map'
     | '/cv'
     | '/design-engineering-course'
@@ -193,9 +193,9 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/air-quality-map'
-    | '/alty-assets'
     | '/alty-rebranding'
     | '/alty-website'
+    | '/ar-apartment-tour'
     | '/comfort-map'
     | '/cv'
     | '/design-engineering-course'
@@ -211,9 +211,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AirQualityMapRoute: typeof AirQualityMapRoute
-  AltyAssetsRoute: typeof AltyAssetsRoute
   AltyRebrandingRoute: typeof AltyRebrandingRoute
   AltyWebsiteRoute: typeof AltyWebsiteRoute
+  ArApartmentTourRoute: typeof ArApartmentTourRoute
   ComfortMapRoute: typeof ComfortMapRoute
   CvRoute: typeof CvRoute
   DesignEngineeringCourseRoute: typeof DesignEngineeringCourseRoute
@@ -290,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComfortMapRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ar-apartment-tour': {
+      id: '/ar-apartment-tour'
+      path: '/ar-apartment-tour'
+      fullPath: '/ar-apartment-tour'
+      preLoaderRoute: typeof ArApartmentTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/alty-website': {
       id: '/alty-website'
       path: '/alty-website'
@@ -302,13 +309,6 @@ declare module '@tanstack/react-router' {
       path: '/alty-rebranding'
       fullPath: '/alty-rebranding'
       preLoaderRoute: typeof AltyRebrandingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/alty-assets': {
-      id: '/alty-assets'
-      path: '/alty-assets'
-      fullPath: '/alty-assets'
-      preLoaderRoute: typeof AltyAssetsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/air-quality-map': {
@@ -339,9 +339,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AirQualityMapRoute: AirQualityMapRoute,
-  AltyAssetsRoute: AltyAssetsRoute,
   AltyRebrandingRoute: AltyRebrandingRoute,
   AltyWebsiteRoute: AltyWebsiteRoute,
+  ArApartmentTourRoute: ArApartmentTourRoute,
   ComfortMapRoute: ComfortMapRoute,
   CvRoute: CvRoute,
   DesignEngineeringCourseRoute: DesignEngineeringCourseRoute,
