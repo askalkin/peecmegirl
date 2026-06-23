@@ -56,6 +56,8 @@ export type PortfolioProject = {
   navigationLabel: string
   year: string
   categories: string[]
+  /** "blog" projects show as small insight cards and use a 3D scene hero. */
+  kind?: 'blog'
   /** Company the work was made for, shown in the case-study label. */
   company?: string
   /** Size of the business the work was made for (e.g. Startup, Scale-up, Enterprise). */
@@ -291,23 +293,36 @@ export const portfolioData = {
     },
     {
       id: 'ar-apartment-tour',
-      title: 'AR Apartment Tour',
-      navigationLabel: 'AR Apartment Tour',
-      year: '2026',
-      company: 'Alty',
-      businessSize: 'Startup',
+      title: 'B2B2C 3D Virtual Tours',
+      navigationLabel: 'B2B2C 3D Virtual Tours',
+      year: '2020',
+      kind: 'blog',
+      company: 'LUN',
+      businessSize: 'Scale-up',
       workType: 'Product Design',
-      categories: ['AR / 3D', 'Product Design', 'Proptech'],
-      focus: 'A walkable apartment tour, before it exists.',
+      categories: ['Real Estate', 'B2B2C', 'AI', '3D in Web'],
+      focus: 'Balancing aesthetics and performance.',
       summary: [
-        'I led the 3D visual prototyping for a new B2B2C apartment tour feature. Partnering with an external vendor and our internal engineering team, I established the visual standards for the 3D environments. I collaborated with our Head of AI on core 3D mechanics, bridging the gap between design and technical execution.',
+        'In 2020, I led the 3D visual prototyping for a new B2B2C apartment tour feature. Partnering with an external vendor and our internal engineering team, I established the visual standards for the 3D environments. I collaborated with our Head of AI on core 3D mechanics, bridging the gap between design and technical execution.',
         'Because the platform served millions of end-users, performance was a critical business requirement. I focused heavily on optimizing the 3D assets, ensuring we delivered a high-end, reliable product for our B2B clients that performed flawlessly at scale and helped them reflect a premium brand experience.',
+        'Now I made it with 2 prompts.',
       ],
       role: 'Product Design, 3D / AR',
       highlights: [],
       process: [],
       team: ['Alina Skalkina, Product Designer'],
-      gallery: [],
+      gallery: [
+        {
+          src: '/recovered/ar-apartment-tour/image-1781813263929.webp',
+          type: 'image',
+          alt: 'B2B2C 3D apartment tour gameplay',
+        },
+        {
+          src: '/recovered/ar-apartment-tour/image-1781813269405.webp',
+          type: 'image',
+          alt: '3D floor plan of the apartment',
+        },
+      ],
     },
     {
       id: 'huawei',

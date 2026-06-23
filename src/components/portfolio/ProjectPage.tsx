@@ -6,6 +6,7 @@ import {
   type PortfolioMediaItem,
   type PortfolioProject,
 } from '@/data/portfolio'
+import { ApartmentScene } from '@/components/ApartmentScene'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
 import { cn } from '@/lib/utils'
@@ -35,7 +36,8 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       (item): item is PortfolioMediaItem & { type: 'video' } =>
         item.type === 'video'
     ) ?? null
-  const heroMedia = leadVideo ?? imageItems[0] ?? null
+  const usesApartmentScene = project.id === 'ar-apartment-tour'
+  const heroMedia = usesApartmentScene ? null : leadVideo ?? imageItems[0] ?? null
   const galleryItems = project.gallery.filter(
     (item) => item.src !== heroMedia?.src
   )
@@ -76,7 +78,10 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
 
   return (
     <main className="text-foreground">
-      {heroMedia ? (
+      {usesApartmentScene ? (
+        // Walkable 3D apartment as the hero.
+        <ApartmentScene className="h-[78vh] w-full" />
+      ) : heroMedia ? (
         // Hero media — first section; ~68vh leaves the title visible on load.
         <section>
           {heroMedia.type === 'video' ? (

@@ -29,6 +29,8 @@ function getCardMedia(project: PortfolioProject): CardMedia {
 
 function PortfolioPage() {
   const sortedProjects = getProjectsNewestFirst()
+  const works = sortedProjects.filter((project) => project.kind !== 'blog')
+  const blogs = sortedProjects.filter((project) => project.kind === 'blog')
 
   return (
     <main id="top" className="text-foreground">
@@ -53,11 +55,24 @@ function PortfolioPage() {
 
       <section id="work" className="scroll-mt-20">
         <div className="grid grid-cols-1 gap-px border-y border-border bg-border sm:grid-cols-2 xl:grid-cols-3">
-          {sortedProjects.map((project) => (
+          {works.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       </section>
+
+      {blogs.length ? (
+        <section id="insights" className="section-shell scroll-mt-20 py-16 md:py-24">
+          <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            Insights
+          </span>
+          <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 xl:grid-cols-5">
+            {blogs.map((project) => (
+              <BlogCard key={project.id} project={project} />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <div id="about" className="scroll-mt-24 md:mt-16 lg:mt-24">
         <AboutContent />
@@ -143,6 +158,71 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
         <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
           {project.focus}
         </p>
+      </div>
+    </a>
+  )
+}
+
+function BlogCard({ project }: { project: PortfolioProject }) {
+  const media = getCardMedia(project)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const handleEnter = () => {
+    videoRef.current?.play().catch(() => {})
+  }
+
+  const handleLeave = () => {
+    const video = videoRef.current
+    if (video) {
+      video.pause()
+      video.currentTime = 0
+    }
+  }
+
+  return (
+    <a
+      href={`/${project.id}`}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      className="group flex flex-col"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+        {media?.type === 'video' ? (
+          <video
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-[1.04] group-hover:grayscale-0"
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            aria-label={`${project.title} preview`}
+          >
+            <source src={media.src} />
+          </video>
+        ) : media?.type === 'image' ? (
+          <img
+            src={media.src}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-[1.04] group-hover:grayscale-0"
+            loading="lazy"
+          />
+        ) : null}
+      </div>
+
+      <div className="mt-3">
+        <div className="flex flex-wrap gap-1.5">
+          {project.categories.map((category) => (
+            <span
+              key={category}
+              className="rounded-full border border-border px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground"
+            >
+              {category}
+            </span>
+          ))}
+        </div>
+        <h3 className="mt-2 font-display text-base font-semibold tracking-tight text-foreground">
+          {project.title}
+        </h3>
       </div>
     </a>
   )
