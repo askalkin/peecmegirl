@@ -4,84 +4,44 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Typography — two families, one variable file each:
+ *   • Inter  → body / UI / labels (highly legible at small sizes)
+ *   • Outfit → display & headings (kept from the original design)
+ * A single variable woff2 per family covers every weight we use.
+ */
 @font-face {
-  font-family: 'Outfit';
+  font-family: 'Inter';
   font-style: normal;
-  font-weight: 100;
+  font-weight: 100 900;
   font-display: swap;
-  src: url('/fonts/outfit/Outfit-Thin.ttf') format('truetype');
+  src: url('/fonts/inter/inter-variable.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Outfit';
   font-style: normal;
-  font-weight: 200;
+  font-weight: 100 900;
   font-display: swap;
-  src: url('/fonts/outfit/Outfit-ExtraLight.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Outfit';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('/fonts/outfit/Outfit-Light.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Outfit';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/outfit/Outfit-Regular.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Outfit';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/outfit/Outfit-Medium.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Outfit';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/outfit/Outfit-SemiBold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Outfit';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/outfit/Outfit-Bold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Outfit';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url('/fonts/outfit/Outfit-ExtraBold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Outfit';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url('/fonts/outfit/Outfit-Black.ttf') format('truetype');
+  src: url('/fonts/outfit-var/outfit-variable.woff2') format('woff2');
 }
 
 body {
   @apply m-0;
   font-family: var(
     --font-sans,
-    'Outfit',
+    'Inter',
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',
     sans-serif
   );
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.55;
 }
 
 code {
@@ -89,7 +49,7 @@ code {
 }
 
 :root {
-  --font-sans: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
   --font-display: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
@@ -216,23 +176,45 @@ code {
     min-height: 100vh;
     text-wrap: pretty;
   }
+  /*
+   * Type roles (4 total):
+   *   h1/h2 → Title (Outfit, bold, tight)
+   *   h3/h4 → Subtitle (Outfit, semibold)
+   *   body  → Inter 400 (set on <body>)
+   *   small → Label/caption (Inter, see .text-label)
+   */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
     font-family: var(--font-display);
+    @apply font-semibold tracking-tight;
+    line-height: 1.1;
     text-wrap: balance;
   }
   h1 {
-    @apply text-4xl lg:text-5xl;
+    @apply text-4xl font-bold lg:text-5xl;
+    letter-spacing: -0.025em;
   }
   h2 {
-    @apply text-3xl lg:text-4xl;
+    @apply text-3xl font-bold lg:text-4xl;
+    letter-spacing: -0.02em;
   }
   h3 {
     @apply text-2xl lg:text-3xl;
   }
+  h4 {
+    @apply text-xl lg:text-2xl;
+  }
   ::selection {
     background: rgba(24, 24, 27, 0.12);
   }
+}
+
+/* Label / caption role — small, uppercase-friendly UI text in the body font. */
+.text-label {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
 }
 
 .section-shell {

@@ -15,7 +15,7 @@
     "cardPaddingLg": "2rem"
   },
   "typography": {
-    "fontFamilySans": "'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "fontFamilySans": "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     "fontFamilyDisplay": "'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     "sizeLabel": "0.875rem",
     "sizeBody": "1rem",

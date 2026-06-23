@@ -191,7 +191,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       {/* Visuals — full-width masonry; media keeps its proportions. */}
       {galleryItems.length ? (
         <section className="w-full pb-16 md:pb-24">
-          <div className="columns-1 gap-2 sm:columns-2 md:gap-3 lg:columns-3">
+          <div className="columns-1 gap-4 sm:columns-2 md:gap-6 lg:columns-3">
             {galleryItems.map((item) => (
               <MasonryTile
                 key={item.src}
@@ -353,9 +353,9 @@ function MasonryTile({
 }) {
   if (item.type === 'video') {
     return (
-      <figure className="mb-2 break-inside-avoid md:mb-3">
+      <figure className="mb-4 break-inside-avoid md:mb-6">
         <video
-          className="block h-auto w-full bg-muted"
+          className="block h-auto max-h-[80vh] w-full bg-muted object-cover"
           autoPlay
           loop
           muted
@@ -370,7 +370,7 @@ function MasonryTile({
   }
 
   return (
-    <figure className="mb-2 break-inside-avoid md:mb-3">
+    <figure className="mb-4 break-inside-avoid md:mb-6">
       <button
         type="button"
         onClick={onImageClick}
@@ -381,7 +381,7 @@ function MasonryTile({
           src={item.src}
           alt={item.alt}
           loading="lazy"
-          className="block h-auto w-full cursor-zoom-in bg-muted transition-opacity duration-300 group-hover:opacity-90"
+          className="block h-auto max-h-[80vh] w-full cursor-zoom-in bg-muted object-cover transition-opacity duration-300 group-hover:opacity-90"
         />
       </button>
     </figure>
