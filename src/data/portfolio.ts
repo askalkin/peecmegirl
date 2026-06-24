@@ -37,6 +37,18 @@ export type PortfolioProcessStep = {
   description: string
 }
 
+/** Inline link inside a story paragraph. */
+export type PortfolioStorySegment = { text: string; href: string }
+/** A paragraph: plain text, or a mix of text and inline links. */
+export type PortfolioStoryParagraph =
+  | string
+  | Array<string | PortfolioStorySegment>
+/** A titled block of narrative copy in a case study. */
+export type PortfolioStorySection = {
+  heading?: string
+  paragraphs: PortfolioStoryParagraph[]
+}
+
 export type PortfolioPartner = {
   name: string
   src: string
@@ -69,6 +81,8 @@ export type PortfolioProject = {
   goals?: string
   role?: string
   liveLink?: PortfolioLink
+  /** Long-form narrative sections (e.g. My role, Leadership, Result). */
+  story?: PortfolioStorySection[]
   highlights: PortfolioHighlight[]
   process: PortfolioProcessStep[]
   team: string[]
@@ -245,7 +259,7 @@ export const portfolioData = {
   projects: [
     {
       id: 'alty-rebranding',
-      title: 'Alty Rebranding',
+      title: 'Making B2B maturity feel less corporate',
       navigationLabel: 'Alty Rebranding',
       year: '2026',
       businessSize: 'Startup',
@@ -256,36 +270,55 @@ export const portfolioData = {
         'Visual Communication',
       ],
       focus:
-        'How do you give a B2B product company a brand that scales across teams without losing coherence?',
+        'From service provider to transformation partner: a brand system for clarity, scale, and high-stakes decisions.',
       summary: [
-        'Led a team of designers in rebuilding Alty\'s B2B brand from the identity foundations up.',
-        'Engineered a token-based design-system architecture so the brand stays coherent as the company and its surfaces scale.',
+        `Alty was already operating at a mature level: products shaped by the company had reached 60M+ users across 40+ markets, with 50+ clients, a 4.6 average client rating, ISO/IEC 27001 certification, and recognition from Red Dot, iF Design Award, Indigo Design Awards, and industry platforms.`,
+        `But the brand had not yet caught up with the company's actual maturity.`,
+        `The challenge was to move Alty beyond the perception of a regular outsourcing company or creative agency — and communicate a more accurate role: a digital transformation partner for complex decisions, high stakes, and long-term change in compliance-heavy businesses.`,
       ],
-      goals:
-        'Establish a scalable, token-driven brand identity that works across product, marketing, and B2B communication.',
       role: 'Lead Brand Product Designer',
-      highlights: [],
-      process: [],
-      team: ['Alina Skalkina, Lead Brand Product Designer'],
-      gallery: [],
-    },
-    {
-      id: 'alty-website',
-      title: 'Alty Website',
-      navigationLabel: 'Alty Website',
-      year: '2026',
-      businessSize: 'Startup',
-      workType: 'Web Design',
-      categories: ['Web Design', 'UI/UX Design', 'Brand'],
-      focus:
-        'Translating the rebrand into a living website that feels like the brand in motion.',
-      summary: [
-        'Designed the Alty marketing website as the first full expression of the new brand system.',
-        'Carried the token-based design system into responsive web layouts, components, and content patterns.',
+      story: [
+        {
+          heading: 'My role',
+          paragraphs: [
+            `As Brand Designer, I worked across both strategy and execution.`,
+            `On the strategic side, I helped define the brand core: who Alty is, how it speaks, who its clients are, what they need, and how the company should be positioned in the market.`,
+            `On the tactical side, I led the website design across UX/UI, visual design, interactions, animations, component logic, and handoff.`,
+            `The website redesign and rebrand were happening at the same time. On Alty's side, I was responsible for translating the external agency's visual identity output into a usable digital system — aligning it with the brand vision, positioning, website experience, and long-term scalability.`,
+            `To make the brand feel mature but not conservative, I defined two identity anchors:`,
+            `Innovator — for reframing problems and seeing beyond the brief.`,
+            `Architect — for bringing structure, logic, and clarity into complex work.`,
+            `Together, they created the right tension: sharp and alternative, but still mature, structured, and credible.`,
+            `Because the website had to move forward before every identity decision was finalized, I created a redesign defence system: a scalable foundation built on semantic tokens, theme collections, adaptive components, and reusable interaction patterns.`,
+            `The workflow connected Figma → Storybook → Claude Code / Codex, allowing us to update color themes, layouts, components, animations, and interaction states without rebuilding the system from scratch.`,
+          ],
+        },
+        {
+          heading: 'Leadership',
+          paragraphs: [
+            `A big part of my role was helping the team think in systems.`,
+            [
+              'I mentored designers in design engineering principles and later created a ',
+              { text: 'course', href: '/design-engineering-course' },
+              ' around this approach.',
+            ],
+            `For this identity, I also had to accept that there would be more card and layout variations than a traditional system might usually allow. But the flexibility was intentional.`,
+            `The point was not to limit creativity.`,
+            `The point was to give creativity a reliable structure.`,
+          ],
+        },
+        {
+          heading: 'Result',
+          paragraphs: [
+            `The full redesign is still in progress, but the rebrand is already showing early signs of impact.`,
+            `Alty now has a clearer way to communicate its value: not as a generic outsourcing team or creative agency, but as a transformation partner for complex, high-stakes digital products.`,
+            `The system foundation reduced repetitive production work and gave the team more space for visual experimentation, sharper storytelling, and more confident brand expression.`,
+            `The strongest signal is qualitative: the new positioning is attracting more relevant client inquiries from businesses that better match Alty's expertise, maturity, and way of working.`,
+            `Not just a new look.`,
+            `A system for how the brand thinks, speaks, moves, and scales.`,
+          ],
+        },
       ],
-      goals:
-        'Ship a brand-accurate, maintainable website that marketing can extend without breaking coherence.',
-      role: 'Lead Brand Product Designer',
       highlights: [],
       process: [],
       team: ['Alina Skalkina, Lead Brand Product Designer'],
@@ -370,48 +403,6 @@ export const portfolioData = {
       process: [],
       team: ['Alina Skalkina, Author and Instructor'],
       gallery: [],
-    },
-    {
-      id: 'lun-assets',
-      title: 'LUN Assets',
-      navigationLabel: 'LUN Assets',
-      year: '2020',
-      businessSize: 'Scale-up',
-      workType: 'Marketing Design',
-      categories: [
-        'Marketing Design',
-        'Brand Assets',
-        'Social Media',
-        'Illustration',
-      ],
-      focus:
-        'A growing library of campaign assets that kept LUN recognisable across every channel.',
-      summary: [
-        'A collection of marketing and brand assets made for LUN across social media, print, and merch.',
-        'Built to stay coherent and on‑brand while moving fast across many channels and campaigns.',
-      ],
-      role: 'Marketing Design, Illustration',
-      highlights: [],
-      process: [],
-      team: ['Alina Skalkina, Marketing Designer'],
-      gallery: [
-        {
-          src: '/recovered/graphic-design/Lun-redesign.jpg',
-          type: 'image',
-          alt: 'LUN "Try 3D buildings on the map" campaign asset',
-          span: 'wide',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-5.jpg',
-          type: 'image',
-          alt: 'LUN illustrated social campaign asset',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-4.jpg',
-          type: 'image',
-          alt: 'LUN branded sticker set',
-        },
-      ],
     },
     {
       id: 'comfort-map',
@@ -1091,6 +1082,32 @@ export const portfolioData = {
           span: 'wide',
           caption:
             'Experimental motion studies testing transitions, timing curves, and bold campaign composition.',
+        },
+        {
+          src: '/recovered/ar-apartment-tour/image-1781813263929.webp',
+          type: 'image',
+          alt: 'B2B2C 3D apartment tour gameplay',
+        },
+        {
+          src: '/recovered/ar-apartment-tour/image-1781813269405.webp',
+          type: 'image',
+          alt: '3D floor plan of the apartment',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-redesign.jpg',
+          type: 'image',
+          alt: 'LUN "Try 3D buildings on the map" campaign asset',
+          span: 'wide',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-5.jpg',
+          type: 'image',
+          alt: 'LUN illustrated social campaign asset',
+        },
+        {
+          src: '/recovered/graphic-design/Lun-4.jpg',
+          type: 'image',
+          alt: 'LUN branded sticker set',
         },
         {
           src: '/recovered/problematic.mp4',

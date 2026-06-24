@@ -54,7 +54,7 @@ export function BrandQuestions({ className }: { className?: string }) {
   return (
     <p
       className={cn(
-        'flex flex-col font-display font-medium leading-tight tracking-tight text-foreground',
+        'flex flex-col font-medium text-foreground',
         className
       )}
     >

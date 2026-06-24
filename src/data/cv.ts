@@ -20,17 +20,15 @@ export const cvRoles: CvRole[] = [
     company: 'Alty',
     country: 'USA',
     companyAbout:
-      'A software company building B2B digital products and platforms for international clients.',
-    years: '2026 —',
+      'Digital transformation partner for complex products, platforms, and compliance-heavy business environments.',
+    years: '2026',
     period: 'Feb 2026 - Present',
     location: 'USA, Remote',
     highlights: [
-      'Led a team of designers in the development of B2B brand materials.',
-      'Engineered a token-based design-system architecture.',
-      'Built modular asset constructors in Figma for social media and B2B presentations for nontechnical stakeholders.',
-      'Optimized design-dev handoff with AI-assisted workflows to reduce delivery debt.',
-      'Crafted visual solutions for multi-channel campaigns.',
-      'Developed the visual foundation for the company’s scale-up rebrand, translating complex B2B compliance rules into clear creative parameters for an external execution agency.',
+      "Led Alty's scale-up rebrand across brand strategy, visual identity, website experience, and scalable system development.",
+      'Reframed the company from service provider to digital transformation partner, turning complex B2B and compliance-heavy positioning into clear creative direction.',
+      'Built a token-based brand system with semantic tokens, adaptive components, reusable patterns, modular Figma constructors, and AI-assisted design-dev workflows.',
+      'Mentored designers in design engineering and scalable brand-system thinking.',
     ],
   },
   {
@@ -39,11 +37,11 @@ export const cvRoles: CvRole[] = [
     country: 'Germany',
     companyAbout:
       'An early-stage booking platform, shaped from concept to MVP.',
-    years: '2025 —',
+    years: '2025',
     period: 'Jun 2025 - Present',
     location: 'Berlin, Germany',
     highlights: [
-      'Led design vision and strategy from concept to MVP across UX, product strategy, and branding.',
+      'Led design vision and strategy from concept to MVP across PMF, UI/UX and branding.',
       'Supported development with handoff, prototyping, and implementation-ready specifications.',
     ],
   },
@@ -52,7 +50,7 @@ export const cvRoles: CvRole[] = [
     company: 'LUN',
     country: 'Ukraine',
     companyAbout:
-      "One of Ukraine's largest real-estate and proptech platforms.",
+      "Ukraine's innovative leader in proptech, with global presence.",
     years: '2023 – 2025',
     period: 'May 2023 - Nov 2025',
     location: 'Kyiv, Remote',
@@ -81,7 +79,7 @@ export const cvRoles: CvRole[] = [
     company: 'LUN',
     country: 'Ukraine',
     companyAbout:
-      "One of Ukraine's largest real-estate and proptech platforms.",
+      "Ukraine's innovative leader in proptech, with global presence.",
     years: '2018 – 2021',
     period: 'Jul 2018 - Jul 2021',
     location: 'Kyiv',

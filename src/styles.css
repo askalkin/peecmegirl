@@ -176,45 +176,68 @@ code {
     min-height: 100vh;
     text-wrap: pretty;
   }
-  /*
-   * Type roles (4 total):
-   *   h1/h2 → Title (Outfit, bold, tight)
-   *   h3/h4 → Subtitle (Outfit, semibold)
-   *   body  → Inter 400 (set on <body>)
-   *   small → Label/caption (Inter, see .text-label)
-   */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    @apply font-semibold tracking-tight;
+    font-weight: 700;
     line-height: 1.1;
+    letter-spacing: -0.02em;
     text-wrap: balance;
   }
   h1 {
-    @apply text-4xl font-bold lg:text-5xl;
+    font-size: var(--text-h1);
+    line-height: 1.04;
     letter-spacing: -0.025em;
   }
-  h2 {
-    @apply text-3xl font-bold lg:text-4xl;
-    letter-spacing: -0.02em;
-  }
-  h3 {
-    @apply text-2xl lg:text-3xl;
-  }
-  h4 {
-    @apply text-xl lg:text-2xl;
+  h2, h3, h4, h5, h6 {
+    font-size: var(--text-h2);
   }
   ::selection {
     background: rgba(24, 24, 27, 0.12);
   }
 }
 
-/* Label / caption role — small, uppercase-friendly UI text in the body font. */
-.text-label {
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: 0.01em;
+/* --- Type system ----------------------------------------------------
+   Exactly five sizes. Any further hierarchy comes from weight and colour,
+   never a new size.
+     .text-display → hero / contact / footer statement type (Outfit)
+     .text-h1      → section & page titles, stat figures (Outfit)
+     .text-h2      → sub-section headings, list titles (Outfit)
+     body          → all running copy → Tailwind `text-base` (1rem, Inter)
+     caption       → meta, labels, captions → Tailwind `text-sm` (0.875rem) */
+:root {
+  --text-display: clamp(2.75rem, 9vw, 11rem);
+  --text-h1: clamp(2rem, 5vw, 4rem);
+  --text-h2: clamp(1.375rem, 2vw, 2rem);
+}
+
+.text-display {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.text-h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-h1);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+}
+
+.text-h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+}
+
+/* --- Layout system --------------------------------------------------
+   One container width and one vertical-rhythm scale keep every section
+   on the same grid. Use `.section-shell` for width on ALL content and
+   `.section-y` (or `.section-y-sm`) for the space between sections. */
+:root {
+  --space-section: clamp(4.5rem, 8vw, 7.5rem);
+  --space-section-sm: clamp(2.75rem, 5vw, 4.5rem);
 }
 
 .section-shell {
@@ -223,52 +246,16 @@ code {
   max-width: 120rem;
 }
 
+.section-y {
+  padding-block: var(--space-section);
+}
+
+.section-y-sm {
+  padding-block: var(--space-section-sm);
+}
+
 .media-tile {
   min-height: 14rem;
-}
-
-.marquee {
-  overflow: hidden;
-  width: 100%;
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  gap: 0;
-  animation: marquee-left 40s linear infinite;
-}
-
-.marquee-track--reverse {
-  animation-name: marquee-right;
-}
-
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
-@keyframes marquee-left {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes marquee-right {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
 }
 
 .nav-switch-indicator {

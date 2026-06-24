@@ -33,13 +33,13 @@ function CvPage() {
 
         <div className="cv-page-hero mt-12 grid gap-10 md:grid-cols-12 md:gap-12">
           <div className="cv-page-hero-copy space-y-6 md:col-span-8">
-            <p className="cv-page-label text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            <p className="cv-page-label text-sm font-medium text-muted-foreground">
               Curriculum vitae
             </p>
-            <h1 className="cv-page-name font-display text-5xl font-bold tracking-tight text-foreground md:text-6xl">
+            <h1 className="cv-page-name text-h1 font-bold text-foreground">
               {portfolioData.person.name}
             </h1>
-            <p className="cv-page-summary max-w-2xl text-lg leading-relaxed text-foreground/80">
+            <p className="cv-page-summary max-w-2xl text-base leading-relaxed text-foreground/80">
               Lead Brand Product Designer with experience across marketing,
               product, and brand systems. Focused on turning complex workflows
               into clear, usable experiences.
@@ -57,7 +57,7 @@ function CvPage() {
           </div>
 
           <div className="cv-page-contact space-y-4 md:col-span-4 md:col-start-9 md:border-l md:border-border md:pl-10">
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            <p className="text-sm font-medium text-muted-foreground">
               Contact
             </p>
             <a
@@ -99,7 +99,7 @@ function CvPage() {
       <section className="section-shell cv-page-experience pb-20 md:pb-28">
         <div className="grid gap-4 md:grid-cols-12 md:gap-12">
           <div className="md:col-span-3">
-            <h2 className="cv-page-section-title text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            <h2 className="cv-page-section-title text-sm font-medium text-muted-foreground">
               Experience
             </h2>
           </div>
@@ -118,7 +118,7 @@ function CvPage() {
 
                 <div>
                   <div className="cv-role-header">
-                    <h3 className="cv-role-title font-display text-xl font-bold tracking-tight text-foreground md:text-2xl">
+                    <h3 className="cv-role-title text-h2 font-bold text-foreground">
                       {role.title}
                     </h3>
                     <p className="cv-role-company mt-1 text-base text-foreground/70">

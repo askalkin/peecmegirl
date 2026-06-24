@@ -5,19 +5,38 @@ import {
   getProjectsNewestFirst,
   type PortfolioMediaItem,
   type PortfolioProject,
+  type PortfolioStoryParagraph,
 } from '@/data/portfolio'
 import { ApartmentScene } from '@/components/ApartmentScene'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
-import { cn } from '@/lib/utils'
 
 import { Lightbox } from './Lightbox'
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+    <span className="text-sm font-medium text-muted-foreground">
       {children}
     </span>
+  )
+}
+
+// Render a story paragraph: plain string, or a mix of text and inline links.
+function renderStoryParagraph(paragraph: PortfolioStoryParagraph) {
+  if (typeof paragraph === 'string') return paragraph
+
+  return paragraph.map((segment, index) =>
+    typeof segment === 'string' ? (
+      <span key={index}>{segment}</span>
+    ) : (
+      <a
+        key={index}
+        href={segment.href}
+        className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
+      >
+        {segment.text}
+      </a>
+    )
   )
 }
 
@@ -52,10 +71,6 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
     (currentProject) => currentProject.id !== project.id
   )
 
-  const roleTags = project.role
-    ? project.role.split(',').map((part) => part.trim())
-    : []
-
   function openImage(item: PortfolioMediaItem) {
     const imageIndex = imageIndexBySrc.get(item.src)
     if (imageIndex === undefined) return
@@ -79,14 +94,14 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   return (
     <main className="text-foreground">
       {usesApartmentScene ? (
-        // Walkable 3D apartment as the hero.
-        <ApartmentScene className="h-[78vh] w-full" />
+        // Walkable 3D apartment as the hero — pulled under the floating header.
+        <ApartmentScene className="-mt-16 h-[calc(78vh+4rem)] w-full" />
       ) : heroMedia ? (
-        // Hero media — first section; ~68vh leaves the title visible on load.
-        <section>
+        // Hero media, flush to the top with the header floating over it.
+        <section className="-mt-16">
           {heroMedia.type === 'video' ? (
             <video
-              className="h-[68vh] w-full object-cover"
+              className="h-[calc(68vh+4rem)] w-full object-cover"
               autoPlay
               loop
               muted
@@ -99,36 +114,24 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
             <img
               src={heroMedia.src}
               alt={heroMedia.alt}
-              className="h-[68vh] w-full object-cover"
+              className="h-[calc(68vh+4rem)] w-full object-cover"
             />
           )}
         </section>
       ) : null}
 
-      <div className="section-shell space-y-16 py-12 md:space-y-24 md:py-16">
-        {/* Description — name, role labels, the hook, and the situation/task. */}
+      <div className="section-shell section-y space-y-16 md:space-y-24">
+        {/* Description — client + year, then the hook and the situation/task. */}
         <header>
-          <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
-            <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-              {project.company
-                ? `${project.title}, ${project.company}`
-                : project.title}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            <span className="font-medium text-foreground">
+              {project.company ?? project.title}
             </span>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              {roleTags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-border px-3 py-0.5 text-sm lowercase text-muted-foreground"
-                >
-                  {tag}
-                </span>
-              ))}
-              <span className="text-sm text-muted-foreground">{project.year}</span>
-            </div>
+            <span>{project.year}</span>
           </div>
 
           <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-12">
-            <h1 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground md:text-4xl">
+            <h1 className="text-h1 font-bold text-foreground">
               {project.focus}
             </h1>
             {project.summary.length || project.liveLink ? (
@@ -136,7 +139,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                 {project.summary.map((paragraph) => (
                   <p
                     key={paragraph}
-                    className="text-base leading-relaxed text-foreground/80 md:text-lg"
+                    className="text-base leading-relaxed text-foreground/80"
                   >
                     {paragraph}
                   </p>
@@ -146,7 +149,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     href={project.liveLink.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-base font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60 md:text-lg"
+                    className="inline-flex items-center gap-2 text-base font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
                   >
                     {project.liveLink.label}
                     <ArrowUpRight className="size-5" />
@@ -157,21 +160,47 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
           </div>
         </header>
 
-        {/* Outcomes — results dashboard. */}
+        {/* Story — long-form narrative (My role, Leadership, Result…). */}
+        {project.story?.length ? (
+          <section className="space-y-12 md:space-y-16">
+            {project.story.map((storySection) => (
+              <div
+                key={storySection.heading ?? storySection.paragraphs.length}
+                className="grid gap-3 border-t border-border pt-8 md:grid-cols-[12rem_1fr] md:gap-12"
+              >
+                {storySection.heading ? (
+                  <h2 className="text-h2 font-bold text-foreground">
+                    {storySection.heading}
+                  </h2>
+                ) : (
+                  <div aria-hidden />
+                )}
+                <div className="max-w-2xl space-y-5">
+                  {storySection.paragraphs.map((paragraph, index) => (
+                    <p
+                      key={index}
+                      className="text-base leading-relaxed text-foreground/80"
+                    >
+                      {renderStoryParagraph(paragraph)}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </section>
+        ) : null}
+
+        {/* Outcomes — results table with uniform hairline dividers. */}
         {project.highlights.length ? (
-          <section className="space-y-8">
-            <Label>Outcomes</Label>
-            <div className="grid grid-cols-1 border-t border-border sm:grid-cols-2 lg:grid-cols-4">
-              {project.highlights.map((highlight, index) => (
+          <section>
+            <div className="grid grid-cols-1 gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+              {project.highlights.map((highlight) => (
                 <div
                   key={`${highlight.title}-${highlight.value ?? ''}`}
-                  className={cn(
-                    'flex flex-col border-border py-8 lg:px-8 lg:first:pl-0',
-                    index > 0 && 'border-t lg:border-l lg:border-t-0'
-                  )}
+                  className="flex flex-col bg-background p-6 md:p-8"
                 >
                   {highlight.value ? (
-                    <div className="font-display text-4xl font-black tracking-tight text-foreground md:text-5xl">
+                    <div className="text-h1 font-black text-foreground">
                       {highlight.value}
                     </div>
                   ) : null}
@@ -188,9 +217,9 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
         ) : null}
       </div>
 
-      {/* Visuals — full-width masonry; media keeps its proportions. */}
+      {/* Visuals — masonry within the shared container; media keeps proportions. */}
       {galleryItems.length ? (
-        <section className="w-full pb-16 md:pb-24">
+        <section className="section-shell section-y">
           <div className="columns-1 gap-4 sm:columns-2 md:gap-6 lg:columns-3">
             {galleryItems.map((item) => (
               <MasonryTile
@@ -207,7 +236,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
         {/* Challenges — the approach / actions, as its own heading. */}
         {project.process.length ? (
           <section className="space-y-10">
-            <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+            <h2 className="text-h1 font-bold text-foreground">
               Challenges
             </h2>
             <div className="space-y-10">
@@ -220,7 +249,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     {String(index + 1).padStart(2, '0')}
                   </span>
                   <div>
-                    <h3 className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl">
+                    <h3 className="text-h2 font-semibold text-foreground">
                       {step.title}
                     </h3>
                     <p className="mt-3 max-w-2xl text-base leading-relaxed text-foreground/80">
@@ -281,7 +310,7 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
   const media = active ? getPreviewMedia(active) : null
 
   return (
-    <section className="section-shell border-t border-border py-16 md:py-20">
+    <section className="section-shell section-y border-t border-border">
       <Label>More projects</Label>
       <div className="mt-6">
         {projects.map((relatedProject) => (
@@ -299,7 +328,7 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
             }
             className="group flex items-baseline justify-between gap-6 border-b border-border py-6"
           >
-            <h3 className="font-display text-2xl font-bold lowercase tracking-tight text-foreground transition-opacity duration-200 group-hover:opacity-50 md:text-4xl">
+            <h3 className="text-h1 font-bold lowercase text-foreground transition-opacity duration-200 group-hover:opacity-50">
               {relatedProject.title}
             </h3>
             <span className="shrink-0 text-sm text-muted-foreground">
