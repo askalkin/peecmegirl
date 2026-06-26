@@ -14,7 +14,7 @@ export function ContactSection({ id }: { id?: string }) {
   return (
     <section
       id={id}
-      className="contact-section relative flex min-h-screen w-full scroll-mt-20 flex-col justify-center overflow-hidden py-20"
+      className="contact-section relative flex min-h-screen w-full scroll-mt-20 flex-col justify-center overflow-hidden bg-background py-20 text-foreground"
     >
       <ContactFigures />
 
@@ -26,7 +26,7 @@ export function ContactSection({ id }: { id?: string }) {
                 href={link.href}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noreferrer' : undefined}
-                className="text-display font-black lowercase text-foreground transition-opacity duration-200 hover:opacity-50"
+                className="text-display font-black lowercase text-foreground decoration-[0.06em] underline-offset-[0.08em] transition-[text-decoration-color] duration-300 hover:underline"
               >
                 {link.label}
               </a>
@@ -54,6 +54,7 @@ export function ContactSection({ id }: { id?: string }) {
               d="M268.625 0.686326C353.4 49.9426 382.38 158.544 333.326 243.509C284.272 328.474 175.729 357.678 90.6841 308.888L268.625 0.686326Z"
               fill="currentColor"
               stroke="currentColor"
+              strokeWidth="2"
             />
           </svg>
         </div>
@@ -170,12 +171,12 @@ function ContactFigures() {
     window.addEventListener('pointermove', onPointerMove)
     window.addEventListener('resize', measure)
 
-    const STIFFNESS = 0.045 // pull back toward home
-    const DAMPING = 0.8 // velocity retained per frame (smooth settle)
-    const REPEL_RADIUS = 320
-    const REPEL_FORCE = 6.5
-    const MAX_OFFSET = 240 // never drift too far from home (stays off the text)
-    const ROT_FACTOR = 0.0011 // faint tilt tied to horizontal offset
+    const STIFFNESS = 0.032 // pull back toward home
+    const DAMPING = 0.86 // velocity retained per frame (smooth settle)
+    const REPEL_RADIUS = 260
+    const REPEL_FORCE = 2.2
+    const MAX_OFFSET = 96 // keep the motion close to the original composition
+    const ROT_FACTOR = 0.00045 // faint tilt tied to horizontal offset
 
     // Soft, position-only separation so the two shapes never overlap.
     const separate = () => {
@@ -269,6 +270,7 @@ function ContactFigures() {
             d="M268.625 0.686326C353.4 49.9426 382.38 158.544 333.326 243.509C284.272 328.474 175.729 357.678 90.6841 308.888L268.625 0.686326Z"
             fill="currentColor"
             stroke="currentColor"
+            strokeWidth="2"
           />
         </svg>
       </div>

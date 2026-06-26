@@ -1,12 +1,12 @@
 {
   "canvas": {
     "base": "neutral.50",
-    "subtle": "neutral.100"
+    "subtle": "neutral.50"
   },
   "surface": {
-    "base": "neutral.0",
-    "sunken": "neutral.100",
-    "subtle": "brand.100",
+    "base": "neutral.50",
+    "sunken": "neutral.50",
+    "subtle": "neutral.50",
     "interactive": "brand.200",
     "overlay": "alpha(absolute.black, 0.82)"
   },
