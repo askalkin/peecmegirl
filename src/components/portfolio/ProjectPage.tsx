@@ -9,7 +9,6 @@ import {
   type PortfolioStoryParagraph,
   type PortfolioStorySection,
 } from '@/data/portfolio'
-import { ApartmentScene } from '@/components/ApartmentScene'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
 
@@ -134,13 +133,12 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       (item): item is PortfolioMediaItem & { type: 'video' } =>
         item.type === 'video'
     ) ?? null
-  const usesApartmentScene = project.id === 'ar-apartment-tour'
   const isFramed = project.cover === 'framed'
   const hasEmbed = Boolean(project.embedUrl)
   // Some projects open straight on their content + gallery (no full-bleed hero).
   const noHero = project.noHero ?? false
   const heroMedia =
-    usesApartmentScene || isFramed || hasEmbed || noHero
+    isFramed || hasEmbed || noHero
       ? null
       : leadVideo ?? imageItems[0] ?? null
   // For framed covers the lead video is shown in the frame, so keep it out of
@@ -187,10 +185,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
 
   return (
     <main className="text-foreground">
-      {usesApartmentScene ? (
-        // Walkable 3D apartment as the hero — pulled under the floating header.
-        <ApartmentScene className="-mt-16 h-[calc(78vh+4rem)] w-full" />
-      ) : isFramed ? (
+      {isFramed ? (
         // Framed keynote-style hero on the shared page surface, padded clear
         // of the nav and narrow enough to fit on screen.
         <section className="w-full md:-mt-16 md:h-[calc(64vh+4rem)]">

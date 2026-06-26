@@ -147,8 +147,8 @@ export const portfolioData = {
         label: 'LinkedIn',
       },
       {
-        href: '/cv',
-        label: 'View Current CV',
+        href: '/recovered/Alina-Skalkina-CV-Lead-Brand-Designer.pdf',
+        label: 'Download CV',
       },
     ] satisfies PortfolioLink[],
     sitemap: [
@@ -422,39 +422,6 @@ export const portfolioData = {
           caption: 'alty 2.1 concepts',
           cols: 30,
           frameWidth: '58%',
-        },
-      ],
-    },
-    {
-      id: 'ar-apartment-tour',
-      title: 'B2B2C 3D Virtual Tours',
-      navigationLabel: 'B2B2C 3D Virtual Tours',
-      year: '2020',
-      kind: 'blog',
-      company: 'LUN',
-      businessSize: 'Scale-up',
-      workType: 'Product Design',
-      categories: ['Real Estate', 'B2B2C', 'AI', '3D in Web'],
-      focus: 'Balancing aesthetics and performance.',
-      summary: [
-        'In 2020, I led the 3D visual prototyping for a new B2B2C apartment tour feature. Partnering with an external vendor and our internal engineering team, I established the visual standards for the 3D environments. I collaborated with our Head of AI on core 3D mechanics, bridging the gap between design and technical execution.',
-        'Because the platform served millions of end-users, performance was a critical business requirement. I focused heavily on optimizing the 3D assets, ensuring we delivered a high-end, reliable product for our B2B clients that performed flawlessly at scale and helped them reflect a premium brand experience.',
-        'Now I made it with 2 prompts.',
-      ],
-      role: 'Product Design, 3D / AR',
-      highlights: [],
-      process: [],
-      team: ['Alina Skalkina, Product Designer'],
-      gallery: [
-        {
-          src: '/recovered/ar-apartment-tour/image-1781813263929.webp',
-          type: 'image',
-          alt: 'B2B2C 3D apartment tour gameplay',
-        },
-        {
-          src: '/recovered/ar-apartment-tour/image-1781813269405.webp',
-          type: 'image',
-          alt: '3D floor plan of the apartment',
         },
       ],
     },
@@ -989,7 +956,7 @@ export const portfolioData = {
       ],
       gallery: [
         {
-          src: '/recovered/lun-hr-brand/code-metro.png',
+          src: '/recovered/lun-hr-brand/code-metro.webp',
           type: 'image',
           alt: 'LUN Game metro ad code puzzle',
           cols: 10,
@@ -1038,13 +1005,13 @@ export const portfolioData = {
           aspect: '3/2',
         },
         {
-          src: '/recovered/lun-hr-brand/shoppers.jpg',
+          src: '/recovered/lun-hr-brand/shoppers.webp',
           type: 'image',
           alt: 'LUN HR brand shoppers',
           cols: 15,
         },
         {
-          src: '/recovered/lun-hr-brand/t-shirt.jpg',
+          src: '/recovered/lun-hr-brand/t-shirt.webp',
           type: 'image',
           alt: 'LUN HR brand t-shirt',
           cols: 15,
@@ -1299,7 +1266,7 @@ function getYearMarkers(yearLabel: string) {
   }
 }
 
-export function getProjectsNewestFirst() {
+export function getProjectsNewestFirst(): PortfolioProject[] {
   return [...portfolioData.projects].sort((a, b) => {
     const markerA = getYearMarkers(a.year)
     const markerB = getYearMarkers(b.year)

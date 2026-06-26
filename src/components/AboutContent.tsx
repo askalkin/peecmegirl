@@ -7,7 +7,7 @@ import { cvEducation, cvKnowledge, cvRoles } from '@/data/cv'
 function DownloadCvLink() {
   return (
     <a
-      href="/cv"
+      href="/recovered/Alina-Skalkina-CV-Lead-Brand-Designer.pdf"
       target="_blank"
       rel="noreferrer"
       className="inline-flex w-fit items-center gap-2 border-b border-foreground pb-1 text-sm font-medium text-foreground transition-opacity hover:opacity-60"

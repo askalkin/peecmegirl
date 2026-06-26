@@ -14,9 +14,7 @@ import { Route as LunieRouteImport } from './routes/lunie'
 import { Route as LunHrBrandRouteImport } from './routes/lun-hr-brand'
 import { Route as HuaweiRouteImport } from './routes/huawei'
 import { Route as FarbaRouteImport } from './routes/farba'
-import { Route as CvRouteImport } from './routes/cv'
 import { Route as ComfortMapRouteImport } from './routes/comfort-map'
-import { Route as ArApartmentTourRouteImport } from './routes/ar-apartment-tour'
 import { Route as AltyRebrandingRouteImport } from './routes/alty-rebranding'
 import { Route as AirQualityMapRouteImport } from './routes/air-quality-map'
 import { Route as AboutRouteImport } from './routes/about'
@@ -47,19 +45,9 @@ const FarbaRoute = FarbaRouteImport.update({
   path: '/farba',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CvRoute = CvRouteImport.update({
-  id: '/cv',
-  path: '/cv',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ComfortMapRoute = ComfortMapRouteImport.update({
   id: '/comfort-map',
   path: '/comfort-map',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArApartmentTourRoute = ArApartmentTourRouteImport.update({
-  id: '/ar-apartment-tour',
-  path: '/ar-apartment-tour',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AltyRebrandingRoute = AltyRebrandingRouteImport.update({
@@ -88,9 +76,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
   '/alty-rebranding': typeof AltyRebrandingRoute
-  '/ar-apartment-tour': typeof ArApartmentTourRoute
   '/comfort-map': typeof ComfortMapRoute
-  '/cv': typeof CvRoute
   '/farba': typeof FarbaRoute
   '/huawei': typeof HuaweiRoute
   '/lun-hr-brand': typeof LunHrBrandRoute
@@ -102,9 +88,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
   '/alty-rebranding': typeof AltyRebrandingRoute
-  '/ar-apartment-tour': typeof ArApartmentTourRoute
   '/comfort-map': typeof ComfortMapRoute
-  '/cv': typeof CvRoute
   '/farba': typeof FarbaRoute
   '/huawei': typeof HuaweiRoute
   '/lun-hr-brand': typeof LunHrBrandRoute
@@ -117,9 +101,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/air-quality-map': typeof AirQualityMapRoute
   '/alty-rebranding': typeof AltyRebrandingRoute
-  '/ar-apartment-tour': typeof ArApartmentTourRoute
   '/comfort-map': typeof ComfortMapRoute
-  '/cv': typeof CvRoute
   '/farba': typeof FarbaRoute
   '/huawei': typeof HuaweiRoute
   '/lun-hr-brand': typeof LunHrBrandRoute
@@ -133,9 +115,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/air-quality-map'
     | '/alty-rebranding'
-    | '/ar-apartment-tour'
     | '/comfort-map'
-    | '/cv'
     | '/farba'
     | '/huawei'
     | '/lun-hr-brand'
@@ -147,9 +127,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/air-quality-map'
     | '/alty-rebranding'
-    | '/ar-apartment-tour'
     | '/comfort-map'
-    | '/cv'
     | '/farba'
     | '/huawei'
     | '/lun-hr-brand'
@@ -161,9 +139,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/air-quality-map'
     | '/alty-rebranding'
-    | '/ar-apartment-tour'
     | '/comfort-map'
-    | '/cv'
     | '/farba'
     | '/huawei'
     | '/lun-hr-brand'
@@ -176,9 +152,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AirQualityMapRoute: typeof AirQualityMapRoute
   AltyRebrandingRoute: typeof AltyRebrandingRoute
-  ArApartmentTourRoute: typeof ArApartmentTourRoute
   ComfortMapRoute: typeof ComfortMapRoute
-  CvRoute: typeof CvRoute
   FarbaRoute: typeof FarbaRoute
   HuaweiRoute: typeof HuaweiRoute
   LunHrBrandRoute: typeof LunHrBrandRoute
@@ -223,25 +197,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FarbaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/cv': {
-      id: '/cv'
-      path: '/cv'
-      fullPath: '/cv'
-      preLoaderRoute: typeof CvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/comfort-map': {
       id: '/comfort-map'
       path: '/comfort-map'
       fullPath: '/comfort-map'
       preLoaderRoute: typeof ComfortMapRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ar-apartment-tour': {
-      id: '/ar-apartment-tour'
-      path: '/ar-apartment-tour'
-      fullPath: '/ar-apartment-tour'
-      preLoaderRoute: typeof ArApartmentTourRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/alty-rebranding': {
@@ -280,9 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AirQualityMapRoute: AirQualityMapRoute,
   AltyRebrandingRoute: AltyRebrandingRoute,
-  ArApartmentTourRoute: ArApartmentTourRoute,
   ComfortMapRoute: ComfortMapRoute,
-  CvRoute: CvRoute,
   FarbaRoute: FarbaRoute,
   HuaweiRoute: HuaweiRoute,
   LunHrBrandRoute: LunHrBrandRoute,

@@ -127,8 +127,8 @@ function PortfolioPage() {
   }, [])
 
   return (
-    <main id="top" className="text-foreground">
-      <section className="section-shell relative z-40 flex h-[calc(100vh-4rem)] flex-col justify-end py-12 md:py-16">
+    <main id="main" className="text-foreground">
+      <section aria-label="Introduction" className="section-shell relative z-40 flex h-[calc(100vh-4rem)] flex-col justify-end py-12 md:py-16">
         {/* Absolutely positioned so the typing text never shifts the layout. */}
         <div
           ref={questionsRef}
@@ -157,7 +157,7 @@ function PortfolioPage() {
         </div>
       </section>
 
-      <section id="work" className="section-shell section-y scroll-mt-20">
+      <section id="work" aria-label="Selected works" className="section-shell section-y scroll-mt-20">
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:gap-x-8 xl:grid-cols-3">
           {works.map((project) => (
             <ProjectCard key={project.id} project={project} />
@@ -165,7 +165,7 @@ function PortfolioPage() {
         </div>
       </section>
 
-      <div id="about" className="scroll-mt-24">
+      <div id="about" role="region" aria-label="About me" className="scroll-mt-24">
         <AboutContent />
       </div>
 
@@ -282,9 +282,9 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
 
       <div className="px-4 py-4">
         <div className="flex items-baseline justify-between gap-3">
-          <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
+          <h2 className="font-display text-base font-semibold tracking-tight text-foreground">
             {project.title}
-          </h3>
+          </h2>
           <span className="shrink-0 text-sm text-muted-foreground">
             {project.year}
           </span>
