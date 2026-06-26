@@ -74,6 +74,12 @@ export type PortfolioMediaItem = {
   frameWidth?: string
   /** How media should fit when an explicit aspect ratio is used. */
   fit?: 'cover' | 'contain'
+  /** Assigns this item to a flex-row group. Items sharing the same number render
+   *  in a single horizontal row at equal height. Use with `flexGrow`. */
+  flexRow?: number
+  /** flex-grow value — set to the image's natural aspect ratio (w/h) so all
+   *  items in a flex row share the same height with proportional widths. */
+  flexGrow?: number
 }
 
 export type PortfolioProject = {
@@ -882,7 +888,7 @@ export const portfolioData = {
       navigationLabel: 'LUN HR Brand',
       year: '2019',
       company: 'LUN',
-      noHero: true,
+      coverSrc: '/recovered/lun-hr-brand/educational-hub-3.webp',
       businessSize: 'Scale-up',
       audience: 'B2B',
       workType: 'Brand Design',
@@ -956,71 +962,72 @@ export const portfolioData = {
       ],
       gallery: [
         {
+          src: '/recovered/lun-hr-brand/educational-hub-3.webp',
+          type: 'image',
+          alt: 'LUN HR community event at the Educational Hub',
+        },
+        {
           src: '/recovered/lun-hr-brand/code-metro.webp',
           type: 'image',
           alt: 'LUN Game metro ad code puzzle',
-          cols: 10,
-          aspect: '3/2',
+          flexRow: 1,
+          flexGrow: 1.84,
         },
         {
-          src: '/recovered/lun-hr-brand/404.png',
+          src: '/recovered/lun-hr-brand/404.webp',
           type: 'image',
-          alt: 'LUN Game challenge screen, task 7 — 404 task not found',
-          cols: 10,
-          aspect: '3/2',
-        },
-        {
-          src: '/recovered/lun-hr-brand/lun-game-chat.webp',
-          type: 'image',
-          alt: 'Player chat message about solving LUN Game tasks',
-          cols: 10,
-          aspect: '3/2',
+          alt: 'LUN Game challenge screen — 404 task not found',
+          flexRow: 1,
+          flexGrow: 1.84,
         },
         {
           src: '/recovered/lun-hr-brand/educational-hub-1.webp',
           type: 'image',
-          alt: 'Educational hub created by LUN at Taras Shevchenko University, space view',
-          cols: 10,
-          aspect: '3/2',
+          alt: 'Educational hub at Taras Shevchenko University, space view',
+          flexRow: 2,
+          flexGrow: 1.33,
         },
         {
           src: '/recovered/lun-hr-brand/educational-hub-2.webp',
           type: 'image',
-          alt: 'Educational hub created by LUN at Taras Shevchenko University, interior',
-          cols: 10,
-          aspect: '3/2',
+          alt: 'Educational hub at Taras Shevchenko University, interior',
+          flexRow: 2,
+          flexGrow: 1.5,
         },
         {
           src: '/recovered/lun-hr-brand/lunoteka-space.webp',
           type: 'image',
           alt: 'Lunoteka lounge and bookshelves',
-          cols: 10,
-          aspect: '3/2',
+          flexRow: 2,
+          flexGrow: 1.5,
         },
         {
           src: '/recovered/lun-hr-brand/lunoteka-award.webp',
           type: 'image',
           alt: 'Lunoteka award moment',
-          cols: 10,
-          aspect: '3/2',
+          flexRow: 3,
+          flexGrow: 1.23,
         },
         {
           src: '/recovered/lun-hr-brand/shoppers.webp',
           type: 'image',
           alt: 'LUN HR brand shoppers',
-          cols: 15,
+          flexRow: 3,
+          flexGrow: 0.75,
         },
         {
           src: '/recovered/lun-hr-brand/t-shirt.webp',
           type: 'image',
           alt: 'LUN HR brand t-shirt',
-          cols: 15,
+          flexRow: 4,
+          flexGrow: 0.75,
         },
         {
           src: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
           type: 'image',
           alt: 'Lunoteka laptop sticker',
-          cols: 30,
+          flexRow: 4,
+          flexGrow: 1.5,
         },
       ],
     },

@@ -296,10 +296,12 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
         ) : null}
       </div>
 
-      {/* Visuals — a 30-col grid when items define cols/center, else masonry. */}
+      {/* Visuals — flex bento rows, a 30-col grid, or masonry depending on data. */}
       {galleryItems.length ? (
         <section className="section-shell pb-[var(--space-section)]">
-          {galleryItems.some((item) => item.cols || item.center) ? (
+          {galleryItems.some((item) => item.flexRow != null) ? (
+            <FlexBentoGallery items={galleryItems} onImageClick={openImage} />
+          ) : galleryItems.some((item) => item.cols || item.center) ? (
             <div className="gallery-grid">
               {galleryItems.map((item) => {
                 const span = item.center ? 30 : item.cols ?? 30
@@ -572,6 +574,70 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
         </div>
       ) : null}
     </section>
+  )
+}
+
+function FlexBentoGallery({
+  items,
+  onImageClick,
+}: {
+  items: PortfolioMediaItem[]
+  onImageClick: (item: PortfolioMediaItem) => void
+}) {
+  const rowMap = new Map<number, PortfolioMediaItem[]>()
+  for (const item of items) {
+    const r = item.flexRow ?? 0
+    if (!rowMap.has(r)) rowMap.set(r, [])
+    rowMap.get(r)!.push(item)
+  }
+  const rows = Array.from(rowMap.entries()).sort(([a], [b]) => a - b)
+
+  return (
+    <div className="flex flex-col gap-1">
+      {rows.map(([rowIndex, rowItems]) => (
+        <div
+          key={rowIndex}
+          className="flex gap-1"
+          style={{ height: 'clamp(180px, 22vw, 340px)' }}
+        >
+          {rowItems.map((item) => (
+            <div
+              key={item.src}
+              className="overflow-hidden"
+              style={{ flex: item.flexGrow ?? 1 }}
+            >
+              {item.type === 'image' ? (
+                <button
+                  type="button"
+                  onClick={() => onImageClick(item)}
+                  aria-label={`Open ${item.alt}`}
+                  className="group/img block h-full w-full"
+                >
+                  <img
+                    src={item.src}
+                    alt={item.alt}
+                    loading="lazy"
+                    className="block h-full w-full cursor-zoom-in object-cover transition-opacity duration-300 group-hover/img:opacity-90"
+                  />
+                </button>
+              ) : (
+                <video
+                  className="block h-full w-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  aria-label={item.alt}
+                >
+                  <source src={item.src} />
+                </video>
+              )}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
   )
 }
 
