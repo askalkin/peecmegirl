@@ -5,6 +5,8 @@ export type CvRole = {
   country: string
   /** Short description of the company, shown when a role is expanded. */
   companyAbout: string
+  /** Employment type, e.g. "Contract". */
+  employment?: string
   /** Years-only label for the experience list (e.g. "2023 – 2025"). */
   years: string
   /** Full month/year range, used on the printable /cv page. */
@@ -23,7 +25,7 @@ export const cvRoles: CvRole[] = [
       'Digital transformation partner for complex products, platforms, and compliance-heavy business environments.',
     years: '2026',
     period: 'Feb 2026 - Present',
-    location: 'USA, Remote',
+    location: 'USA',
     highlights: [
       "Led Alty's scale-up rebrand across brand strategy, visual identity, website experience, and scalable system development.",
       'Reframed the company from service provider to digital transformation partner, turning complex B2B and compliance-heavy positioning into clear creative direction.',
@@ -49,11 +51,12 @@ export const cvRoles: CvRole[] = [
     title: 'Brand Designer',
     company: 'LUN',
     country: 'Ukraine',
+    employment: 'Contract',
     companyAbout:
       "Ukraine's innovative leader in proptech, with global presence.",
     years: '2023 – 2025',
     period: 'May 2023 - Nov 2025',
-    location: 'Kyiv, Remote',
+    location: 'Kyiv',
     highlights: [
       'Designed brand identity guidelines and a modular asset constructor in Figma for social media.',
       'Delivered assets and animations.',
@@ -61,13 +64,13 @@ export const cvRoles: CvRole[] = [
   },
   {
     title: 'Brand Designer',
-    company: 'UTC FILM Creative Agency',
+    company: 'UTC Film',
     country: 'Ukraine',
-    companyAbout:
-      'A creative agency producing brand campaigns and video content.',
+    employment: 'Contract',
+    companyAbout: 'A full-cycle agency producing brand campaigns.',
     years: '2021 – 2025',
     period: 'Aug 2021 - May 2025',
-    location: 'Kyiv, Remote',
+    location: 'Kyiv',
     highlights: [
       'Led design direction for a B2B website redesign.',
       'Facilitated cross-team workshops to align strategy during fast campaign cycles.',
@@ -93,5 +96,39 @@ export const cvRoles: CvRole[] = [
       'Designed end-to-end HR CRM workflows that reduced onboarding time by 40% and manual HR workload by 60%.',
       'Reached 100% employee self-service adoption across teams in 10 countries.',
     ],
+  },
+]
+
+export type CvEducation = {
+  title: string
+  period: string
+  note: string
+}
+
+export const cvEducation: CvEducation[] = [
+  {
+    title: 'Applied Physics, Nanoelectronics and Computer Technologies — Taras Shevchenko National University of Kyiv',
+    period: '2015 – 2019',
+    note: 'Built strong foundations in color theory, optics, 3D modeling, enhancing my visual and spatial thinking. Studied Web Development and Data Analytics, supporting User-centered, Data-driven design. System Design knowledge strengthens my ability to build scalable digital products.',
+  },
+  {
+    title: 'Unit Factory / School 42, Kyiv',
+    period: '2016',
+    note: 'Learned programming languages (C, C#, C++, Bash). This coding foundation helps me bridge the gap between design and development, ensuring smooth execution of design.',
+  },
+]
+
+export type CvKnowledgeEntry = {
+  title: string
+  year: string
+  description: string
+}
+
+export const cvKnowledge: CvKnowledgeEntry[] = [
+  {
+    title: 'Lecture About Design And Frontend Collaboration',
+    year: '2020',
+    description:
+      'Guest lecture speaker (with Frontend Engineer) at the National University of Kyiv on effective collaboration strategies for efficient Design and Frontend Engineering workflows.',
   },
 ]

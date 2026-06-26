@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -23,6 +23,9 @@ export function Lightbox({
   onNext,
   onPrevious,
 }: LightboxProps) {
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null)
+  const activeImage = activeIndex === null ? null : images[activeIndex]
+
   useEffect(() => {
     if (activeIndex === null) return
 
@@ -43,9 +46,11 @@ export function Lightbox({
     }
   }, [activeIndex, onClose, onNext, onPrevious])
 
-  if (activeIndex === null) return null
+  useEffect(() => {
+    setLoadedSrc(null)
+  }, [activeImage?.src])
 
-  const activeImage = images[activeIndex]
+  if (activeIndex === null || !activeImage) return null
 
   return (
     <div
@@ -53,7 +58,7 @@ export function Lightbox({
       onClick={onClose}
     >
       <div
-        className="mx-auto flex h-full max-w-7xl flex-col"
+        className="mx-auto flex h-full w-[90vw] max-w-[90vw] flex-col"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between text-sm text-[var(--color-overlay-foreground-muted)]">
@@ -84,11 +89,16 @@ export function Lightbox({
             </Button>
           ) : null}
 
-          <img
-            src={activeImage.src}
-            alt={activeImage.alt}
-            className="max-h-full max-w-full object-contain"
-          />
+          <div className="flex h-[75vh] max-h-[75vh] w-full max-w-[90vw] items-center justify-center overflow-hidden">
+            <img
+              src={activeImage.src}
+              alt={activeImage.alt}
+              onLoad={() => setLoadedSrc(activeImage.src)}
+              className={`h-[75vh] w-auto max-w-full object-contain transition-opacity duration-300 ${
+                loadedSrc === activeImage.src ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          </div>
 
           {images.length > 1 ? (
             <Button

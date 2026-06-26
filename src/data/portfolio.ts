@@ -60,6 +60,20 @@ export type PortfolioMediaItem = {
   type: MediaType
   span?: 'wide' | 'tall'
   caption?: string
+  /** Width in a 30-column gallery grid. When any item sets this (or `center`),
+   *  the gallery renders as a row-based grid instead of masonry. */
+  cols?: number
+  /** Render this video centred at 70% width with a rounded, cropped frame. */
+  center?: boolean
+  /** CSS aspect-ratio (e.g. '16/10') for the grid cell. Items sharing a row
+   *  with the same aspect + width render at identical heights. */
+  aspect?: string
+  /** Cap the cell at this share of viewport height (vh), contained & centred. */
+  maxVh?: number
+  /** Render this item centred at a fixed width (e.g. '58%' to match the hero). */
+  frameWidth?: string
+  /** How media should fit when an explicit aspect ratio is used. */
+  fit?: 'cover' | 'contain'
 }
 
 export type PortfolioProject = {
@@ -81,6 +95,23 @@ export type PortfolioProject = {
   goals?: string
   role?: string
   liveLink?: PortfolioLink
+  /** 'framed' centres the cover/hero media on a white card (Apple-keynote vibe). */
+  cover?: 'framed'
+  /** Background-player embed URL (e.g. Vimeo) used as the framed media. */
+  embedUrl?: string
+  /** Aspect-ratio class for a framed embed, e.g. 'aspect-[4/3]'. */
+  embedAspect?: string
+  /** Dedicated cover/hover image, shown on the card and the hover preview but
+   *  not in the case-study gallery. */
+  coverSrc?: string
+  /** Skip the full-bleed hero; the page opens on its content and gallery. */
+  noHero?: boolean
+  /** Hide the workType/businessSize chips on the homepage card. */
+  hideLabels?: boolean
+  /** Audience label shown on the homepage card (e.g. 'B2B', 'B2C'). */
+  audience?: string
+  /** Horizontal offset for the cover embed/video (e.g. '3%'). Applied on the card. */
+  coverOffsetX?: string
   /** Long-form narrative sections (e.g. My role, Leadership, Result). */
   story?: PortfolioStorySection[]
   highlights: PortfolioHighlight[]
@@ -93,18 +124,18 @@ export type PortfolioProject = {
 export const portfolioData = {
   person: {
     name: 'Alina Skalkina',
-    role: 'Lead Brand Product Designer',
+    role: 'Lead Brand Designer',
     heroRole: 'Brand Designer',
     tagline:
       'I shape brand systems that turn complex products into clear, expressive experiences across marketing, identity, and product.',
     intro:
-      'Lead Brand Product Designer with experience across marketing, product, and brand systems. Focused on turning complex workflows into clear, usable experiences.',
+      'B2B Brand Designer by choice, Design Engineer by destiny, and the person asking why this component exists in five different versions.',
     approach:
       'Berlin, Germany',
     email: 'skalkinalina@gmail.com',
     footerTitle: 'Personal Portfolio Website',
     footerYear: '2026',
-    heroImage: '/recovered/computer.png',
+    heroImage: '/recovered/computer.webp',
     heroImageAlt: 'Recovered hero asset from the original portfolio',
     links: [
       {
@@ -259,10 +290,13 @@ export const portfolioData = {
   projects: [
     {
       id: 'alty-rebranding',
-      title: 'Making B2B maturity feel less corporate',
+      title: 'Alty rebranding',
       navigationLabel: 'Alty Rebranding',
+      cover: 'framed',
+      coverSrc: '/alty/new-products.webm',
       year: '2026',
-      businessSize: 'Startup',
+      businessSize: 'Scale-up',
+      audience: 'B2B',
       workType: 'Brand Design',
       categories: [
         'Brand Identity',
@@ -276,7 +310,8 @@ export const portfolioData = {
         `But the brand had not yet caught up with the company's actual maturity.`,
         `The challenge was to move Alty beyond the perception of a regular outsourcing company or creative agency — and communicate a more accurate role: a digital transformation partner for complex decisions, high stakes, and long-term change in compliance-heavy businesses.`,
       ],
-      role: 'Lead Brand Product Designer',
+      role: 'Lead Brand Designer',
+      liveLink: { href: 'https://alty.co', label: 'Try Alty 2.0' },
       story: [
         {
           heading: 'My role',
@@ -285,10 +320,7 @@ export const portfolioData = {
             `On the strategic side, I helped define the brand core: who Alty is, how it speaks, who its clients are, what they need, and how the company should be positioned in the market.`,
             `On the tactical side, I led the website design across UX/UI, visual design, interactions, animations, component logic, and handoff.`,
             `The website redesign and rebrand were happening at the same time. On Alty's side, I was responsible for translating the external agency's visual identity output into a usable digital system — aligning it with the brand vision, positioning, website experience, and long-term scalability.`,
-            `To make the brand feel mature but not conservative, I defined two identity anchors:`,
-            `Innovator — for reframing problems and seeing beyond the brief.`,
-            `Architect — for bringing structure, logic, and clarity into complex work.`,
-            `Together, they created the right tension: sharp and alternative, but still mature, structured, and credible.`,
+            `To make the brand feel mature but not conservative, I defined two visual identity anchors, that created the right tension: sharp and alternative, but still mature, structured, and credible.`,
             `Because the website had to move forward before every identity decision was finalized, I created a redesign defence system: a scalable foundation built on semantic tokens, theme collections, adaptive components, and reusable interaction patterns.`,
             `The workflow connected Figma → Storybook → Claude Code / Codex, allowing us to update color themes, layouts, components, animations, and interaction states without rebuilding the system from scratch.`,
           ],
@@ -297,32 +329,101 @@ export const portfolioData = {
           heading: 'Leadership',
           paragraphs: [
             `A big part of my role was helping the team think in systems.`,
-            [
-              'I mentored designers in design engineering principles and later created a ',
-              { text: 'course', href: '/design-engineering-course' },
-              ' around this approach.',
-            ],
+            `I mentored designers in design engineering principles and later created a course around this approach.`,
             `For this identity, I also had to accept that there would be more card and layout variations than a traditional system might usually allow. But the flexibility was intentional.`,
             `The point was not to limit creativity.`,
             `The point was to give creativity a reliable structure.`,
           ],
         },
         {
-          heading: 'Result',
+          heading: 'Impact',
           paragraphs: [
             `The full redesign is still in progress, but the rebrand is already showing early signs of impact.`,
             `Alty now has a clearer way to communicate its value: not as a generic outsourcing team or creative agency, but as a transformation partner for complex, high-stakes digital products.`,
             `The system foundation reduced repetitive production work and gave the team more space for visual experimentation, sharper storytelling, and more confident brand expression.`,
             `The strongest signal is qualitative: the new positioning is attracting more relevant client inquiries from businesses that better match Alty's expertise, maturity, and way of working.`,
-            `Not just a new look.`,
-            `A system for how the brand thinks, speaks, moves, and scales.`,
+            `While visual identity is continuous work in progress, now it has a system for how the brand thinks, speaks, looks, and scales.`,
+            `Stay updated for alty 2.1`,
           ],
         },
       ],
-      highlights: [],
+      highlights: [
+        {
+          value: '73% → 64%',
+          title: 'Bounce rate',
+          description: 'Fewer bounces.',
+        },
+        {
+          value: '1.5 → 2.4',
+          title: 'Pages / visit',
+          description: 'Deeper engagement.',
+        },
+        {
+          value: '0 → 92',
+          title: 'GEO score',
+          description: 'Agent-Native.',
+        },
+      ],
       process: [],
-      team: ['Alina Skalkina, Lead Brand Product Designer'],
-      gallery: [],
+      team: [
+        'Alina Skalkina, Lead Brand Designer',
+        'Kristina Olekh, Marketing Manager',
+        'Leonid Goriev, Founder',
+        'Mykola Melnyk, Head of Design',
+        'Diliara Asanova, UX Director',
+        'Maksym Tkhorenko, Frontend Engineer',
+        'Dmytro Novikov, UI/UX Designer',
+        'Swoon',
+      ],
+      gallery: [
+        // Lead video — pulled into the framed hero, excluded from the grid below.
+        {
+          src: '/alty/new-products.webm',
+          type: 'video',
+          alt: 'Alty new products section',
+        },
+        // Exploration pair — two images side by side on lg/xl, stacked below.
+        {
+          src: '/alty/innovation-exploration.webp',
+          type: 'image',
+          alt: 'Alty — innovation exploration',
+          caption: 'exploration',
+          cols: 15,
+          aspect: '1/1',
+        },
+        {
+          src: '/alty/architecture-exploration.webp',
+          type: 'image',
+          alt: 'Alty — architecture exploration',
+          caption: 'exploration',
+          cols: 15,
+          aspect: '1/1',
+        },
+        // Two videos in one row on lg/xl, stacked below.
+        {
+          src: '/alty/home.webm',
+          type: 'video',
+          alt: 'Alty homepage walkthrough',
+          cols: 15,
+          aspect: '1876/1080',
+        },
+        {
+          src: '/alty/cards.webm',
+          type: 'video',
+          alt: 'Alty cards interaction',
+          cols: 15,
+          aspect: '1876/1080',
+        },
+        // Concepts — centred at the same width as the framed hero (58%).
+        {
+          src: '/alty/alty-concepts.webp',
+          type: 'image',
+          alt: 'Alty brand concepts',
+          caption: 'alty 2.1 concepts',
+          cols: 30,
+          frameWidth: '58%',
+        },
+      ],
     },
     {
       id: 'ar-apartment-tour',
@@ -361,9 +462,16 @@ export const portfolioData = {
       id: 'huawei',
       title: 'Huawei',
       navigationLabel: 'Huawei',
-      year: '2023',
+      embedUrl:
+        'https://player.vimeo.com/video/1204428080?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
+      // Static poster for the hover preview — the Vimeo embed is too slow to
+      // mount on hover, so the card shows this instant image instead.
+      coverSrc: '/recovered/huawei/poster.webp',
+      coverOffsetX: '3%',
+      year: '2024',
       company: 'Huawei',
       businessSize: 'Enterprise',
+      audience: 'B2B',
       workType: 'Motion Design',
       categories: ['Motion Design', '3D Design', 'Video'],
       focus: 'The hidden infrastructure powering Ukraine’s resilience.',
@@ -378,39 +486,14 @@ export const portfolioData = {
       gallery: [],
     },
     {
-      id: 'design-engineering-course',
-      title: 'Design Engineering Course',
-      navigationLabel: 'Design Engineering Course',
-      year: '2025',
-      businessSize: 'Education',
-      workType: 'Design Engineering',
-      categories: [
-        'Design Engineering',
-        'Education',
-        'Design Systems',
-        'AI Workflows',
-      ],
-      focus:
-        'How do you teach designers to think and build like engineers, and ship real, coherent interfaces?',
-      summary: [
-        'A course that bridges design and engineering, taking designers from Figma to working, maintainable front-end.',
-        'Built around real workflows: design tokens, component thinking, design systems, and AI-assisted implementation loops.',
-      ],
-      goals:
-        'Help designers ship production-ready interfaces and collaborate fluently with engineering.',
-      role: 'Curriculum Design, Teaching',
-      highlights: [],
-      process: [],
-      team: ['Alina Skalkina, Author and Instructor'],
-      gallery: [],
-    },
-    {
       id: 'comfort-map',
+      cover: 'framed',
       title: 'Comfort Map',
       navigationLabel: 'Comfort Map',
       year: '2021',
       company: 'LUN',
-      businessSize: 'Enterprise',
+      businessSize: 'Scale-up',
+      audience: 'B2B',
       workType: 'Growth Design',
       focus: 'Can apartment hunting build an inclusive city?',
       categories: [
@@ -421,12 +504,9 @@ export const portfolioData = {
         'Product Strategy',
       ],
       summary: [
-        'LUN Misto was an urban research lab working with Taras Shevchenko National University and government bodies to build open-data infrastructure for the city.',
-        'The Comfort Map was one product of that: 20 layers of verified urban data covering noise, greenery, air quality, school access, kindergarten queues, price dynamics, and more.',
-        'The data was rigorous, but users got overwhelmed and left. The issue was not data quality. The product had not clearly decided what kind of tool it was.',
-        'Survey work and interviews with active apartment seekers in Kyiv showed a mental-model mismatch: users arrived expecting a search tool and found a research environment.',
-        'I facilitated a cross-functional workshop with R&D, marketing, and editorial teams to map the full apartment-buying journey and identify where the map should fit.',
-        'The key insight: users were not overwhelmed by the data itself, but by being asked to interpret it without a clear starting point.',
+        'LUN Misto was an urban research lab partnering with Taras Shevchenko National University and government bodies to build open-data infrastructure for the city. One product, the Comfort Map, combined 20 verified urban data layers, including noise, greenery, air quality, school access, kindergarten queues, and price dynamics.',
+        'Although the data was rigorous, users felt overwhelmed and left. Research with active apartment seekers in Kyiv revealed the problem: they expected a search tool but entered a research environment.',
+        'I facilitated a cross-functional workshop with R&D, marketing, and editorial teams to map the apartment-buying journey and define the map’s role. The key insight was that users were not overwhelmed by the data itself, but by having to interpret it without a clear starting point.',
       ],
       goals:
         'Make a research-grade urban analytics tool useful for someone choosing where to live, without losing the depth that made it credible.',
@@ -444,7 +524,7 @@ export const portfolioData = {
         },
         {
           value: '+17%',
-          title: 'Conversion rate',
+          title: 'Conversion Rate',
           description:
             'Conversion increased after adding personalized comfort scoring and street-level context.',
         },
@@ -460,24 +540,14 @@ export const portfolioData = {
             "Best social IT initiative by Ukraine's largest IT community.",
         },
         {
-          title: 'First Lady initiative',
+          title: 'National Accessibility & Barrier-Free Initiatives',
           description:
-            'Adopted by Olena Zelenska\'s "Business without Barriers"; LUN signed the national accessibility declaration.',
+            'Consolidated multiple national efforts by signing the accessibility declaration for the First Lady\'s "Business without Barriers," serving as the official technology partner for the Ministry of Regional Development, and co-launching a nationwide accessibility audit with the Ministry of Culture.',
         },
         {
-          title: 'Ministry of Culture',
+          title: 'KNU & Government Collaboration',
           description:
-            'Co-launched a nationwide accessibility audit for theatres, museums, and libraries with a dedicated map layer built without public funding.',
-        },
-        {
-          title: 'National technology partner',
-          description:
-            "Official technology partner of the Ministry of Regional Development's barrier-free environment program.",
-        },
-        {
-          title: 'KNU & government',
-          description:
-            'Research delivered in collaboration with Taras Shevchenko National University and government bodies.',
+            'Research delivered in collaboration with Taras Shevchenko National University and government bodies, which included the opening of an Urbanist faculty.',
         },
       ],
       process: [
@@ -512,54 +582,57 @@ export const portfolioData = {
       ],
       gallery: [
         {
-          src: '/recovered/comfort-map-video.mp4',
+          src: '/recovered/comfort-map-video.webm',
           type: 'video',
           alt: 'Comfort Map walkthrough video',
           span: 'wide',
         },
         {
-          src: '/recovered/comfort-map/desktop-1.png',
+          src: '/recovered/comfort-map/desktop-1.webp',
           type: 'image',
           alt: 'Comfort Map desktop screen 1',
-          span: 'wide',
+          cols: 15,
+          aspect: '1084/743',
         },
         {
-          src: '/recovered/comfort-map/desktop-2.png',
+          src: '/recovered/comfort-map/desktop-2.webp',
           type: 'image',
           alt: 'Comfort Map desktop screen 2',
-          span: 'wide',
+          cols: 15,
+          aspect: '1084/743',
         },
         {
-          src: '/recovered/comfort-map/mobile-1.png',
+          src: '/recovered/comfort-map/mobile-1.webp',
           type: 'image',
           alt: 'Comfort Map mobile screen 1',
+          cols: 10,
+          maxVh: 70,
         },
         {
-          src: '/recovered/comfort-map/mobile-2.png',
+          src: '/recovered/comfort-map/mobile-2.webp',
           type: 'image',
           alt: 'Comfort Map mobile screen 2',
+          cols: 10,
+          maxVh: 70,
         },
         {
-          src: '/recovered/comfort-map/mobile-3.png',
-          type: 'image',
-          alt: 'Comfort Map mobile screen 3',
-        },
-        {
-          src: '/recovered/comfort-map/mobile-4.png',
+          src: '/recovered/comfort-map/mobile-4.webp',
           type: 'image',
           alt: 'Comfort Map mobile screen 4',
+          cols: 10,
+          maxVh: 70,
         },
         {
-          src: '/recovered/visual-design/1.mp4',
+          src: '/recovered/visual-design/1.webm',
           type: 'video',
           alt: 'Comfort Map campaign video 1',
-          span: 'wide',
+          cols: 15,
         },
         {
-          src: '/recovered/visual-design/3.mp4',
+          src: '/recovered/visual-design/3.webm',
           type: 'video',
           alt: 'Comfort Map campaign video 2',
-          span: 'wide',
+          cols: 15,
         },
       ],
     },
@@ -570,6 +643,7 @@ export const portfolioData = {
       year: '2020',
       company: 'LUN',
       businessSize: 'Scale-up',
+      audience: 'B2C',
       workType: 'Growth Design',
       focus: 'Turn invisible air data into visible action.',
       categories: [
@@ -602,12 +676,6 @@ export const portfolioData = {
           title: 'In Bounce Rate',
           description:
             '5k active users on IOS widget, 4 stars rating in App Store, offline notification system in case of poor air quality.',
-        },
-        {
-          value: '-33%',
-          title: 'Cleaner air',
-          description:
-            'In 2022 on average concentration of the PM2.5 in Ukraine fell by 33% compared to 2021.',
         },
         {
           value: '+17%',
@@ -647,67 +715,70 @@ export const portfolioData = {
       ],
       gallery: [
         {
-          src: '/recovered/air-video.mp4',
+          src: '/recovered/air-video.webm',
           type: 'video',
           alt: 'Air Quality Map walkthrough video',
           span: 'wide',
         },
         {
-          src: '/recovered/lun-misto-air/jpg/map-1.jpg',
+          src: '/recovered/lun-misto-air/jpg/map-1.webp',
           type: 'image',
           alt: 'Air Quality map interface 1',
+          cols: 6,
         },
         {
-          src: '/recovered/lun-misto-air/jpg/map-2.jpg',
+          src: '/recovered/lun-misto-air/jpg/map-2.webp',
           type: 'image',
           alt: 'Air Quality map interface 2',
+          cols: 6,
         },
         {
-          src: '/recovered/lun-misto-air/jpg/map-3.jpg',
+          src: '/recovered/lun-misto-air/jpg/map-3.webp',
           type: 'image',
           alt: 'Air Quality map interface 3',
+          cols: 6,
         },
         {
-          src: '/recovered/lun-misto-air/jpg/map-4.jpg',
+          src: '/recovered/lun-misto-air/jpg/map-4.webp',
           type: 'image',
           alt: 'Air Quality map interface 4',
+          cols: 6,
         },
         {
-          src: '/recovered/lun-misto-air/jpg/map-5.jpg',
+          src: '/recovered/lun-misto-air/jpg/map-5.webp',
           type: 'image',
           alt: 'Air Quality map interface 5',
+          cols: 6,
         },
         {
-          src: '/recovered/lun-misto-air/jpg/air-1.jpg',
-          type: 'image',
-          alt: 'Air Quality NOW widget — unhealthy air, mascot guidance',
-          span: 'tall',
-        },
-        {
-          src: '/recovered/lun-misto-air/jpg/watch.jpg',
+          src: '/recovered/lun-misto-air/jpg/watch.webp',
           type: 'image',
           alt: 'Air Quality watch widget',
+          cols: 10,
         },
         {
-          src: '/recovered/lun-misto-air/jpg/widget-watches-2.jpg',
+          src: '/recovered/lun-misto-air/jpg/widget-watches-2.webp',
           type: 'image',
           alt: 'Air Quality watch widgets',
+          cols: 10,
         },
         {
-          src: '/recovered/lun-misto-air/jpg/widget-chrome.jpg',
+          src: '/recovered/lun-misto-air/jpg/widget-chrome.webp',
           type: 'image',
           alt: 'Air Quality Chrome widget',
-          span: 'wide',
+          cols: 10,
         },
       ],
     },
     {
       id: 'lunie',
+      cover: 'framed',
       title: 'LUN HR System',
       navigationLabel: 'LUN HR System',
       year: '2018',
       company: 'LUN',
       businessSize: 'Scale-up',
+      audience: 'B2B',
       workType: 'Product Design',
       focus:
         'How we reduced operational cognitive load with a custom HR OS.',
@@ -746,28 +817,7 @@ export const portfolioData = {
             'Role-based permissions improved security and made workflows clearer for each function.',
         },
       ],
-      process: [
-        {
-          title: 'Discovery',
-          description:
-            'Rapid hiring and international growth exposed clear limits in off-the-shelf HR tools.',
-        },
-        {
-          title: 'Research',
-          description:
-            'I interviewed founders, HR, recruiters, accountants, and product teams, then formalized jobs-to-be-done and personas.',
-        },
-        {
-          title: 'Hypothesis',
-          description:
-            'A unified HRM with role-based access, scheduling tools, team visibility, and recruitment communication would cut friction and improve daily operations.',
-        },
-        {
-          title: 'Development',
-          description:
-            'I designed the core IA and flows, validated prototypes in iterative research loops, and shipped role-based interfaces across calendar, team, office map, and admin sections. I also created Lunie, an HR assistant persona later integrated with Slack support.',
-        },
-      ],
+      process: [],
       team: [
         'Alina Skalkina, Product Designer',
         'Andrii Stavinsky, Full Stack Developer',
@@ -775,65 +825,87 @@ export const portfolioData = {
       ],
       gallery: [
         {
-          src: '/recovered/lunie.mp4',
+          src: '/recovered/lunie.webm',
           type: 'video',
           alt: 'Lunie walkthrough video',
           span: 'wide',
         },
         {
-          src: '/recovered/lunie/1.png',
+          src: '/recovered/lunie/1.webp',
           type: 'image',
           alt: 'LUN HR System screen 1',
+          cols: 10,
+          aspect: '1395/907',
         },
         {
-          src: '/recovered/lunie/2.png',
+          src: '/recovered/lunie/2.webp',
           type: 'image',
           alt: 'LUN HR System screen 2',
+          cols: 10,
+          aspect: '1395/907',
         },
         {
-          src: '/recovered/lunie/3.png',
+          src: '/recovered/lunie/3.webp',
           type: 'image',
           alt: 'LUN HR System screen 3',
+          cols: 10,
+          aspect: '1395/907',
         },
         {
-          src: '/recovered/lunie/4.png',
+          src: '/recovered/lunie/4.webp',
           type: 'image',
           alt: 'LUN HR System screen 4',
+          cols: 10,
+          aspect: '1395/907',
         },
         {
-          src: '/recovered/lunie/5.png',
+          src: '/recovered/lunie/5.webp',
           type: 'image',
           alt: 'LUN HR System screen 5',
+          cols: 10,
+          aspect: '1395/907',
         },
         {
-          src: '/recovered/lunie/6.png',
+          src: '/recovered/lunie/6.webp',
           type: 'image',
           alt: 'LUN HR System screen 6',
+          cols: 10,
+          aspect: '1395/907',
         },
         {
-          src: '/recovered/lunie/mobile-1.png',
+          src: '/recovered/lunie/mobile-1.webp',
           type: 'image',
           alt: 'LUN HR System mobile screen 1',
+          cols: 6,
+          aspect: '333/719',
         },
         {
-          src: '/recovered/lunie/mobile-2.png',
+          src: '/recovered/lunie/mobile-2.webp',
           type: 'image',
           alt: 'LUN HR System mobile screen 2',
+          cols: 6,
+          aspect: '333/719',
         },
         {
-          src: '/recovered/lunie/mobile-3.png',
+          src: '/recovered/lunie/mobile-3.webp',
           type: 'image',
           alt: 'LUN HR System mobile screen 3',
+          cols: 6,
+          aspect: '333/719',
         },
         {
-          src: '/recovered/lunie/mobile-4.png',
+          src: '/recovered/lunie/mobile-4.webp',
           type: 'image',
           alt: 'LUN HR System mobile screen 4',
+          cols: 6,
+          aspect: '333/719',
         },
         {
-          src: '/recovered/lunie/mobile-5.png',
+          src: '/recovered/lunie/mobile-5.webp',
           type: 'image',
           alt: 'LUN HR System mobile screen 5',
+          cols: 6,
+          aspect: '333/719',
         },
       ],
     },
@@ -843,7 +915,9 @@ export const portfolioData = {
       navigationLabel: 'LUN HR Brand',
       year: '2019',
       company: 'LUN',
+      noHero: true,
       businessSize: 'Scale-up',
+      audience: 'B2B',
       workType: 'Brand Design',
       focus: 'The hiring game that built a community.',
       categories: [
@@ -915,73 +989,83 @@ export const portfolioData = {
       ],
       gallery: [
         {
-          src: '/recovered/lun-hr-brand/educational-hub-3.jpg',
-          type: 'image',
-          alt: 'LUN HR brand event with the team and candidates',
-          span: 'wide',
-        },
-        {
-          src: '/recovered/lun-hr-brand/lun-game-metro-code.png',
+          src: '/recovered/lun-hr-brand/code-metro.png',
           type: 'image',
           alt: 'LUN Game metro ad code puzzle',
-          span: 'wide',
+          cols: 10,
+          aspect: '3/2',
         },
         {
-          src: '/recovered/lun-hr-brand/lun-game-task-1.jpg',
+          src: '/recovered/lun-hr-brand/404.png',
           type: 'image',
-          alt: 'LUN Game challenge screen, task 1',
+          alt: 'LUN Game challenge screen, task 7 — 404 task not found',
+          cols: 10,
+          aspect: '3/2',
         },
         {
-          src: '/recovered/lun-hr-brand/lun-game-task-7.jpg',
-          type: 'image',
-          alt: 'LUN Game challenge screen, task 7',
-        },
-        {
-          src: '/recovered/lun-hr-brand/lun-game-chat.jpg',
+          src: '/recovered/lun-hr-brand/lun-game-chat.webp',
           type: 'image',
           alt: 'Player chat message about solving LUN Game tasks',
+          cols: 10,
+          aspect: '3/2',
         },
         {
-          src: '/recovered/lun-hr-brand/educational-hub-1.jpg',
+          src: '/recovered/lun-hr-brand/educational-hub-1.webp',
           type: 'image',
           alt: 'Educational hub created by LUN at Taras Shevchenko University, space view',
+          cols: 10,
+          aspect: '3/2',
         },
         {
-          src: '/recovered/lun-hr-brand/educational-hub-2.jpg',
+          src: '/recovered/lun-hr-brand/educational-hub-2.webp',
           type: 'image',
           alt: 'Educational hub created by LUN at Taras Shevchenko University, interior',
+          cols: 10,
+          aspect: '3/2',
         },
         {
-          src: '/recovered/lun-hr-brand/lunoteka-laptop.jpg',
+          src: '/recovered/lun-hr-brand/lunoteka-space.webp',
           type: 'image',
-          alt: 'Laptop with a ЛУНОТЕКА branded sticker',
-          span: 'wide',
+          alt: 'Lunoteka lounge and bookshelves',
+          cols: 10,
+          aspect: '3/2',
         },
         {
-          src: '/recovered/lun-hr-brand/lunoteka-award.jpg',
+          src: '/recovered/lun-hr-brand/lunoteka-award.webp',
           type: 'image',
-          alt: 'ЛУНОТЕКА award moment with the team and a winner',
+          alt: 'Lunoteka award moment',
+          cols: 10,
+          aspect: '3/2',
         },
         {
-          src: '/recovered/lun-hr-brand/lunoteka-event.jpg',
+          src: '/recovered/lun-hr-brand/shoppers.jpg',
           type: 'image',
-          alt: 'Crowd at a ЛУНОТЕКА event in front of the brand wall',
+          alt: 'LUN HR brand shoppers',
+          cols: 15,
         },
         {
-          src: '/recovered/lun-hr-brand/lunoteka-space.jpg',
+          src: '/recovered/lun-hr-brand/t-shirt.jpg',
           type: 'image',
-          alt: 'ЛУНОТЕКА educational hub interior with bookshelves and lounge',
-          span: 'wide',
+          alt: 'LUN HR brand t-shirt',
+          cols: 15,
+        },
+        {
+          src: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
+          type: 'image',
+          alt: 'Lunoteka laptop sticker',
+          cols: 30,
         },
       ],
     },
     {
       id: 'farba',
+      cover: 'framed',
       title: 'Farba',
       navigationLabel: 'Farba',
-      year: '2025 - Ongoing',
+      year: '2025',
       company: 'Farba',
       businessSize: 'Startup',
+      audience: 'B2B',
       workType: 'Design System',
       focus: 'Can strict architecture unlock infinite creativity?',
       categories: [
@@ -1048,22 +1132,64 @@ export const portfolioData = {
         },
       ],
       team: [
-        'Alina Skalkina, Product and Design System Lead',
+        'Alina Skalkina, Founding Designer',
         'Maksym Dolynchuk, CTO',
         'ay_seed',
         'Viki Berg',
       ],
-      gallery: [],
+      gallery: [
+        {
+          src: '/farba/Farba-booking.webm',
+          type: 'video',
+          alt: 'Farba booking flow',
+        },
+        {
+          src: '/farba/onboarding.webp',
+          type: 'image',
+          alt: 'Farba onboarding screens',
+          cols: 15,
+          aspect: '3048/1976',
+        },
+        {
+          src: '/farba/editors.webp',
+          type: 'image',
+          alt: 'Farba profile and field editors',
+          cols: 15,
+          aspect: '3048/1976',
+        },
+        {
+          src: '/farba/management.webp',
+          type: 'image',
+          alt: 'Farba service and schedule management',
+          cols: 15,
+          aspect: '3048/1976',
+        },
+        {
+          src: '/farba/dialogs.webp',
+          type: 'image',
+          alt: 'Farba dialogs and modals',
+          cols: 15,
+          aspect: '3048/1976',
+        },
+        {
+          src: '/farba/farba-demo.webm',
+          type: 'video',
+          alt: 'Farba booking app walkthrough',
+          center: true,
+        },
+      ],
     },
     {
-      id: 'graphic-design',
+      id: 'my-playground',
       title: 'My playground',
       navigationLabel: 'My playground',
-      year: '2018-2025',
+      year: 'Since 2018',
       businessSize: 'Personal',
       workType: 'Visual Design',
-      focus:
-        'Design moves fast, and I’ve found that the only way to keep up is to keep playing. This is my lab for visual experiments—a place where I research tools not just to stay current, but to stay inspired.',
+      hideLabels: true,
+      coverSrc: '/recovered/graphic-design.webm',
+      noHero: true,
+      focus: 'Design moves fast, so I keep playing.',
       categories: [
         'Brand Identity',
         'Typography',
@@ -1076,7 +1202,17 @@ export const portfolioData = {
       team: [],
       gallery: [
         {
-          src: '/recovered/graphic-design.mov',
+          src: '/recovered/graphic-design/bachelor.webp',
+          type: 'image',
+          alt: 'Bachelor dinner poster — 3D type and chrome',
+        },
+        {
+          src: '/recovered/graphic-design/alty-merch.webp',
+          type: 'image',
+          alt: 'Alty gradient merch concept',
+        },
+        {
+          src: '/recovered/graphic-design.webm',
           type: 'video',
           alt: 'Graphic Design motion studies reel',
           span: 'wide',
@@ -1094,62 +1230,46 @@ export const portfolioData = {
           alt: '3D floor plan of the apartment',
         },
         {
-          src: '/recovered/graphic-design/Lun-redesign.jpg',
+          src: '/recovered/graphic-design/Lun-redesign.webp',
           type: 'image',
           alt: 'LUN "Try 3D buildings on the map" campaign asset',
           span: 'wide',
         },
         {
-          src: '/recovered/graphic-design/Lun-5.jpg',
+          src: '/recovered/graphic-design/Lun-5.webp',
           type: 'image',
           alt: 'LUN illustrated social campaign asset',
         },
         {
-          src: '/recovered/graphic-design/Lun-4.jpg',
+          src: '/recovered/graphic-design/Lun-4.webp',
           type: 'image',
           alt: 'LUN branded sticker set',
         },
         {
-          src: '/recovered/problematic.mp4',
+          src: '/recovered/graphic-design/house2.webm',
           type: 'video',
-          alt: 'Graphic Design motion clip',
-          span: 'wide',
-        },
-        {
-          src: '/recovered/graphic-design/house2.gif',
-          type: 'image',
           alt: 'Graphic Design animated house concept',
           span: 'wide',
         },
         {
-          src: '/recovered/graphic-design/L-0.jpg',
+          src: '/recovered/graphic-design/L-0.webp',
           type: 'image',
           alt: 'Graphic Design piece L-0',
         },
         {
-          src: '/recovered/graphic-design/B-1.jpg',
+          src: '/recovered/graphic-design/B-1.webp',
           type: 'image',
           alt: 'Graphic Design piece B-1',
         },
         {
-          src: '/recovered/graphic-design/D-1.jpg',
+          src: '/recovered/graphic-design/D-1.webp',
           type: 'image',
           alt: 'Graphic Design piece D-1',
         },
         {
-          src: '/recovered/graphic-design/I-2.jpg',
+          src: '/recovered/graphic-design/I-2.webp',
           type: 'image',
           alt: 'Graphic Design piece I-2',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-redesign.jpg',
-          type: 'image',
-          alt: 'Graphic Design Lun redesign',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-5.jpg',
-          type: 'image',
-          alt: 'Graphic Design Lun visual 5',
         },
       ],
     },

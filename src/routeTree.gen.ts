@@ -9,12 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MyPlaygroundRouteImport } from './routes/my-playground'
 import { Route as LunieRouteImport } from './routes/lunie'
 import { Route as LunHrBrandRouteImport } from './routes/lun-hr-brand'
 import { Route as HuaweiRouteImport } from './routes/huawei'
-import { Route as GraphicDesignRouteImport } from './routes/graphic-design'
 import { Route as FarbaRouteImport } from './routes/farba'
-import { Route as DesignEngineeringCourseRouteImport } from './routes/design-engineering-course'
 import { Route as CvRouteImport } from './routes/cv'
 import { Route as ComfortMapRouteImport } from './routes/comfort-map'
 import { Route as ArApartmentTourRouteImport } from './routes/ar-apartment-tour'
@@ -23,6 +22,11 @@ import { Route as AirQualityMapRouteImport } from './routes/air-quality-map'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const MyPlaygroundRoute = MyPlaygroundRouteImport.update({
+  id: '/my-playground',
+  path: '/my-playground',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LunieRoute = LunieRouteImport.update({
   id: '/lunie',
   path: '/lunie',
@@ -38,19 +42,9 @@ const HuaweiRoute = HuaweiRouteImport.update({
   path: '/huawei',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GraphicDesignRoute = GraphicDesignRouteImport.update({
-  id: '/graphic-design',
-  path: '/graphic-design',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const FarbaRoute = FarbaRouteImport.update({
   id: '/farba',
   path: '/farba',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DesignEngineeringCourseRoute = DesignEngineeringCourseRouteImport.update({
-  id: '/design-engineering-course',
-  path: '/design-engineering-course',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CvRoute = CvRouteImport.update({
@@ -97,12 +91,11 @@ export interface FileRoutesByFullPath {
   '/ar-apartment-tour': typeof ArApartmentTourRoute
   '/comfort-map': typeof ComfortMapRoute
   '/cv': typeof CvRoute
-  '/design-engineering-course': typeof DesignEngineeringCourseRoute
   '/farba': typeof FarbaRoute
-  '/graphic-design': typeof GraphicDesignRoute
   '/huawei': typeof HuaweiRoute
   '/lun-hr-brand': typeof LunHrBrandRoute
   '/lunie': typeof LunieRoute
+  '/my-playground': typeof MyPlaygroundRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -112,12 +105,11 @@ export interface FileRoutesByTo {
   '/ar-apartment-tour': typeof ArApartmentTourRoute
   '/comfort-map': typeof ComfortMapRoute
   '/cv': typeof CvRoute
-  '/design-engineering-course': typeof DesignEngineeringCourseRoute
   '/farba': typeof FarbaRoute
-  '/graphic-design': typeof GraphicDesignRoute
   '/huawei': typeof HuaweiRoute
   '/lun-hr-brand': typeof LunHrBrandRoute
   '/lunie': typeof LunieRoute
+  '/my-playground': typeof MyPlaygroundRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -128,12 +120,11 @@ export interface FileRoutesById {
   '/ar-apartment-tour': typeof ArApartmentTourRoute
   '/comfort-map': typeof ComfortMapRoute
   '/cv': typeof CvRoute
-  '/design-engineering-course': typeof DesignEngineeringCourseRoute
   '/farba': typeof FarbaRoute
-  '/graphic-design': typeof GraphicDesignRoute
   '/huawei': typeof HuaweiRoute
   '/lun-hr-brand': typeof LunHrBrandRoute
   '/lunie': typeof LunieRoute
+  '/my-playground': typeof MyPlaygroundRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -145,12 +136,11 @@ export interface FileRouteTypes {
     | '/ar-apartment-tour'
     | '/comfort-map'
     | '/cv'
-    | '/design-engineering-course'
     | '/farba'
-    | '/graphic-design'
     | '/huawei'
     | '/lun-hr-brand'
     | '/lunie'
+    | '/my-playground'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -160,12 +150,11 @@ export interface FileRouteTypes {
     | '/ar-apartment-tour'
     | '/comfort-map'
     | '/cv'
-    | '/design-engineering-course'
     | '/farba'
-    | '/graphic-design'
     | '/huawei'
     | '/lun-hr-brand'
     | '/lunie'
+    | '/my-playground'
   id:
     | '__root__'
     | '/'
@@ -175,12 +164,11 @@ export interface FileRouteTypes {
     | '/ar-apartment-tour'
     | '/comfort-map'
     | '/cv'
-    | '/design-engineering-course'
     | '/farba'
-    | '/graphic-design'
     | '/huawei'
     | '/lun-hr-brand'
     | '/lunie'
+    | '/my-playground'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -191,16 +179,22 @@ export interface RootRouteChildren {
   ArApartmentTourRoute: typeof ArApartmentTourRoute
   ComfortMapRoute: typeof ComfortMapRoute
   CvRoute: typeof CvRoute
-  DesignEngineeringCourseRoute: typeof DesignEngineeringCourseRoute
   FarbaRoute: typeof FarbaRoute
-  GraphicDesignRoute: typeof GraphicDesignRoute
   HuaweiRoute: typeof HuaweiRoute
   LunHrBrandRoute: typeof LunHrBrandRoute
   LunieRoute: typeof LunieRoute
+  MyPlaygroundRoute: typeof MyPlaygroundRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/my-playground': {
+      id: '/my-playground'
+      path: '/my-playground'
+      fullPath: '/my-playground'
+      preLoaderRoute: typeof MyPlaygroundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lunie': {
       id: '/lunie'
       path: '/lunie'
@@ -222,25 +216,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HuaweiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/graphic-design': {
-      id: '/graphic-design'
-      path: '/graphic-design'
-      fullPath: '/graphic-design'
-      preLoaderRoute: typeof GraphicDesignRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/farba': {
       id: '/farba'
       path: '/farba'
       fullPath: '/farba'
       preLoaderRoute: typeof FarbaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/design-engineering-course': {
-      id: '/design-engineering-course'
-      path: '/design-engineering-course'
-      fullPath: '/design-engineering-course'
-      preLoaderRoute: typeof DesignEngineeringCourseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cv': {
@@ -303,12 +283,11 @@ const rootRouteChildren: RootRouteChildren = {
   ArApartmentTourRoute: ArApartmentTourRoute,
   ComfortMapRoute: ComfortMapRoute,
   CvRoute: CvRoute,
-  DesignEngineeringCourseRoute: DesignEngineeringCourseRoute,
   FarbaRoute: FarbaRoute,
-  GraphicDesignRoute: GraphicDesignRoute,
   HuaweiRoute: HuaweiRoute,
   LunHrBrandRoute: LunHrBrandRoute,
   LunieRoute: LunieRoute,
+  MyPlaygroundRoute: MyPlaygroundRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

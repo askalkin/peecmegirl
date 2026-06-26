@@ -3,7 +3,7 @@ import { ArrowLeft, Download } from 'lucide-react'
 
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
-import { cvRoles } from '@/data/cv'
+import { cvEducation, cvKnowledge, cvRoles } from '@/data/cv'
 import { portfolioData } from '@/data/portfolio'
 
 export const Route = createFileRoute('/cv')({
@@ -40,18 +40,23 @@ function CvPage() {
               {portfolioData.person.name}
             </h1>
             <p className="cv-page-summary max-w-2xl text-base leading-relaxed text-foreground/80">
-              Lead Brand Product Designer with experience across marketing,
-              product, and brand systems. Focused on turning complex workflows
-              into clear, usable experiences.
+              B2B Brand Designer by choice, Design Engineer by destiny, and the
+              person asking why this component exists in five different
+              versions. Helping B2B products explain themselves better, make
+              visuals less generic, and design systems less likely to become
+              archaeological sites.
+              <br />
+              <br />
+              Currently exploring how AI-native workflows, design engineering,
+              and brand systems are changing the way modern teams build
+              identity, websites, and creative pipelines.
             </p>
             <div className="cv-print-meta">
               <span>{portfolioData.person.role}</span>
               <span>{portfolioData.person.approach}</span>
-              <a href={`mailto:${portfolioData.person.email}`}>
-                {portfolioData.person.email}
-              </a>
+              <a href={`mailto:${portfolioData.person.email}`}>email</a>
               <a href={linkedInLink.href} target="_blank" rel="noreferrer">
-                LinkedIn
+                linkedin
               </a>
             </div>
           </div>
@@ -83,7 +88,7 @@ function CvPage() {
                 Email
               </a>
               <a
-                href="/recovered/Alina-Skalkina-CV-Lead-Brand-Product-Designer.pdf"
+                href="/recovered/Alina-Skalkina-CV-Lead-Brand-Designer.pdf"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-1.5 font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
@@ -98,11 +103,7 @@ function CvPage() {
 
       <section className="section-shell cv-page-experience pb-20 md:pb-28">
         <div className="grid gap-4 md:grid-cols-12 md:gap-12">
-          <div className="md:col-span-3">
-            <h2 className="cv-page-section-title text-sm font-medium text-muted-foreground">
-              Experience
-            </h2>
-          </div>
+          <div className="md:col-span-3" />
           <div className="cv-page-roles md:col-span-9">
             {cvRoles.map((role) => (
               <article
@@ -122,7 +123,9 @@ function CvPage() {
                       {role.title}
                     </h3>
                     <p className="cv-role-company mt-1 text-base text-foreground/70">
-                      {role.company}
+                      {role.employment
+                        ? `${role.company} · ${role.employment}`
+                        : role.company}
                     </p>
                   </div>
 
@@ -143,6 +146,66 @@ function CvPage() {
                       </li>
                     ))}
                   </ul>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell cv-page-experience pb-20 md:pb-28">
+        <div className="grid gap-4 md:grid-cols-12 md:gap-12">
+          <div className="md:col-span-3">
+            <h2 className="cv-page-section-title text-sm font-medium text-muted-foreground">
+              Knowledge Sharing
+            </h2>
+          </div>
+          <div className="cv-page-roles md:col-span-9">
+            {cvKnowledge.map((entry) => (
+              <article
+                key={entry.title}
+                className="cv-role-card grid gap-3 border-t border-border py-8 md:grid-cols-[11rem_1fr] md:gap-10"
+              >
+                <div className="cv-role-period text-sm text-muted-foreground">
+                  {entry.year}
+                </div>
+                <div>
+                  <h3 className="cv-role-title text-h2 font-bold text-foreground">
+                    {entry.title}
+                  </h3>
+                  <p className="cv-role-note mt-3 max-w-2xl text-base leading-relaxed text-foreground/80">
+                    {entry.description}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell cv-page-experience pb-20 md:pb-28">
+        <div className="grid gap-4 md:grid-cols-12 md:gap-12">
+          <div className="md:col-span-3">
+            <h2 className="cv-page-section-title text-sm font-medium text-muted-foreground">
+              Education
+            </h2>
+          </div>
+          <div className="cv-page-roles md:col-span-9">
+            {cvEducation.map((entry) => (
+              <article
+                key={entry.title}
+                className="cv-role-card grid gap-3 border-t border-border py-8 md:grid-cols-[11rem_1fr] md:gap-10"
+              >
+                <div className="cv-role-period text-sm text-muted-foreground">
+                  {entry.period}
+                </div>
+                <div>
+                  <h3 className="cv-role-title text-h2 font-bold text-foreground">
+                    {entry.title}
+                  </h3>
+                  <p className="cv-role-note mt-3 max-w-2xl text-base leading-relaxed text-foreground/80">
+                    {entry.note}
+                  </p>
                 </div>
               </article>
             ))}

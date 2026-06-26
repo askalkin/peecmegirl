@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { ArrowDown, ChevronDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { cvRoles } from '@/data/cv'
+import { cvEducation, cvKnowledge, cvRoles } from '@/data/cv'
 
 function DownloadCvLink() {
   return (
     <a
-      href="/recovered/Alina-Skalkina-CV-Lead-Brand-Product-Designer.pdf"
+      href="/cv"
       target="_blank"
       rel="noreferrer"
       className="inline-flex w-fit items-center gap-2 border-b border-foreground pb-1 text-sm font-medium text-foreground transition-opacity hover:opacity-60"
@@ -43,7 +43,9 @@ function ExperienceList() {
                 </span>
                 <span>
                   <span className="block text-sm font-medium text-muted-foreground">
-                    {role.company}, {role.country}
+                    {[role.employment, `${role.company}, ${role.country}`]
+                      .filter(Boolean)
+                      .join(' · ')}
                   </span>
                   <span className="mt-1 block text-h2 font-semibold text-foreground">
                     {role.title}
@@ -107,6 +109,58 @@ export function AboutContent() {
 
       <div className="mt-12 md:mt-16">
         <ExperienceList />
+      </div>
+
+      <div className="mt-20 md:mt-28">
+        <h3 className="mb-8 text-sm font-medium text-muted-foreground">
+          Knowledge Sharing
+        </h3>
+        <div className="border-t border-border">
+          {cvKnowledge.map((entry) => (
+            <div
+              key={entry.title}
+              className="grid gap-3 border-b border-border py-6 md:grid-cols-[7rem_1fr] md:gap-8"
+            >
+              <span className="pt-1 text-sm tabular-nums text-muted-foreground">
+                {entry.year}
+              </span>
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  {entry.title}
+                </p>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                  {entry.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-20 md:mt-28">
+        <h3 className="mb-8 text-sm font-medium text-muted-foreground">
+          Education
+        </h3>
+        <div className="border-t border-border">
+          {cvEducation.map((entry) => (
+            <div
+              key={entry.title}
+              className="grid gap-3 border-b border-border py-6 md:grid-cols-[7rem_1fr] md:gap-8"
+            >
+              <span className="pt-1 text-sm tabular-nums text-muted-foreground">
+                {entry.period}
+              </span>
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  {entry.title}
+                </p>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                  {entry.note}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

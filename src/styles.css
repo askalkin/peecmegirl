@@ -53,20 +53,20 @@ code {
     sans-serif;
   --font-display: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
-  --background: oklch(0.985 0.003 258);
-  --foreground: oklch(0.211 0.01 264.53);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.211 0.01 264.53);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.211 0.01 264.53);
-  --primary: oklch(0.232 0.013 264.8);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.232 0.013 264.8);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.48 0.013 264.91);
-  --accent: oklch(0.96 0 0);
-  --accent-foreground: oklch(0.232 0.013 264.8);
+  --background: oklch(97.91% 0.0000 89.88);
+  --foreground: oklch(21.78% 0.0000 89.88);
+  --card: oklch(97.91% 0.0000 89.88);
+  --card-foreground: oklch(21.78% 0.0000 89.88);
+  --popover: oklch(97.91% 0.0000 89.88);
+  --popover-foreground: oklch(21.78% 0.0000 89.88);
+  --primary: oklch(21.78% 0.0000 89.88);
+  --primary-foreground: oklch(97.91% 0.0000 89.88);
+  --secondary: oklch(97.91% 0.0000 89.88);
+  --secondary-foreground: oklch(21.78% 0.0000 89.88);
+  --muted: oklch(97.91% 0.0000 89.88);
+  --muted-foreground: oklch(49.64% 0.0000 89.88);
+  --accent: oklch(97.91% 0.0000 89.88);
+  --accent-foreground: oklch(21.78% 0.0000 89.88);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: oklch(0.9 0 0);
@@ -78,11 +78,11 @@ code {
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
+  --sidebar: oklch(97.91% 0.0000 89.88);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.21 0.006 285.885);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-primary-foreground: oklch(97.91% 0.0000 89.88);
+  --sidebar-accent: oklch(97.91% 0.0000 89.88);
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.871 0.006 286.286);
@@ -167,6 +167,7 @@ code {
 @layer base {
   html {
     scroll-behavior: smooth;
+    @apply bg-background;
   }
   * {
     @apply border-border outline-ring/50;
@@ -192,7 +193,7 @@ code {
     font-size: var(--text-h2);
   }
   ::selection {
-    background: rgba(24, 24, 27, 0.12);
+    background: oklch(21.78% 0.0000 89.88 / 0.12);
   }
 }
 
@@ -206,7 +207,7 @@ code {
      caption       → meta, labels, captions → Tailwind `text-sm` (0.875rem) */
 :root {
   --text-display: clamp(2.75rem, 9vw, 11rem);
-  --text-h1: clamp(2rem, 5vw, 4rem);
+  --text-h1: clamp(1.875rem, 2.2vw, 2.25rem);
   --text-h2: clamp(1.375rem, 2vw, 2rem);
 }
 
@@ -229,6 +230,24 @@ code {
   font-size: var(--text-h2);
   line-height: 1.18;
   letter-spacing: -0.015em;
+}
+
+/* Case-study gallery: media stacks on small screens; on lg+ it becomes a
+   30-column grid where each item spans `--span` columns (30 = full row). */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .gallery-grid {
+    grid-template-columns: repeat(30, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .gallery-grid > * {
+    grid-column: span var(--span, 30);
+  }
 }
 
 /* --- Layout system --------------------------------------------------
@@ -256,6 +275,32 @@ code {
 
 .media-tile {
   min-height: 14rem;
+}
+
+.media-loading-surface {
+  background:
+    linear-gradient(
+      110deg,
+      var(--background) 0%,
+      oklch(93% 0 0) 22%,
+      oklch(96% 0 0) 44%,
+      oklch(93% 0 0) 66%,
+      var(--background) 100%
+    );
+  background-size: 260% 100%;
+  animation: media-loading-gradient 3s ease-in-out infinite;
+}
+
+@keyframes media-loading-gradient {
+  0% {
+    background-position: 120% 50%;
+  }
+  50% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: -120% 50%;
+  }
 }
 
 .nav-switch-indicator {
@@ -291,6 +336,10 @@ code {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-orb:hover {
+    animation: none;
+  }
+
+  .media-loading-surface {
     animation: none;
   }
 }
@@ -334,7 +383,7 @@ code {
     line-height: 1.4;
   }
 
-  body > header,
+  header,
   .cv-page-backlink,
   .cv-page-actions,
   .contact-section,
@@ -377,9 +426,9 @@ code {
 
   .cv-page-name {
     margin: 0 !important;
-    font-size: 27pt !important;
-    line-height: 1.05 !important;
-    letter-spacing: -0.03em;
+    font-size: 18pt !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.02em;
     color: #111 !important;
   }
 
@@ -395,8 +444,8 @@ code {
     display: flex !important;
     flex-wrap: wrap;
     gap: 2mm 4mm;
-    margin-top: 3mm;
-    font-size: 9.5pt;
+    margin-top: 2mm;
+    font-size: 8.5pt;
     line-height: 1.35;
     color: #555 !important;
   }
@@ -454,7 +503,7 @@ code {
   }
 
   .cv-role-title {
-    font-size: 13pt !important;
+    font-size: 11pt !important;
     line-height: 1.2 !important;
     color: #111 !important;
   }
@@ -493,4 +542,3 @@ code {
     background: #666 !important;
   }
 }
-
