@@ -86,7 +86,7 @@ export function VimeoBackground({
   return (
     <div
       className={cn(
-        'absolute inset-0 overflow-hidden',
+        'absolute inset-0 overflow-hidden bg-black',
         grayscale && 'grayscale transition duration-500 group-hover:grayscale-0'
       )}
     >

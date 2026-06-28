@@ -434,10 +434,6 @@ export const portfolioData = {
       navigationLabel: 'Huawei',
       embedUrl:
         'https://player.vimeo.com/video/1204428080?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
-      // Static poster for the hover preview — the Vimeo embed is too slow to
-      // mount on hover, so the card shows this instant image instead.
-      coverSrc: '/recovered/huawei/poster.webp',
-      coverOffsetX: '3%',
       year: '2024',
       company: 'Huawei',
       businessSize: 'Enterprise',

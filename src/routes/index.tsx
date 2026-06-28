@@ -212,7 +212,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       <div
         className={cn(
           'media-loading-surface relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:h-[52vh] xl:h-[56vh]',
-          hasEmbed && !isFramed && 'bg-foreground'
+          hasEmbed && !isFramed && 'bg-black'
         )}
       >
         {isFramed ? (
