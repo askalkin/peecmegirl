@@ -26,9 +26,13 @@ export function ContactSection({ id }: { id?: string }) {
                 href={link.href}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noreferrer' : undefined}
-                className="text-display font-black lowercase text-foreground decoration-[0.06em] underline-offset-[0.08em] transition-[text-decoration-color] duration-300 hover:underline"
+                className="group/link relative inline-block text-display font-black lowercase text-foreground"
               >
                 {link.label}
+                <span
+                  aria-hidden
+                  className="absolute bottom-[0.04em] left-0 h-[0.06em] w-0 bg-foreground transition-[width] duration-300 ease-in-out group-hover/link:w-full"
+                />
               </a>
             </li>
           ))}

@@ -90,17 +90,14 @@ export function VimeoBackground({
         grayscale && 'grayscale transition duration-500 group-hover:grayscale-0'
       )}
     >
-      {/* 16:9 iframe oversized so the video covers (fills) the container in
-          both dimensions instead of letterboxing. */}
+      {/* Vimeo background=1 mode scales the video to cover the iframe element,
+          so filling the container is enough — no manual aspect-ratio tricks. */}
       <iframe
         ref={ref}
         src={url}
         title={title}
-        className="absolute top-1/2 aspect-video min-h-full min-w-full -translate-y-1/2"
-        style={offsetX
-          ? { left: `calc(50% + ${offsetX})`, transform: `translateX(-50%) translateY(-50%)` }
-          : { left: '50%', transform: 'translateX(-50%) translateY(-50%)' }
-        }
+        className="absolute inset-0 h-full w-full"
+        style={offsetX ? { left: offsetX, width: `calc(100% + ${offsetX})` } : undefined}
         allow="autoplay; fullscreen; picture-in-picture"
       />
     </div>

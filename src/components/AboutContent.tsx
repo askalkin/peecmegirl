@@ -3,6 +3,7 @@ import { ArrowDown, ChevronDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { cvEducation, cvKnowledge, cvRoles } from '@/data/cv'
+import type { CvEducation, CvKnowledgeEntry } from '@/data/cv'
 
 function DownloadCvLink() {
   return (
@@ -19,6 +20,7 @@ function DownloadCvLink() {
 }
 
 // Expandable, swiss-style experience list. Collapsed by default.
+// Knowledge sharing and education entries follow jobs in the same list.
 function ExperienceList() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
@@ -29,7 +31,7 @@ function ExperienceList() {
         return (
           <div
             key={`${role.title}-${role.company}-${role.period}`}
-            className={cn(index > 0 && 'border-t border-border')}
+            className="border-t border-border first:border-t-0"
           >
             <button
               type="button"
@@ -92,6 +94,34 @@ function ExperienceList() {
           </div>
         )
       })}
+
+      {cvKnowledge.map((entry: CvKnowledgeEntry) => (
+        <div key={entry.title} className="grid gap-2 border-t border-border py-6 md:grid-cols-[7rem_1fr] md:gap-8">
+          <span className="pt-1 text-sm tabular-nums text-muted-foreground">
+            {entry.year}
+          </span>
+          <div>
+            <p className="text-sm font-semibold text-foreground">{entry.title}</p>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/70">
+              {entry.description}
+            </p>
+          </div>
+        </div>
+      ))}
+
+      {cvEducation.map((entry: CvEducation) => (
+        <div key={entry.title} className="grid gap-2 border-t border-border py-6 md:grid-cols-[7rem_1fr] md:gap-8">
+          <span className="pt-1 text-sm tabular-nums text-muted-foreground">
+            {entry.period}
+          </span>
+          <div>
+            <p className="text-sm font-semibold text-foreground">{entry.title}</p>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/70">
+              {entry.note}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -111,57 +141,6 @@ export function AboutContent() {
         <ExperienceList />
       </div>
 
-      <div className="mt-20 md:mt-28">
-        <h3 className="mb-8 text-sm font-medium text-muted-foreground">
-          Knowledge Sharing
-        </h3>
-        <div className="border-t border-border">
-          {cvKnowledge.map((entry) => (
-            <div
-              key={entry.title}
-              className="grid gap-3 border-b border-border py-6 md:grid-cols-[7rem_1fr] md:gap-8"
-            >
-              <span className="pt-1 text-sm tabular-nums text-muted-foreground">
-                {entry.year}
-              </span>
-              <div>
-                <p className="text-sm font-medium text-foreground">
-                  {entry.title}
-                </p>
-                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                  {entry.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-20 md:mt-28">
-        <h3 className="mb-8 text-sm font-medium text-muted-foreground">
-          Education
-        </h3>
-        <div className="border-t border-border">
-          {cvEducation.map((entry) => (
-            <div
-              key={entry.title}
-              className="grid gap-3 border-b border-border py-6 md:grid-cols-[7rem_1fr] md:gap-8"
-            >
-              <span className="pt-1 text-sm tabular-nums text-muted-foreground">
-                {entry.period}
-              </span>
-              <div>
-                <p className="text-sm font-medium text-foreground">
-                  {entry.title}
-                </p>
-                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                  {entry.note}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
     </section>
   )
 }

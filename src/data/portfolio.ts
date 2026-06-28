@@ -325,9 +325,9 @@ export const portfolioData = {
             `As Brand Designer, I worked across both strategy and execution.`,
             `On the strategic side, I helped define the brand core: who Alty is, how it speaks, who its clients are, what they need, and how the company should be positioned in the market.`,
             `On the tactical side, I led the website design across UX/UI, visual design, interactions, animations, component logic, and handoff.`,
-            `The website redesign and rebrand were happening at the same time. On Alty's side, I was responsible for translating the external agency's visual identity output into a usable digital system — aligning it with the brand vision, positioning, website experience, and long-term scalability.`,
+            `The website redesign and rebrand were happening at the same time. My job was to make sure our core vision, the website experience, and our future growth perfectly matched the new visuals created by our external agency.`,
             `To make the brand feel mature but not conservative, I defined two visual identity anchors, that created the right tension: sharp and alternative, but still mature, structured, and credible.`,
-            `Because the website had to move forward before every identity decision was finalized, I created a redesign defence system: a scalable foundation built on semantic tokens, theme collections, adaptive components, and reusable interaction patterns.`,
+            `Because the website had to move forward before identity was finalized, I created a redesign defence system: a scalable foundation built on semantic tokens, theme collections, adaptive components, and reusable interaction patterns.`,
             `The workflow connected Figma → Storybook → Claude Code / Codex, allowing us to update color themes, layouts, components, animations, and interaction states without rebuilding the system from scratch.`,
           ],
         },
@@ -335,10 +335,7 @@ export const portfolioData = {
           heading: 'Leadership',
           paragraphs: [
             `A big part of my role was helping the team think in systems.`,
-            `I mentored designers in design engineering principles and later created a course around this approach.`,
-            `For this identity, I also had to accept that there would be more card and layout variations than a traditional system might usually allow. But the flexibility was intentional.`,
-            `The point was not to limit creativity.`,
-            `The point was to give creativity a reliable structure.`,
+            `I mentored designers in design engineering principles and later created a course around this approach. I also had to accept that there would be more card and layout variations than a traditional system might usually allow. But the flexibility was intentional. The point was not to limit creativity. The point was to give creativity a reliable structure.`,
           ],
         },
         {
@@ -1072,22 +1069,12 @@ export const portfolioData = {
           description:
             'After architecture, new feature work shifted from mockup-heavy cycles to supervised prompt-and-validate implementation.',
         },
-        {
-          title: 'Curator-first product model',
-          description:
-            'Users pick color, templates, and components while the system handles complexity across light/dark modes and edge cases.',
-        },
       ],
       process: [
         {
-          title: 'Experiment Setup',
+          title: 'System as Creative Environment',
           description:
-            'Farba started as a deliberate R&D bet: stop waiting for ideal system conditions and test whether a themable system could be both flexible and maintainable.',
-        },
-        {
-          title: 'Architecture First',
-          description:
-            'The team invested heavily in system architecture before scaling features, so future additions would rely on durable rules instead of ad-hoc custom components.',
+            'Farba was an R&D bet on a flexible, maintainable theming system. We prioritized core architecture first so future growth relies on durable rules, not ad-hoc hacks.',
         },
         {
           title: 'OKLCH Color Engine',
@@ -1098,11 +1085,6 @@ export const portfolioData = {
           title: 'AI-Integrated Build Loop',
           description:
             'Once architecture stabilized, feature delivery became significantly faster: define intent, generate under developer supervision, evaluate solution quality, iterate.',
-        },
-        {
-          title: 'System as Creative Environment',
-          description:
-            'With core system problems largely solved, energy shifted from maintenance overhead to making useful, expressive experiences for portfolios, services, blogs, about pages, and booking flows.',
         },
       ],
       team: [
