@@ -5,7 +5,7 @@ import { portfolioData } from '@/data/portfolio'
 export function SiteFooter() {
   return (
     <footer className="section-shell flex flex-wrap items-center justify-between gap-2 py-6 text-base text-muted-foreground">
-      <span className="lowercase">{portfolioData.person.name}</span>
+      <span>{portfolioData.person.name}</span>
       <span>&copy; {portfolioData.person.footerYear}</span>
     </footer>
   )

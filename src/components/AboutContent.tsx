@@ -3,11 +3,14 @@ import { ArrowDown, ChevronDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { cvRoles } from '@/data/cv'
+import { portfolioData } from '@/data/portfolio'
+
+const cvLink = portfolioData.person.links.find((l) => l.label === 'Download CV')
 
 function DownloadCvLink() {
   return (
     <a
-      href="/recovered/Alina-Skalkina-CV.pdf"
+      href={cvLink?.href ?? '/recovered/Alina-Skalkina-CV.pdf'}
       target="_blank"
       rel="noreferrer"
       className="group/cv relative inline-flex w-fit items-center gap-2 text-sm font-medium text-foreground"
@@ -43,23 +46,23 @@ function ExperienceList() {
               className="flex w-full items-start justify-between gap-6 py-6 text-left"
             >
               <div className="grid flex-1 gap-2 md:grid-cols-[7rem_1fr] md:gap-8">
-                <span className="pt-1 text-sm font-bold tabular-nums text-foreground">
+                <span className="pt-1 text-base font-bold tabular-nums text-text-primary">
                   {role.years}
                 </span>
                 <span>
-                  <span className="block text-sm font-medium text-muted-foreground">
+                  <span className="block text-sm font-medium text-text-secondary">
                     {[role.employment, `${role.company}, ${role.country}`]
                       .filter(Boolean)
                       .join(' · ')}
                   </span>
-                  <span className="mt-1 block text-h2 font-semibold text-foreground">
+                  <span className="mt-1 block text-h2 font-semibold text-text-primary">
                     {role.title}
                   </span>
                 </span>
               </div>
               <ChevronDown
                 className={cn(
-                  'mt-1.5 size-5 shrink-0 text-muted-foreground transition-transform duration-300',
+                  'mt-1.5 size-5 shrink-0 text-text-secondary transition-transform duration-300',
                   isOpen && 'rotate-180'
                 )}
               />
@@ -72,14 +75,14 @@ function ExperienceList() {
             >
               <div className="overflow-hidden">
                 <div className="pb-8 md:pl-[calc(7rem+2rem)]">
-                  <p className="mb-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                  <p className="mb-4 max-w-2xl text-base leading-relaxed text-text-secondary">
                     {role.companyAbout}
                   </p>
                   <ul className="space-y-2.5">
                     {role.highlights.map((highlight) => (
                       <li
                         key={highlight}
-                        className="flex max-w-2xl gap-3 text-sm leading-relaxed text-foreground/90"
+                        className="flex max-w-2xl gap-3 text-base leading-relaxed text-text-primary"
                       >
                         <span className="mt-2 inline-block size-1 shrink-0 rounded-full bg-muted-foreground/60" />
                         <span>{highlight}</span>
@@ -102,8 +105,8 @@ export function AboutContent() {
     <section className="section-shell section-y">
       {/* Title left, download right; the list sits full-width below. */}
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
-        <h2 className="text-h1 font-black lowercase text-foreground">
-          my experience
+        <h2 className="text-h1 font-black text-text-primary">
+          My experience
         </h2>
         <DownloadCvLink />
       </div>

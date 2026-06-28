@@ -80,6 +80,12 @@ export type PortfolioMediaItem = {
   /** flex-grow value — set to the image's natural aspect ratio (w/h) so all
    *  items in a flex row share the same height with proportional widths. */
   flexGrow?: number
+  /** Column span in a 12-column bento grid (1–12). Triggers BentoGridGallery. */
+  colSpan?: number
+  /** Row span in a 12-column bento grid (default 1). */
+  rowSpan?: number
+  /** Vimeo video ID — when set, the gallery renders this via Vimeo instead of a local file. */
+  vimeoId?: string
 }
 
 export type PortfolioProject = {
@@ -158,9 +164,9 @@ export const portfolioData = {
       },
     ] satisfies PortfolioLink[],
     sitemap: [
-      { href: '/#work', label: 'works' },
-      { href: '/#about', label: 'about me' },
-      { href: '/#contact', label: 'contacts' },
+      { href: '/#work', label: 'Works' },
+      { href: '/#about', label: 'About me' },
+      { href: '/#contact', label: 'Contacts' },
     ] satisfies PortfolioLink[],
     stats: [
       { label: 'Experience', value: '6+ years' },
@@ -553,6 +559,7 @@ export const portfolioData = {
           type: 'video',
           alt: 'Comfort Map walkthrough video',
           span: 'wide',
+          vimeoId: '1205293955',
         },
         {
           src: '/recovered/comfort-map/desktop-1.webp',
@@ -594,12 +601,16 @@ export const portfolioData = {
           type: 'video',
           alt: 'Comfort Map campaign video 1',
           cols: 15,
+          aspect: '16/9',
+          vimeoId: '1205294149',
         },
         {
           src: '/recovered/visual-design/3.webm',
           type: 'video',
           alt: 'Comfort Map campaign video 2',
           cols: 15,
+          aspect: '16/9',
+          vimeoId: '1205294148',
         },
       ],
     },
@@ -686,6 +697,7 @@ export const portfolioData = {
           type: 'video',
           alt: 'Air Quality Map walkthrough video',
           span: 'wide',
+          vimeoId: '1205293956',
         },
         {
           src: '/recovered/lun-misto-air/jpg/map-1.webp',
@@ -796,6 +808,7 @@ export const portfolioData = {
           type: 'video',
           alt: 'Lunie walkthrough video',
           span: 'wide',
+          vimeoId: '1205293953',
         },
         {
           src: '/recovered/lunie/1.webp',
@@ -882,7 +895,7 @@ export const portfolioData = {
       navigationLabel: 'LUN HR Brand',
       year: '2019',
       company: 'LUN',
-      coverSrc: '/recovered/lun-hr-brand/educational-hub-3.webp',
+      coverSrc: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
       businessSize: 'Scale-up',
       audience: 'B2B',
       workType: 'Brand Design',
@@ -956,72 +969,65 @@ export const portfolioData = {
       ],
       gallery: [
         {
+          src: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
+          type: 'image',
+          alt: 'Lunoteka laptop sticker',
+          colSpan: 12,
+        },
+        {
           src: '/recovered/lun-hr-brand/educational-hub-3.webp',
           type: 'image',
           alt: 'LUN HR community event at the Educational Hub',
+          colSpan: 12,
+          rowSpan: 2,
         },
         {
           src: '/recovered/lun-hr-brand/code-metro.webp',
           type: 'image',
           alt: 'LUN Game metro ad code puzzle',
-          flexRow: 1,
-          flexGrow: 1.84,
+          colSpan: 6,
         },
         {
           src: '/recovered/lun-hr-brand/404.webp',
           type: 'image',
           alt: 'LUN Game challenge screen — 404 task not found',
-          flexRow: 1,
-          flexGrow: 1.84,
+          colSpan: 6,
         },
         {
           src: '/recovered/lun-hr-brand/educational-hub-1.webp',
           type: 'image',
           alt: 'Educational hub at Taras Shevchenko University, space view',
-          flexRow: 2,
-          flexGrow: 1.33,
+          colSpan: 4,
         },
         {
           src: '/recovered/lun-hr-brand/educational-hub-2.webp',
           type: 'image',
           alt: 'Educational hub at Taras Shevchenko University, interior',
-          flexRow: 2,
-          flexGrow: 1.5,
+          colSpan: 4,
         },
         {
           src: '/recovered/lun-hr-brand/lunoteka-space.webp',
           type: 'image',
           alt: 'Lunoteka lounge and bookshelves',
-          flexRow: 2,
-          flexGrow: 1.5,
+          colSpan: 4,
         },
         {
           src: '/recovered/lun-hr-brand/lunoteka-award.webp',
           type: 'image',
           alt: 'Lunoteka award moment',
-          flexRow: 3,
-          flexGrow: 1.23,
+          colSpan: 3,
         },
         {
           src: '/recovered/lun-hr-brand/shoppers.webp',
           type: 'image',
           alt: 'LUN HR brand shoppers',
-          flexRow: 3,
-          flexGrow: 0.75,
+          colSpan: 2,
         },
         {
           src: '/recovered/lun-hr-brand/t-shirt.webp',
           type: 'image',
           alt: 'LUN HR brand t-shirt',
-          flexRow: 4,
-          flexGrow: 0.75,
-        },
-        {
-          src: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
-          type: 'image',
-          alt: 'Lunoteka laptop sticker',
-          flexRow: 4,
-          flexGrow: 1.5,
+          colSpan: 2,
         },
       ],
     },
@@ -1140,7 +1146,7 @@ export const portfolioData = {
       businessSize: 'Personal',
       workType: 'Visual Design',
       hideLabels: true,
-      coverSrc: '/recovered/graphic-design.webm',
+      embedUrl: 'https://player.vimeo.com/video/1205293954?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
       noHero: true,
       focus: 'Design moves fast, so I keep playing.',
       categories: [
@@ -1169,6 +1175,7 @@ export const portfolioData = {
           type: 'video',
           alt: 'Graphic Design motion studies reel',
           span: 'wide',
+          vimeoId: '1205293954',
           caption:
             'Experimental motion studies testing transitions, timing curves, and bold campaign composition.',
         },

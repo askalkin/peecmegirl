@@ -9,7 +9,6 @@ import {
 } from '@/data/portfolio'
 import { AboutContent } from '@/components/AboutContent'
 import { BrandQuestions } from '@/components/BrandQuestions'
-import { CoverMedia } from '@/components/portfolio/CoverMedia'
 import { VimeoBackground } from '@/components/portfolio/VimeoBackground'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
@@ -134,7 +133,7 @@ function PortfolioPage() {
           ref={questionsRef}
           className="absolute inset-x-0 top-12 flex justify-start sm:justify-end md:top-16"
         >
-          <BrandQuestions className="max-w-full text-left lowercase sm:text-right lg:max-w-none text-h2" />
+          <BrandQuestions className="max-w-full text-left sm:text-right lg:max-w-none text-h1" />
         </div>
 
         <div className="flex w-full flex-col items-start gap-5 sm:flex-row sm:items-end sm:gap-6">
@@ -143,15 +142,15 @@ function PortfolioPage() {
             aria-hidden
             className="hero-orb size-[clamp(2.5rem,8vw,8.5rem)] shrink-0 rounded-full bg-foreground sm:order-2"
           />
-          <h1 className="text-display font-black lowercase text-foreground sm:order-1">
+          <h1 className="text-display font-black text-foreground sm:order-1">
             <span
               ref={nameRef}
               className="block origin-top-left will-change-transform pointer-events-none"
             >
-              alina skalkina
+              Alina Skalkina
             </span>
             <span ref={brandRef} className="block">
-              brand designer
+              Brand designer
             </span>
           </h1>
         </div>
@@ -203,28 +202,37 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
     : [project.workType, project.businessSize, project.audience].filter(Boolean)
 
   return (
-    <a
-      href={`/${project.id}`}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-      className="group flex flex-col border border-border bg-background"
-    >
-      <div
+    <div className="group flex flex-col gap-4">
+      <a
+        href={`/${project.id}`}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
         className={cn(
-          'media-loading-surface relative aspect-video overflow-hidden',
-          hasEmbed && !isFramed && 'bg-black'
+          'media-loading-surface relative block aspect-video overflow-hidden border border-border',
+          (hasEmbed || (isFramed && project.embedUrl)) && 'bg-black'
         )}
       >
-        {isFramed ? (
-          <CoverMedia
-            videoSrc={coverVideo?.src}
-            embedUrl={project.embedUrl}
-            embedAspect={project.embedAspect}
-            embedActive={hovered}
+        {isFramed && project.embedUrl ? (
+          <VimeoBackground
+            url={project.embedUrl}
             title={project.title}
-            videoRef={videoRef}
+            loopSeconds={4}
+            active={hovered}
             grayscale
+            offsetX={project.coverOffsetX}
           />
+        ) : isFramed && coverVideo ? (
+          <video
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.04] md:grayscale md:group-hover:grayscale-0"
+            loop
+            muted
+            playsInline
+            preload="none"
+            aria-label={`${project.title} preview`}
+          >
+            <source src={coverVideo.src} />
+          </video>
         ) : hasEmbed ? (
           <>
             {project.coverSrc &&
@@ -265,34 +273,21 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             loading="lazy"
           />
         ) : null}
+      </a>
 
-        {labels.length > 0 ? (
-          <div className="absolute left-3 top-3 flex flex-wrap gap-2">
-            {labels.map((label) => (
-              <span
-                key={label}
-                className="rounded-full bg-background/85 px-2.5 py-1 text-sm font-medium text-foreground backdrop-blur-sm"
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="px-4 py-4">
+      <a href={`/${project.id}`} className="flex flex-col">
         <div className="flex items-baseline justify-between gap-3">
-          <h2 className="font-display text-base font-semibold tracking-tight text-foreground">
+          <h2 className="text-h3 font-semibold text-text-primary">
             {project.title}
           </h2>
-          <span className="shrink-0 text-sm text-muted-foreground">
+          <span className="shrink-0 text-base font-bold tabular-nums text-text-secondary">
             {project.year}
           </span>
         </div>
-        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-text-secondary">
           {project.focus}
         </p>
-      </div>
-    </a>
+      </a>
+    </div>
   )
 }

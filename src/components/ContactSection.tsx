@@ -6,9 +6,9 @@ export function ContactSection({ id }: { id?: string }) {
   const [callLink, linkedInLink] = portfolioData.person.links
 
   const links = [
-    { href: callLink.href, label: 'book call', external: true },
-    { href: `mailto:${portfolioData.person.email}`, label: 'email', external: false },
-    { href: linkedInLink.href, label: 'linkedin', external: true },
+    { href: callLink.href, label: 'Book call', external: true },
+    { href: `mailto:${portfolioData.person.email}`, label: 'Email', external: false },
+    { href: linkedInLink.href, label: 'LinkedIn', external: true },
   ]
 
   return (
@@ -50,7 +50,7 @@ export function ContactSection({ id }: { id?: string }) {
                 href={link.href}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noreferrer' : undefined}
-                className="group/link relative inline-block pb-[0.25em] text-display font-black lowercase text-foreground"
+                className="group/link relative inline-block pb-[0.25em] text-display font-black text-foreground"
               >
                 {link.label}
                 <span

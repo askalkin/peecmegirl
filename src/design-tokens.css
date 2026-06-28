@@ -1,0 +1,118 @@
+/*
+ * ============================================================
+ *  DESIGN TOKENS — single source of truth for static tokens
+ * ============================================================
+ *
+ *  DYNAMIC TOKENS (colors, semantic palette, dark/light/color modes)
+ *  are generated at runtime by src/tokens/theme.ts and injected as
+ *  CSS variables by the ThemeProvider. Edit src/tokens/primitives/
+ *  and src/tokens/semantic/ to change those.
+ *
+ *  Everything else lives here.
+ * ============================================================
+ */
+
+:root {
+
+  /* ----------------------------------------------------------
+   *  TYPOGRAPHY — families
+   * ---------------------------------------------------------- */
+  --font-sans:    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* ----------------------------------------------------------
+   *  TYPOGRAPHY — size scale
+   *
+   *  Four sizes only. Further hierarchy comes from weight and colour.
+   *    display → hero / contact / footer statement type
+   *    h1      → section & page titles, stat figures
+   *    h2      → sub-section headings, list titles
+   *    body    → all running copy (1rem / 16px)
+   *    label   → captions, chips, nav items
+   * ---------------------------------------------------------- */
+  --text-display: clamp(2.75rem, 9vw, 11rem);      /* ~44px → 176px */
+  --text-h1:      clamp(1.875rem, 2.2vw, 2.25rem); /* ~30px → 36px  */
+  --text-h2:      clamp(1.375rem, 2vw,   2rem);    /* ~22px → 32px  */
+  --text-h3:      clamp(1.125rem, 1.5vw, 1.375rem);/* ~18px → 22px  */
+  --text-body:    1rem;                             /* 16px           */
+
+  /* ----------------------------------------------------------
+   *  TYPOGRAPHY — line-heights & letter-spacing
+   * ---------------------------------------------------------- */
+  --leading-display: 0.92;
+  --leading-h1:      1.04;
+  --leading-h2:      1.18;
+  --leading-body:    1.6;
+
+  --tracking-display: -0.03em;
+  --tracking-h1:      -0.025em;
+  --tracking-h2:      -0.015em;
+  --tracking-body:    -0.005em;
+
+  /* ----------------------------------------------------------
+   *  BORDER RADIUS
+   * ---------------------------------------------------------- */
+  --radius-sm:   0.375rem;  /*  6px */
+  --radius-md:   0.5rem;    /*  8px */
+  --radius:      0.625rem;  /* 10px — default */
+  --radius-lg:   0.625rem;  /* 10px */
+  --radius-xl:   1rem;      /* 16px */
+  --radius-2xl:  1.5rem;    /* 24px */
+  --radius-pill: 999px;
+
+  /* ----------------------------------------------------------
+   *  SHADOWS
+   *  Colour is injected at runtime by theme.ts (alpha varies by mode).
+   *  Change the geometry here; colours auto-follow the theme.
+   *
+   *  Shorthand:      offset-y | blur  | spread
+   *    surface  →  card / UI element lift
+   *    float    →  dropdown / modal / tooltip lift
+   * ---------------------------------------------------------- */
+  --shadow-geometry-sm: 0 10px 30px; /* used for --shadow-surface  */
+  --shadow-geometry-md: 0 18px 40px; /* used for --shadow-surface-lg */
+  --shadow-geometry-lg: 0 24px 60px; /* used for --shadow-float    */
+
+  /* ----------------------------------------------------------
+   *  SPACING — section rhythm
+   *  These drive .section-y and .section-y-sm padding.
+   * ---------------------------------------------------------- */
+  --space-section:    clamp(4.5rem, 8vw, 7.5rem);  /* ~72px → 120px */
+  --space-section-sm: clamp(2.75rem, 5vw, 4.5rem); /* ~44px →  72px */
+
+  /* ----------------------------------------------------------
+   *  SPACING — card / component padding
+   * ---------------------------------------------------------- */
+  --space-card:    1.5rem; /* 24px */
+  --space-card-lg: 2rem;   /* 32px */
+
+  /* ----------------------------------------------------------
+   *  SPACING — inline section x-padding (used inside cards etc.)
+   * ---------------------------------------------------------- */
+  --space-section-x:    1.25rem; /* 20px */
+  --space-section-x-sm: 1.75rem; /* 28px */
+  --space-section-x-lg: 2.25rem; /* 36px */
+
+  /* ----------------------------------------------------------
+   *  LAYOUT — container
+   * ---------------------------------------------------------- */
+  --container-width:   90%;      /* % of viewport used by .section-shell */
+  --container-max:     120rem;   /* 1920px hard cap                       */
+
+  /* ----------------------------------------------------------
+   *  LAYOUT — gallery grid
+   * ---------------------------------------------------------- */
+  --gallery-gap-mobile:  1rem;
+  --gallery-gap-desktop: 1.5rem;
+  --gallery-columns:     30;     /* total fractional columns on desktop   */
+
+  /* ----------------------------------------------------------
+   *  ANIMATION — easing & durations
+   * ---------------------------------------------------------- */
+  --ease-spring:   cubic-bezier(0.34, 1.4, 0.5, 1);
+  --ease-out:      ease-out;
+
+  --duration-fast:   150ms;
+  --duration-normal: 300ms;
+  --duration-slow:   500ms;
+}

@@ -16,9 +16,12 @@ import { CoverMedia } from './CoverMedia'
 import { VimeoBackground } from './VimeoBackground'
 import { Lightbox } from './Lightbox'
 
+const vimeoEmbedUrl = (id: string) =>
+  `https://player.vimeo.com/video/${id}?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479`
+
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-sm font-medium text-muted-foreground">
+    <span className="text-sm font-medium text-text-secondary">
       {children}
     </span>
   )
@@ -35,7 +38,7 @@ function renderStoryParagraph(paragraph: PortfolioStoryParagraph) {
       <a
         key={index}
         href={segment.href}
-        className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
+        className="font-medium text-text-primary underline underline-offset-4 transition-opacity hover:opacity-60"
       >
         {segment.text}
       </a>
@@ -62,12 +65,12 @@ function StorySections({ sections }: { sections: PortfolioStorySection[] }) {
               aria-expanded={isOpen}
               className="flex w-full items-center justify-between gap-6 py-6 text-left"
             >
-              <h2 className="text-h2 font-bold text-foreground">
+              <h2 className="text-h2 font-bold text-text-primary">
                 {storySection.heading}
               </h2>
               <ChevronDown
                 className={cn(
-                  'size-5 shrink-0 text-muted-foreground transition-transform duration-300',
+                  'size-5 shrink-0 text-text-secondary transition-transform duration-300',
                   isOpen && 'rotate-180'
                 )}
               />
@@ -83,7 +86,7 @@ function StorySections({ sections }: { sections: PortfolioStorySection[] }) {
                   {storySection.paragraphs.map((paragraph, paragraphIndex) => (
                     <p
                       key={paragraphIndex}
-                      className="text-base leading-relaxed text-foreground/80"
+                      className="text-base leading-relaxed text-text-secondary"
                     >
                       {renderStoryParagraph(paragraph)}
                     </p>
@@ -102,11 +105,11 @@ function MetricValue({ value }: { value: string }) {
   const [from, to] = value.split('→').map((part) => part.trim())
 
   if (!to) {
-    return <div className="text-h1 font-black text-foreground">{value}</div>
+    return <div className="text-h1 font-black text-text-primary">{value}</div>
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-2 text-h1 font-black leading-none text-foreground">
+    <div className="flex flex-wrap items-center gap-x-2 text-h1 font-black leading-none text-text-primary">
       <span>{from}</span>
       <ArrowRight
         aria-hidden="true"
@@ -202,7 +205,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
             mobileFull
           />
         </section>
-      ) : hasEmbed ? (
+      ) : hasEmbed && !noHero ? (
         // Full-bleed background video hero (e.g. Huawei), under the header.
         <section className="relative -mt-16 h-[calc(68vh+4rem)] w-full">
           <VimeoBackground url={project.embedUrl!} title={project.title} />
@@ -210,7 +213,11 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       ) : heroMedia ? (
         // Hero media, flush to the top with the header floating over it.
         <section className="-mt-16">
-          {heroMedia.type === 'video' ? (
+          {heroMedia.vimeoId ? (
+            <div className="relative h-[calc(68vh+4rem)] w-full">
+              <VimeoBackground url={vimeoEmbedUrl(heroMedia.vimeoId)} title={heroMedia.alt} />
+            </div>
+          ) : heroMedia.type === 'video' ? (
             <video
               className="media-loading-surface h-[calc(68vh+4rem)] w-full object-cover"
               autoPlay
@@ -234,15 +241,15 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       <div className={`section-shell space-y-16 md:space-y-24 ${noHero ? 'section-y-sm' : 'section-y'}`}>
         {/* Description — client + year, then the hook and the situation/task. */}
         <header>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-text-secondary">
+            <span className="font-bold text-text-primary">
               {project.company ?? project.title}
             </span>
-            <span>{project.year}</span>
+            <span className="font-bold tabular-nums">{project.year}</span>
           </div>
 
           <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-12 lg:gap-24 xl:gap-32">
-            <h1 className="text-h1 font-bold text-foreground">
+            <h1 className="text-h1 font-bold text-text-primary">
               {project.focus}
             </h1>
             {project.summary.length || project.liveLink ? (
@@ -250,7 +257,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                 {project.summary.map((paragraph) => (
                   <p
                     key={paragraph}
-                    className="text-base leading-relaxed text-foreground/80"
+                    className="text-base leading-relaxed text-text-secondary"
                   >
                     {paragraph}
                   </p>
@@ -260,7 +267,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     href={project.liveLink.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-base font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-60"
+                    className="inline-flex items-center gap-2 text-base font-medium text-text-primary underline underline-offset-4 transition-opacity hover:opacity-60"
                   >
                     {project.liveLink.label}
                     <ArrowUpRight className="size-5" />
@@ -283,10 +290,10 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                   {highlight.value ? (
                     <MetricValue value={highlight.value} />
                   ) : null}
-                  <div className="mt-3 text-sm font-semibold text-foreground">
+                  <div className="mt-3 text-base font-bold text-text-primary">
                     {highlight.title}
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-2 text-sm leading-relaxed text-text-secondary">
                     {highlight.description}
                   </p>
                 </div>
@@ -296,10 +303,12 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
         ) : null}
       </div>
 
-      {/* Visuals — flex bento rows, a 30-col grid, or masonry depending on data. */}
+      {/* Visuals — bento grid, flex bento rows, a 30-col grid, or masonry depending on data. */}
       {galleryItems.length ? (
         <section className="section-shell pb-[var(--space-section)]">
-          {galleryItems.some((item) => item.flexRow != null) ? (
+          {galleryItems.some((item) => item.colSpan != null) ? (
+            <BentoGridGallery items={galleryItems} onImageClick={openImage} />
+          ) : galleryItems.some((item) => item.flexRow != null) ? (
             <FlexBentoGallery items={galleryItems} onImageClick={openImage} />
           ) : galleryItems.some((item) => item.cols || item.center) ? (
             <div className="gallery-grid">
@@ -362,18 +371,24 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     style={cellStyle}
                     className={centred ? 'flex justify-center' : undefined}
                   >
-                    <video
-                      className={`media-loading-surface block rounded-sm ${mediaFit}`}
-                      style={mediaStyle}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="none"
-                      aria-label={item.alt}
-                    >
-                      <source src={item.src} />
-                    </video>
+                    {item.vimeoId ? (
+                      <div className={`relative overflow-hidden rounded-sm ${mediaFit}`} style={mediaStyle}>
+                        <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
+                      </div>
+                    ) : (
+                      <video
+                        className={`media-loading-surface block rounded-sm ${mediaFit}`}
+                        style={mediaStyle}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="none"
+                        aria-label={item.alt}
+                      >
+                        <source src={item.src} />
+                      </video>
+                    )}
                   </div>
                 ) : (
                   <div key={item.src} style={cellStyle}>
@@ -392,7 +407,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                       />
                     </button>
                     {item.caption ? (
-                      <p className="mt-2 text-sm text-muted-foreground">
+                      <p className="mt-2 text-sm text-text-secondary">
                         {item.caption}
                       </p>
                     ) : null}
@@ -426,7 +441,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
         {/* Challenges — the approach / actions, as its own heading. */}
         {project.process.length ? (
           <section className="space-y-10">
-            <h2 className="text-h1 font-bold text-foreground">
+            <h2 className="text-h2 font-bold text-text-primary">
               Challenges
             </h2>
             <div className="space-y-10">
@@ -435,14 +450,14 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                   key={step.title}
                   className="grid gap-2 border-t border-border pt-6 md:grid-cols-[3rem_1fr] md:gap-8"
                 >
-                  <span className="text-sm tabular-nums text-muted-foreground">
+                  <span className="text-base font-bold tabular-nums text-text-secondary">
                     {String(index + 1).padStart(2, '0')}
                   </span>
                   <div>
-                    <h3 className="text-h2 font-semibold text-foreground">
+                    <h3 className="text-h3 font-semibold text-text-primary">
                       {step.title}
                     </h3>
-                    <p className="mt-3 max-w-2xl text-base leading-relaxed text-foreground/80">
+                    <p className="mt-3 max-w-2xl text-base leading-relaxed text-text-secondary">
                       {step.description}
                     </p>
                   </div>
@@ -454,8 +469,8 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
 
         {project.team.length > 1 ? (
           <section className="space-y-5">
-            <Label>Shout-out to my team!</Label>
-            <ul className="flex flex-wrap gap-x-8 gap-y-2 text-base text-foreground/70">
+            <h2 className="text-h2 font-bold text-text-primary">Shout-out to my team!</h2>
+            <ul className="flex flex-wrap gap-x-8 gap-y-2 text-base text-text-secondary">
               {project.team.map((member) => (
                 <li key={member}>{member}</li>
               ))}
@@ -524,10 +539,10 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
             }
             className="group flex items-baseline justify-between gap-6 border-b border-border py-6"
           >
-            <h3 className="text-h1 font-bold lowercase text-foreground transition-opacity duration-200 group-hover:opacity-50">
+            <h3 className="text-h3 font-bold text-text-primary transition-opacity duration-200 group-hover:opacity-50">
               {relatedProject.title}
             </h3>
-            <span className="shrink-0 text-sm text-muted-foreground">
+            <span className="shrink-0 text-base font-bold tabular-nums text-text-secondary">
               {relatedProject.year}
             </span>
           </a>
@@ -577,6 +592,65 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
   )
 }
 
+function BentoGridGallery({
+  items,
+  onImageClick,
+}: {
+  items: PortfolioMediaItem[]
+  onImageClick: (item: PortfolioMediaItem) => void
+}) {
+  return (
+    <div
+      className="grid gap-1"
+      style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}
+    >
+      {items.map((item) => {
+        const colSpan = item.colSpan ?? 6
+        const rowSpan = item.rowSpan ?? 1
+        return (
+          <div
+            key={item.src}
+            className="overflow-hidden"
+            style={{
+              gridColumn: `span ${colSpan}`,
+              gridRow: `span ${rowSpan}`,
+              aspectRatio: rowSpan > 1 ? `${colSpan} / ${rowSpan * 3}` : `${colSpan} / 3`,
+            }}
+          >
+            {item.type === 'image' ? (
+              <button
+                type="button"
+                onClick={() => onImageClick(item)}
+                aria-label={`Open ${item.alt}`}
+                className="group/img block h-full w-full"
+              >
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  loading="lazy"
+                  className="block h-full w-full cursor-zoom-in object-cover transition-opacity duration-300 group-hover/img:opacity-90"
+                />
+              </button>
+            ) : (
+              <video
+                className="block h-full w-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="none"
+                aria-label={item.alt}
+              >
+                <source src={item.src} />
+              </video>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 function FlexBentoGallery({
   items,
   onImageClick,
@@ -617,12 +691,12 @@ function FlexBentoGallery({
                     src={item.src}
                     alt={item.alt}
                     loading="lazy"
-                    className="block h-full w-full cursor-zoom-in object-cover transition-opacity duration-300 group-hover/img:opacity-90"
+                    className="block h-full w-full cursor-zoom-in object-contain transition-opacity duration-300 group-hover/img:opacity-90"
                   />
                 </button>
               ) : (
                 <video
-                  className="block h-full w-full object-cover"
+                  className="block h-full w-full object-contain"
                   autoPlay
                   loop
                   muted
@@ -651,17 +725,26 @@ function MasonryTile({
   if (item.type === 'video') {
     return (
       <figure className="mb-4 break-inside-avoid md:mb-6">
-        <video
-          className="media-loading-surface block h-auto max-h-[80vh] w-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="none"
-          aria-label={item.alt}
-        >
-          <source src={item.src} />
-        </video>
+        {item.vimeoId ? (
+          <div className="relative aspect-video w-full overflow-hidden">
+            <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
+          </div>
+        ) : (
+          <video
+            className="media-loading-surface block h-auto max-h-[80vh] w-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="none"
+            aria-label={item.alt}
+          >
+            <source src={item.src} />
+          </video>
+        )}
+        {item.caption && (
+          <figcaption className="mt-2 text-sm text-text-secondary">{item.caption}</figcaption>
+        )}
       </figure>
     )
   }

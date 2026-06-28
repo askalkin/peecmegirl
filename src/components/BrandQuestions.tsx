@@ -54,7 +54,7 @@ export function BrandQuestions({ className }: { className?: string }) {
   return (
     <p
       className={cn(
-        'flex flex-col font-medium text-foreground',
+        'flex flex-col overflow-hidden font-medium text-foreground',
         className
       )}
     >
@@ -70,7 +70,7 @@ export function BrandQuestions({ className }: { className?: string }) {
           !isSelecting && charCount >= start && charCount <= start + line.length
 
         return (
-          <span key={lineIndex} className="block lg:whitespace-nowrap">
+          <span key={lineIndex} className="block whitespace-nowrap">
             {/* The full line is always laid out — the untyped part is just
                 transparent — so typing never reflows the text. */}
             <span
@@ -82,12 +82,11 @@ export function BrandQuestions({ className }: { className?: string }) {
             >
               {opaque}
             </span>
-            {caretHere ? (
-              <span
-                aria-hidden
-                className="brand-questions-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.12em] bg-foreground align-baseline"
-              />
-            ) : null}
+            <span
+              aria-hidden
+              className="brand-questions-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.12em] bg-foreground align-baseline"
+              style={{ visibility: caretHere ? 'visible' : 'hidden' }}
+            />
             <span className="text-transparent">{rest}</span>
           </span>
         )

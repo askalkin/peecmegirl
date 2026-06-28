@@ -52,11 +52,11 @@ export default function Header() {
           <span
             data-nav-wordmark
             className={cn(
-              'relative font-display text-sm font-black lowercase leading-[0.92] tracking-[-0.03em] text-foreground',
+              'relative font-display text-sm font-black leading-[0.92] tracking-[-0.03em] text-foreground',
               landed ? 'opacity-100' : 'opacity-0'
             )}
           >
-            alina skalkina
+            Alina Skalkina
           </span>
         </a>
         <SiteNav />
