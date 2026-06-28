@@ -90,14 +90,13 @@ export function VimeoBackground({
         grayscale && 'grayscale transition duration-500 group-hover:grayscale-0'
       )}
     >
-      {/* Vimeo background=1 mode scales the video to cover the iframe element,
-          so filling the container is enough — no manual aspect-ratio tricks. */}
+      {/* Force cover-fill: fix height to 100%, let aspect-ratio determine width
+          (≈177% for 16:9), then centre — the overflow is clipped by the wrapper. */}
       <iframe
         ref={ref}
         src={url}
         title={title}
-        className="absolute inset-0 h-full w-full"
-        style={offsetX ? { left: offsetX, width: `calc(100% + ${offsetX})` } : undefined}
+        className="absolute left-1/2 top-1/2 h-full -translate-x-1/2 -translate-y-1/2 aspect-video"
         allow="autoplay; fullscreen; picture-in-picture"
       />
     </div>
