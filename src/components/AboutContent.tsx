@@ -11,10 +11,14 @@ function DownloadCvLink() {
       href="/recovered/Alina-Skalkina-CV-Lead-Brand-Designer.pdf"
       target="_blank"
       rel="noreferrer"
-      className="inline-flex w-fit items-center gap-2 border-b border-foreground pb-1 text-sm font-medium text-foreground transition-opacity hover:opacity-60"
+      className="group/cv relative inline-flex w-fit items-center gap-2 text-sm font-medium text-foreground"
     >
       Download CV
       <ArrowDown className="size-4" />
+      <span
+        aria-hidden
+        className="absolute bottom-0 left-0 h-px w-0 bg-foreground transition-[width] duration-300 ease-in-out group-hover/cv:w-full"
+      />
     </a>
   )
 }
