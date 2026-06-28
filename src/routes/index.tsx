@@ -128,7 +128,7 @@ function PortfolioPage() {
 
   return (
     <main id="main" className="text-foreground">
-      <section aria-label="Introduction" className="section-shell relative z-40 flex h-[calc(100vh-4rem)] flex-col justify-end py-12 md:py-16">
+      <section aria-label="Introduction" className="section-shell relative z-40 flex h-[calc(100dvh-4rem)] flex-col justify-end py-12 md:py-16">
         {/* Absolutely positioned so the typing text never shifts the layout. */}
         <div
           ref={questionsRef}
@@ -232,7 +232,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
                 <img
                   src={project.coverSrc}
                   alt=""
-                  className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0"
+                  className="absolute inset-0 h-full w-full object-cover transition-all duration-700 md:grayscale md:group-hover:grayscale-0"
                   loading="lazy"
                 />
               )}
@@ -248,7 +248,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
         ) : media?.type === 'video' ? (
           <video
             ref={videoRef}
-            className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-[1.04] group-hover:grayscale-0"
+            className="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.04] md:grayscale md:group-hover:grayscale-0"
             loop
             muted
             playsInline
@@ -261,7 +261,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
           <img
             src={media.src}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-[1.04] group-hover:grayscale-0"
+            className="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.04] md:grayscale md:group-hover:grayscale-0"
             loading="lazy"
           />
         ) : null}

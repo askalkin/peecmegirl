@@ -1198,12 +1198,6 @@ export const portfolioData = {
           alt: 'LUN branded sticker set',
         },
         {
-          src: '/recovered/graphic-design/house2.webm',
-          type: 'video',
-          alt: 'Graphic Design animated house concept',
-          span: 'wide',
-        },
-        {
           src: '/recovered/graphic-design/L-0.webp',
           type: 'image',
           alt: 'Graphic Design piece L-0',

@@ -43,7 +43,7 @@ function ExperienceList() {
               className="flex w-full items-start justify-between gap-6 py-6 text-left"
             >
               <div className="grid flex-1 gap-2 md:grid-cols-[7rem_1fr] md:gap-8">
-                <span className="pt-1 text-sm tabular-nums text-muted-foreground">
+                <span className="pt-1 text-sm font-bold tabular-nums text-foreground">
                   {role.years}
                 </span>
                 <span>
@@ -72,19 +72,14 @@ function ExperienceList() {
             >
               <div className="overflow-hidden">
                 <div className="pb-8 md:pl-[calc(7rem+2rem)]">
-                  <p className="mb-5 max-w-2xl text-base leading-relaxed text-foreground/80">
+                  <p className="mb-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
                     {role.companyAbout}
                   </p>
-                  {role.note ? (
-                    <p className="mb-3 max-w-2xl text-sm leading-relaxed text-foreground/80">
-                      {role.note}
-                    </p>
-                  ) : null}
                   <ul className="space-y-2.5">
                     {role.highlights.map((highlight) => (
                       <li
                         key={highlight}
-                        className="flex max-w-2xl gap-3 text-sm leading-relaxed text-foreground/70"
+                        className="flex max-w-2xl gap-3 text-sm leading-relaxed text-foreground/90"
                       >
                         <span className="mt-2 inline-block size-1 shrink-0 rounded-full bg-muted-foreground/60" />
                         <span>{highlight}</span>

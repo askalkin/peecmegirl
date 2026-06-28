@@ -86,7 +86,6 @@ export const cvRoles: CvRole[] = [
     years: '2018 – 2021',
     period: 'Jul 2018 - Jul 2021',
     location: 'Kyiv',
-    note: 'Collaborated with designers, developers, marketers, analysts, product managers, and founders across 10 countries.',
     highlights: [
       'Drove growth design for the LUN Misto air quality map, apps, and widgets, contributing to 230% growth.',
       'Led UI/UX development of the inclusivity award-winning Comfort Map.',

@@ -87,7 +87,7 @@ export function VimeoBackground({
     <div
       className={cn(
         'absolute inset-0 overflow-hidden bg-black',
-        grayscale && 'grayscale transition duration-500 group-hover:grayscale-0'
+        grayscale && 'md:grayscale transition duration-500 md:group-hover:grayscale-0'
       )}
     >
       {/* Force cover-fill: fix height to 100%, let aspect-ratio determine width

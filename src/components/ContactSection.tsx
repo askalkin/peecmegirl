@@ -150,6 +150,7 @@ function ContactFigures() {
           figure.x = figure.homeX
           figure.y = figure.homeY
           figure.el.style.transform = `translate(${figure.x}px, ${figure.y}px)`
+          figure.el.style.opacity = '1'
         }
       }
     }
@@ -267,7 +268,7 @@ function ContactFigures() {
       aria-hidden
       className="pointer-events-none absolute inset-0 z-0 hidden text-foreground md:block"
     >
-      <div ref={discRef} className="absolute left-0 top-0 will-change-transform">
+      <div ref={discRef} className="absolute left-0 top-0 will-change-transform" style={{ opacity: 0 }}>
         <svg viewBox="90 0 293 359" className="block h-auto w-full">
           <path
             d="M268.625 0.686326C353.4 49.9426 382.38 158.544 333.326 243.509C284.272 328.474 175.729 357.678 90.6841 308.888L268.625 0.686326Z"
@@ -277,7 +278,7 @@ function ContactFigures() {
           />
         </svg>
       </div>
-      <div ref={triangleRef} className="absolute left-0 top-0 will-change-transform">
+      <div ref={triangleRef} className="absolute left-0 top-0 will-change-transform" style={{ opacity: 0 }}>
         <svg viewBox="0 241 363 314" className="block h-auto w-full">
           <path
             d="M1.00329 242L361.267 554H1L1.00329 242Z"
