@@ -88,7 +88,7 @@ export function CoverMedia({
           loop
           muted
           playsInline
-          preload="metadata"
+          preload={autoPlay ? 'metadata' : 'none'}
           aria-label={`${title} preview`}
         >
           <source src={videoSrc} />

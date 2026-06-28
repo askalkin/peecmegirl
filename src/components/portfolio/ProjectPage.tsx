@@ -322,7 +322,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                           loop
                           muted
                           playsInline
-                          preload="metadata"
+                          preload="none"
                           aria-label={item.alt}
                         >
                           <source src={item.src} />
@@ -369,7 +369,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                       loop
                       muted
                       playsInline
-                      preload="metadata"
+                      preload="none"
                       aria-label={item.alt}
                     >
                       <source src={item.src} />
@@ -627,7 +627,7 @@ function FlexBentoGallery({
                   loop
                   muted
                   playsInline
-                  preload="metadata"
+                  preload="none"
                   aria-label={item.alt}
                 >
                   <source src={item.src} />
@@ -657,7 +657,7 @@ function MasonryTile({
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="none"
           aria-label={item.alt}
         >
           <source src={item.src} />

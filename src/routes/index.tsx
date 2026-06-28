@@ -211,7 +211,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
     >
       <div
         className={cn(
-          'media-loading-surface relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:h-[52vh] xl:h-[56vh]',
+          'media-loading-surface relative aspect-video overflow-hidden',
           hasEmbed && !isFramed && 'bg-black'
         )}
       >
@@ -252,7 +252,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="none"
             aria-label={`${project.title} preview`}
           >
             <source src={media.src} />

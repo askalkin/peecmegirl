@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -20,6 +20,7 @@ type VimeoPlayer = {
 // the video autoplays muted, loops, and covers its container with no controls.
 // `loopSeconds` restarts playback at that mark; `active` toggles play/pause so
 // card covers can stay paused (and greyscale) until hovered.
+// The iframe is deferred until the container enters the viewport (300px margin).
 export function VimeoBackground({
   url,
   title,
@@ -35,15 +36,34 @@ export function VimeoBackground({
   grayscale?: boolean
   offsetX?: string
 }) {
-  const ref = useRef<HTMLIFrameElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<VimeoPlayer | undefined>(undefined)
+  const [inView, setInView] = useState(false)
 
   useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '300px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!inView) return
     let cancelled = false
 
     const init = () => {
-      if (cancelled || !ref.current || !window.Vimeo) return
-      const player = new window.Vimeo.Player(ref.current)
+      if (cancelled || !iframeRef.current || !window.Vimeo) return
+      const player = new window.Vimeo.Player(iframeRef.current)
       playerRef.current = player
       if (loopSeconds) {
         player.on('timeupdate', (data) => {
@@ -74,7 +94,7 @@ export function VimeoBackground({
       playerRef.current?.destroy().catch(() => {})
       playerRef.current = undefined
     }
-  }, [loopSeconds, url])
+  }, [loopSeconds, url, inView])
 
   useEffect(() => {
     const player = playerRef.current
@@ -85,21 +105,22 @@ export function VimeoBackground({
 
   return (
     <div
+      ref={containerRef}
       className={cn(
         'absolute inset-0 overflow-hidden bg-black',
         grayscale && 'md:grayscale transition duration-500 md:group-hover:grayscale-0'
       )}
     >
-      {/* Force cover-fill: fix height to 100%, let aspect-ratio determine width
-          (≈177% for 16:9), then centre — the overflow is clipped by the wrapper. */}
-      <iframe
-        ref={ref}
-        src={url}
-        title={title}
-        className="absolute top-1/2 h-full -translate-x-1/2 -translate-y-1/2 aspect-video"
-        style={{ left: offsetX ? `calc(50% + ${offsetX})` : '50%' }}
-        allow="autoplay; fullscreen; picture-in-picture"
-      />
+      {inView && (
+        <iframe
+          ref={iframeRef}
+          src={url}
+          title={title}
+          className="absolute top-1/2 h-full -translate-x-1/2 -translate-y-1/2 aspect-video"
+          style={{ left: offsetX ? `calc(50% + ${offsetX})` : '50%' }}
+          allow="autoplay; fullscreen; picture-in-picture"
+        />
+      )}
     </div>
   )
 }
