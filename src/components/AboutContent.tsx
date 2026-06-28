@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { ArrowDown, ChevronDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { cvEducation, cvKnowledge, cvRoles } from '@/data/cv'
-import type { CvEducation, CvKnowledgeEntry } from '@/data/cv'
+import { cvRoles } from '@/data/cv'
 
 function DownloadCvLink() {
   return (
@@ -99,33 +98,6 @@ function ExperienceList() {
         )
       })}
 
-      {cvKnowledge.map((entry: CvKnowledgeEntry) => (
-        <div key={entry.title} className="grid gap-2 border-t border-border py-6 md:grid-cols-[7rem_1fr] md:gap-8">
-          <span className="pt-1 text-sm tabular-nums text-muted-foreground">
-            {entry.year}
-          </span>
-          <div>
-            <p className="text-sm font-semibold text-foreground">{entry.title}</p>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/70">
-              {entry.description}
-            </p>
-          </div>
-        </div>
-      ))}
-
-      {cvEducation.map((entry: CvEducation) => (
-        <div key={entry.title} className="grid gap-2 border-t border-border py-6 md:grid-cols-[7rem_1fr] md:gap-8">
-          <span className="pt-1 text-sm tabular-nums text-muted-foreground">
-            {entry.period}
-          </span>
-          <div>
-            <p className="text-sm font-semibold text-foreground">{entry.title}</p>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/70">
-              {entry.note}
-            </p>
-          </div>
-        </div>
-      ))}
     </div>
   )
 }
