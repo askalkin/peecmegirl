@@ -432,6 +432,7 @@ export const portfolioData = {
       id: 'huawei',
       title: 'Huawei',
       navigationLabel: 'Huawei',
+      coverOffsetX: '3%',
       embedUrl:
         'https://player.vimeo.com/video/1204428080?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
       year: '2024',
