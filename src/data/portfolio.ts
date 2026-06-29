@@ -86,6 +86,8 @@ export type PortfolioMediaItem = {
   rowSpan?: number
   /** Vimeo video ID — when set, the gallery renders this via Vimeo instead of a local file. */
   vimeoId?: string
+  /** Additional image srcs to cycle through in the playground grid slideshow cell. */
+  slides?: string[]
 }
 
 export type PortfolioProject = {
@@ -118,6 +120,12 @@ export type PortfolioProject = {
   coverSrc?: string
   /** Skip the full-bleed hero; the page opens on its content and gallery. */
   noHero?: boolean
+  /** Background for a contained (letterboxed) hero — set to match the video's
+   *  own canvas colour so the side gutters blend seamlessly. Accepts any CSS
+   *  `background` value (solid colour or gradient). */
+  heroBg?: string
+  /** Render the gallery as a 3-column square slideshow grid (playground style). */
+  playgroundGrid?: boolean
   /** Hide the workType/businessSize chips on the homepage card. */
   hideLabels?: boolean
   /** Audience label shown on the homepage card (e.g. 'B2B', 'B2C'). */
@@ -305,7 +313,7 @@ export const portfolioData = {
       title: 'Alty rebranding',
       navigationLabel: 'Alty Rebranding',
       cover: 'framed',
-      coverSrc: '/alty/new-products.webm',
+      embedUrl: 'https://player.vimeo.com/video/1205368261?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
       year: '2026',
       businessSize: 'Scale-up',
       audience: 'B2B',
@@ -322,7 +330,7 @@ export const portfolioData = {
         `But the brand had not yet caught up with the company's actual maturity.`,
         `The challenge was to move Alty beyond the perception of a regular outsourcing company or creative agency — and communicate a more accurate role: a digital transformation partner for complex decisions, high stakes, and long-term change in compliance-heavy businesses.`,
       ],
-      role: 'Lead Brand Designer',
+      role: 'Lead Brand Designer, AI-Integrated Workflow Design',
       liveLink: { href: 'https://alty.co', label: 'Try Alty 2.0' },
       story: [
         {
@@ -390,6 +398,7 @@ export const portfolioData = {
           src: '/alty/new-products.webm',
           type: 'video',
           alt: 'Alty new products section',
+          vimeoId: '1205368261',
         },
         // Exploration pair — two images side by side on lg/xl, stacked below.
         {
@@ -415,6 +424,7 @@ export const portfolioData = {
           alt: 'Alty homepage walkthrough',
           cols: 15,
           aspect: '1876/1080',
+          vimeoId: '1205368259',
         },
         {
           src: '/alty/cards.webm',
@@ -422,6 +432,7 @@ export const portfolioData = {
           alt: 'Alty cards interaction',
           cols: 15,
           aspect: '1876/1080',
+          vimeoId: '1205368260',
         },
         // Concepts — centred at the same width as the framed hero (58%).
         {
@@ -693,6 +704,12 @@ export const portfolioData = {
       ],
       gallery: [
         {
+          src: '/recovered/visual-design/5.webp',
+          type: 'image',
+          alt: 'LUN Misto city dashboard with air quality, traffic and weather',
+          span: 'wide',
+        },
+        {
           src: '/recovered/air-video.webm',
           type: 'video',
           alt: 'Air Quality Map walkthrough video',
@@ -768,7 +785,7 @@ export const portfolioData = {
       ],
       goals:
         'LUN needed an end-to-end HR system that could scale with hiring, role complexity, and multi-user workflows across the company.',
-      role: 'UX design, UI design, Design system, Mascot development',
+      role: 'UI/UX design, Design system, Mascot development',
       highlights: [
         {
           title: 'Day-off bookings',
@@ -969,6 +986,12 @@ export const portfolioData = {
       ],
       gallery: [
         {
+          src: '/recovered/visual-design/6.webp',
+          type: 'image',
+          alt: 'LUN HR Brand careers site',
+          span: 'wide',
+        },
+        {
           src: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
           type: 'image',
           alt: 'Lunoteka laptop sticker',
@@ -1034,7 +1057,8 @@ export const portfolioData = {
     {
       id: 'farba',
       cover: 'framed',
-      title: 'Farba',
+      heroBg: 'linear-gradient(to bottom, #f8fafb, #ebedf0)',
+      title: 'Farba booking platform',
       navigationLabel: 'Farba',
       year: '2025',
       company: 'Farba',
@@ -1101,6 +1125,8 @@ export const portfolioData = {
           src: '/farba/Farba-booking.webm',
           type: 'video',
           alt: 'Farba booking flow',
+          fit: 'contain',
+          vimeoId: '1204610863',
         },
         {
           src: '/farba/onboarding.webp',
@@ -1135,6 +1161,7 @@ export const portfolioData = {
           type: 'video',
           alt: 'Farba booking app walkthrough',
           center: true,
+          vimeoId: '1205383073',
         },
       ],
     },
@@ -1148,6 +1175,7 @@ export const portfolioData = {
       hideLabels: true,
       embedUrl: 'https://player.vimeo.com/video/1205293954?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
       noHero: true,
+      playgroundGrid: true,
       focus: 'Design moves fast, so I keep playing.',
       categories: [
         'Brand Identity',
@@ -1160,70 +1188,111 @@ export const portfolioData = {
       process: [],
       team: [],
       gallery: [
+        // Row 1
         {
-          src: '/recovered/graphic-design/bachelor.webp',
           type: 'image',
-          alt: 'Bachelor dinner poster — 3D type and chrome',
+          src: '/recovered/graphic-design/A-0.webp',
+          alt: 'Letter A explorations',
+          slides: [
+            '/recovered/graphic-design/A-1.webp',
+            '/recovered/graphic-design/A-2.webp',
+            '/recovered/graphic-design/A-3.webp',
+          ],
         },
         {
-          src: '/recovered/graphic-design/alty-merch.webp',
           type: 'image',
-          alt: 'Alty gradient merch concept',
+          src: '/recovered/graphic-design/I-0.webp',
+          alt: 'Letter I explorations',
+          slides: [
+            '/recovered/graphic-design/I-1.webp',
+            '/recovered/graphic-design/I-2.webp',
+            '/recovered/graphic-design/I-3.webp',
+          ],
         },
         {
-          src: '/recovered/graphic-design.webm',
+          type: 'image',
+          src: '/recovered/graphic-design/L-0.webp',
+          alt: 'Letter L design',
+        },
+        // Row 2
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/B-3.webp',
+          alt: 'Letter B explorations',
+          slides: [
+            '/recovered/graphic-design/B-4.webp',
+            '/recovered/graphic-design/B-5.webp',
+          ],
+        },
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/abstract.webp',
+          alt: 'Abstract graphic composition',
+        },
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/D-0.webp',
+          alt: 'Letter D explorations',
+          slides: [
+            '/recovered/graphic-design/D-1.webp',
+            '/recovered/graphic-design/D-2.webp',
+          ],
+        },
+        // Row 3
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/G-1.webp',
+          alt: 'Letter G explorations',
+          slides: ['/recovered/graphic-design/G-2.webp'],
+        },
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/K-0.webp',
+          alt: 'Letter K explorations',
+          slides: ['/recovered/graphic-design/K-1.webp'],
+        },
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/Lun-3.webp',
+          alt: 'LUN campaign assets',
+          slides: [
+            '/recovered/graphic-design/Lun-5.webp',
+            '/recovered/graphic-design/Lun-6.webp',
+          ],
+        },
+        // Row 4
+        {
           type: 'video',
-          alt: 'Graphic Design motion studies reel',
-          span: 'wide',
-          vimeoId: '1205293954',
-          caption:
-            'Experimental motion studies testing transitions, timing curves, and bold campaign composition.',
+          src: '/recovered/graphic-design/house2.webm',
+          alt: '3D apartment tour walkthrough',
         },
         {
-          src: '/recovered/ar-apartment-tour/image-1781813263929.webp',
           type: 'image',
-          alt: 'B2B2C 3D apartment tour gameplay',
-        },
-        {
-          src: '/recovered/ar-apartment-tour/image-1781813269405.webp',
-          type: 'image',
-          alt: '3D floor plan of the apartment',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-redesign.webp',
-          type: 'image',
-          alt: 'LUN "Try 3D buildings on the map" campaign asset',
-          span: 'wide',
-        },
-        {
-          src: '/recovered/graphic-design/Lun-5.webp',
-          type: 'image',
-          alt: 'LUN illustrated social campaign asset',
-        },
-        {
           src: '/recovered/graphic-design/Lun-4.webp',
-          type: 'image',
           alt: 'LUN branded sticker set',
         },
         {
-          src: '/recovered/graphic-design/L-0.webp',
           type: 'image',
-          alt: 'Graphic Design piece L-0',
+          src: '/recovered/graphic-design/spilka-1.webp',
+          alt: 'Spilka brand identity',
+          slides: ['/recovered/graphic-design/spilka-2.webp'],
+        },
+        // Row 5
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/lun-data-visual.webp',
+          alt: 'LUN data visualisation',
         },
         {
-          src: '/recovered/graphic-design/B-1.webp',
           type: 'image',
-          alt: 'Graphic Design piece B-1',
+          src: '/recovered/graphic-design/Lun-redesign.webp',
+          alt: 'LUN "Try 3D buildings on the map" campaign',
         },
         {
-          src: '/recovered/graphic-design/D-1.webp',
           type: 'image',
-          alt: 'Graphic Design piece D-1',
-        },
-        {
-          src: '/recovered/graphic-design/I-2.webp',
-          type: 'image',
-          alt: 'Graphic Design piece I-2',
+          src: '/recovered/graphic-design/bachelor.webp',
+          alt: 'Brand design work',
+          slides: ['/recovered/graphic-design/alty-merch.webp'],
         },
       ],
     },
