@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { cn } from '@/lib/utils'
+import { getHeroMorphDistance } from '@/lib/heroMorph'
 
 import {
   getProjectsNewestFirst,
@@ -17,6 +17,11 @@ export const Route = createFileRoute('/')({ component: PortfolioPage })
 
 const vimeoEmbedUrl = (id: string) =>
   `https://player.vimeo.com/video/${id}?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479`
+
+const cardVimeoProps = {
+  cropScale: 1.18,
+  stageClassName: 'bg-card',
+}
 
 type CardMedia =
   | { type: 'video'; src: string }
@@ -50,6 +55,7 @@ function PortfolioPage() {
   // Scroll-linked hero: as the next section fills the viewport, the secondary
   // text fades and "alina skalkina" shrinks/rises toward the header wordmark.
   const nameRef = useRef<HTMLSpanElement>(null)
+  const morphRef = useRef<HTMLSpanElement>(null)
   const brandRef = useRef<HTMLSpanElement>(null)
   const orbRef = useRef<HTMLSpanElement>(null)
   const questionsRef = useRef<HTMLDivElement>(null)
@@ -57,79 +63,122 @@ function PortfolioPage() {
 
   useEffect(() => {
     const heroName = nameRef.current
-    if (!heroName) return
+    const morph = morphRef.current
+    if (!heroName || !morph) return
 
     let cancelled = false
     let cleanup = () => {}
 
-    // GSAP Flip + ScrollTrigger are browser-only and ship as separate plugin
-    // modules, so load them lazily on the client.
     void (async () => {
-      const [{ gsap }, { Flip }, { ScrollTrigger }] = await Promise.all([
-        import('gsap'),
-        import('gsap/Flip'),
-        import('gsap/ScrollTrigger'),
-      ])
-      if (cancelled) return
-      gsap.registerPlugin(Flip, ScrollTrigger)
-
       const wordmark = document.querySelector<HTMLElement>('[data-nav-wordmark]')
       if (!wordmark) return
 
-      // The header wordmark is the element that actually moves. The hero name
-      // becomes an invisible layout/measurement target it flips onto — kept in
-      // the DOM (transparent, not display:none) so the <h1> heading and its
-      // box are preserved for layout and screen readers.
+      await document.fonts.ready
+      if (cancelled) return
+
+      // The visible morphing text is `morph`: a fixed-position overlay rendered
+      // as real text. It animates font metrics and position instead of scaling a
+      // transformed layer, which avoids the rasterized/pixelated look during the
+      // scroll morph.
+      //
+      // The real <h1> name stays in the DOM for layout/screen readers but is
+      // hidden, since the overlay now draws the visible name.
       heroName.style.opacity = '0'
-
-      let flip: GSAPTween | undefined
-
-      // Flip.fit transforms the wordmark to exactly cover the hero name (same
-      // font, weight and tracking → a clean uniform scale). Paused at progress
-      // 1, that "fitted" state is what shows at the top of the page.
-      const buildFlip = () => {
-        flip?.kill()
-        gsap.set(wordmark, { clearProps: 'transform' })
-        flip = Flip.fit(wordmark, heroName, {
-          scale: true,
-          duration: 1,
-          ease: 'none',
-        }) as GSAPTween
-        flip.pause(1)
-      }
+      morph.style.opacity = '1'
+      morph.style.transform = 'none'
+      morph.style.willChange = 'left, top, font-size, line-height, letter-spacing, opacity'
 
       const fadeEls = [brandRef.current, orbRef.current, questionsRef.current]
+      const lerp = (start: number, end: number, progress: number) =>
+        start + (end - start) * progress
+      const easeInOut = (value: number) => value * value * (3 - 2 * value)
+      const parsePx = (value: string) => {
+        const parsed = Number.parseFloat(value)
+        return Number.isFinite(parsed) ? parsed : 0
+      }
 
-      const st = ScrollTrigger.create({
-        // Drive the morph off the hero section's own geometry: start when its
-        // top hits the viewport top, finish as its bottom scrolls past — robust
-        // regardless of window.innerHeight quirks.
-        trigger: heroRef.current ?? '#main',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true,
-        // Rebuild the fit whenever ScrollTrigger recomputes (load, resize), so
-        // the target geometry stays correct across breakpoints.
-        onRefreshInit: buildFlip,
-        onUpdate: (self) => {
-          // progress 0 at the top → wordmark fitted over the hero (flip == 1);
-          // progress 1 once the hero has scrolled out → wordmark home in header.
-          const p = self.progress
-          flip?.progress(1 - p)
-          // Secondary hero text clears out over the first half of the morph.
-          const fade = String(1 - Math.min(1, p / 0.5))
-          for (const el of fadeEls) if (el) el.style.opacity = fade
-        },
-      })
+      let metrics = {
+        startLeft: 0,
+        startTop: 0,
+        startFontSize: 0,
+        startLineHeight: 0,
+        startLetterSpacing: 0,
+        endLeft: 0,
+        endTop: 0,
+        endFontSize: 0,
+        endLineHeight: 0,
+        endLetterSpacing: 0,
+      }
+      let progress = 0
+      let frame: number | undefined
 
-      buildFlip()
-      ScrollTrigger.refresh()
+      const readMetrics = () => {
+        const heroRect = heroName.getBoundingClientRect()
+        const wordmarkRect = wordmark.getBoundingClientRect()
+        const heroStyles = getComputedStyle(heroName)
+        const wordmarkStyles = getComputedStyle(wordmark)
+
+        metrics = {
+          startLeft: heroRect.left + window.scrollX,
+          startTop: heroRect.top + window.scrollY,
+          startFontSize: parsePx(heroStyles.fontSize),
+          startLineHeight: parsePx(heroStyles.lineHeight),
+          startLetterSpacing: parsePx(heroStyles.letterSpacing),
+          endLeft: wordmarkRect.left,
+          endTop: wordmarkRect.top,
+          endFontSize: parsePx(wordmarkStyles.fontSize),
+          endLineHeight: parsePx(wordmarkStyles.lineHeight),
+          endLetterSpacing: parsePx(wordmarkStyles.letterSpacing),
+        }
+      }
+
+      const applyMorph = (nextProgress: number) => {
+        progress = Math.max(0, Math.min(1, nextProgress))
+        const easedProgress = easeInOut(progress)
+        morph.style.left = `${lerp(metrics.startLeft, metrics.endLeft, easedProgress)}px`
+        morph.style.top = `${lerp(metrics.startTop, metrics.endTop, easedProgress)}px`
+        morph.style.fontSize = `${lerp(metrics.startFontSize, metrics.endFontSize, easedProgress)}px`
+        morph.style.lineHeight = `${lerp(metrics.startLineHeight, metrics.endLineHeight, easedProgress)}px`
+        morph.style.letterSpacing = `${lerp(metrics.startLetterSpacing, metrics.endLetterSpacing, easedProgress)}px`
+
+        // Secondary hero text clears quickly so the moving name never crosses a
+        // visible "Brand designer" layer.
+        const fade = String(1 - Math.min(1, progress / 0.35))
+        for (const el of fadeEls) if (el) el.style.opacity = fade
+
+        // Hand off to the header's own crisp wordmark over the final stretch.
+        morph.style.opacity = String(
+          1 - Math.min(1, Math.max(0, (progress - 0.82) / 0.13))
+        )
+      }
+
+      const update = () => {
+        frame = undefined
+        const distance = getHeroMorphDistance(window.innerHeight || 1)
+        applyMorph(window.scrollY / distance)
+      }
+
+      const scheduleUpdate = () => {
+        if (frame === undefined) frame = window.requestAnimationFrame(update)
+      }
+
+      const handleResize = () => {
+        readMetrics()
+        scheduleUpdate()
+      }
+
+      readMetrics()
+      update()
+      window.addEventListener('scroll', scheduleUpdate, { passive: true })
+      window.addEventListener('resize', handleResize)
 
       cleanup = () => {
-        st.kill()
-        flip?.kill()
-        gsap.set(wordmark, { clearProps: 'transform' })
+        if (frame !== undefined) window.cancelAnimationFrame(frame)
+        window.removeEventListener('scroll', scheduleUpdate)
+        window.removeEventListener('resize', handleResize)
+        morph.removeAttribute('style')
         heroName.style.opacity = ''
+        for (const el of fadeEls) if (el) el.style.opacity = ''
       }
     })()
 
@@ -141,7 +190,17 @@ function PortfolioPage() {
 
   return (
     <main id="main" className="text-foreground">
-      <section ref={heroRef} aria-label="Introduction" className="section-shell relative z-40 flex h-[calc(100dvh-4rem)] flex-col justify-end py-12 md:py-16">
+      {/* Fixed overlay that redraws as live text while moving from the hero name
+          into the header wordmark. Hidden until the client morph takes over
+          (opacity set in the effect), so SSR/no-JS just shows the real <h1>. */}
+      <span
+        ref={morphRef}
+        aria-hidden
+        className="text-display font-black text-foreground fixed left-0 top-0 z-50 block origin-top-left whitespace-nowrap pointer-events-none opacity-0"
+      >
+        Alina Skalkina
+      </span>
+      <section ref={heroRef} aria-label="Introduction" className="section-shell relative z-40 -mt-16 flex min-h-dvh flex-col justify-end py-12 md:py-16">
         {/* Absolutely positioned so the typing text never shifts the layout. */}
         <div
           ref={questionsRef}
@@ -157,11 +216,10 @@ function PortfolioPage() {
             className="hero-orb size-[clamp(2.5rem,8vw,8.5rem)] shrink-0 rounded-full bg-foreground sm:order-2"
           />
           <h1 className="text-display font-black text-foreground sm:order-1">
-            {/* Kept on one line so it shares the header wordmark's aspect
-                ratio — GSAP Flip can then scale it uniformly (no distortion). */}
+            {/* Kept on one line so the overlay can measure a stable text box. */}
             <span
               ref={nameRef}
-              className="block origin-top-left whitespace-nowrap will-change-transform pointer-events-none"
+              className="block origin-top-left whitespace-nowrap pointer-events-none"
             >
               Alina Skalkina
             </span>
@@ -213,9 +271,6 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
   const isFramed = project.cover === 'framed'
   const hasEmbed = Boolean(project.embedUrl)
   const coverVideo = project.gallery.find((item) => item.type === 'video')
-  const labels = project.hideLabels
-    ? []
-    : [project.workType, project.businessSize, project.audience].filter(Boolean)
 
   const colDelay = staggerIndex % 3
   return (
@@ -228,14 +283,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
         href={`/${project.id}`}
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
-        className={cn(
-          'media-loading-surface relative block aspect-video overflow-hidden',
-          (hasEmbed ||
-            media?.type === 'embed' ||
-            coverVideo?.vimeoId ||
-            (isFramed && project.embedUrl)) &&
-            'bg-black'
-        )}
+        className="media-loading-surface relative block aspect-video overflow-hidden"
       >
         {isFramed && project.embedUrl ? (
           <VimeoBackground
@@ -245,6 +293,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             active={hovered}
             grayscale
             offsetX={project.coverOffsetX}
+            {...cardVimeoProps}
           />
         ) : isFramed && coverVideo?.vimeoId ? (
           <VimeoBackground
@@ -254,6 +303,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             active={hovered}
             grayscale
             offsetX={project.coverOffsetX}
+            {...cardVimeoProps}
           />
         ) : isFramed && coverVideo ? (
           <video
@@ -285,6 +335,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
               active={hovered}
               grayscale
               offsetX={project.coverOffsetX}
+              {...cardVimeoProps}
             />
           </>
         ) : media?.type === 'embed' ? (
@@ -295,6 +346,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             active={hovered}
             grayscale
             offsetX={project.coverOffsetX}
+            {...cardVimeoProps}
           />
         ) : media?.type === 'video' ? (
           <video

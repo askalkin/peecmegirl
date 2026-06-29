@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 import { useLocation } from '@tanstack/react-router'
 
 import { cn } from '@/lib/utils'
+import { getHeroMorphDistance } from '@/lib/heroMorph'
 
 import { SiteNav } from './SiteNav'
 
-// Must match the hero morph mapping in routes/index.tsx — the name lands at
-// MORPH_END, where it cross-fades into this wordmark.
-const MORPH_END = 0.9
+const HEADER_WORDMARK_REVEAL_PROGRESS = 0.9
 
 export default function Header() {
   const location = useLocation()
@@ -21,22 +20,29 @@ export default function Header() {
       setLanded(true)
       return
     }
-    const onScroll = () =>
-      setLanded(window.scrollY / (window.innerHeight || 1) >= MORPH_END)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    const update = () => {
+      const distance = getHeroMorphDistance(window.innerHeight || 1)
+      setLanded(window.scrollY >= distance * HEADER_WORDMARK_REVEAL_PROGRESS)
+    }
+
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
   }, [isHome])
 
   return (
     <header className="sticky top-0 z-50 h-16">
-      <div className="section-shell relative flex h-16 items-center justify-between gap-3">
+      <div className="section-shell relative flex h-16 items-center gap-2 sm:gap-3">
         <a
           href="/"
           aria-hidden={!landed}
           tabIndex={landed ? undefined : -1}
           className={cn(
-            'group relative inline-flex shrink-0 items-center rounded-[4px] px-4 py-2 sm:px-5 sm:py-2.5',
+            'group relative inline-flex h-11 shrink-0 items-center rounded-[4px] px-4 sm:px-5',
             !landed && 'pointer-events-none'
           )}
         >
@@ -48,21 +54,26 @@ export default function Header() {
               landed ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
             )}
           />
-          {/* This wordmark is the element GSAP Flip physically moves: at the top
-              of the home page it sits scaled-up over the hero name, then flies
-              up into the header as you scroll. So it stays visible throughout. */}
-          {/* No will-change/layer promotion: GSAP scales this 14px wordmark up
-              ~9x over the hero. A cached transform layer would rasterize at the
-              natural size and upscale the bitmap (blurry). Without it the browser
-              re-rasterizes the vector text crisply at the displayed scale. */}
+          {/* The crisp, native-size landed wordmark. The hero morph is drawn by
+              a separate fixed text overlay until it hands off to this element. */}
           <span
             data-nav-wordmark
-            className="relative inline-block origin-top-left font-display text-sm font-black leading-[0.92] tracking-[-0.03em] text-foreground"
+            className={cn(
+              'relative inline-block origin-top-left font-display text-sm font-black leading-none tracking-[-0.03em] text-foreground transition-opacity duration-200',
+              landed ? 'opacity-100' : 'opacity-0'
+            )}
           >
             Alina Skalkina
           </span>
         </a>
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div
+          className={cn(
+            'flex min-w-0 justify-end',
+            landed
+              ? 'ml-auto lg:absolute lg:left-1/2 lg:top-1/2 lg:ml-0 lg:-translate-x-1/2 lg:-translate-y-1/2'
+              : 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+          )}
+        >
           <SiteNav />
         </div>
       </div>

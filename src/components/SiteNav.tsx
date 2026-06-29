@@ -61,7 +61,7 @@ export function SiteNav({ className = '' }: { className?: string }) {
   return (
     <nav
       className={cn(
-        'relative flex items-center gap-1 rounded-[4px] border border-border/60 bg-background/55 p-1 text-sm backdrop-blur-md transition-all duration-300 hover:bg-background/40 hover:backdrop-blur-xl',
+        'relative flex h-11 max-w-full items-stretch gap-1 overflow-x-auto rounded-[4px] border border-border/60 bg-background/55 p-1 text-sm backdrop-blur-md transition-all duration-300 hover:bg-background/40 hover:backdrop-blur-xl lg:overflow-visible',
         className
       )}
     >
@@ -81,7 +81,7 @@ export function SiteNav({ className = '' }: { className?: string }) {
           }}
           href={link.href}
           className={cn(
-            'relative z-10 rounded-[2px] px-3 py-2 font-display font-bold transition-colors duration-300 sm:px-4',
+            'relative z-10 flex h-full shrink-0 items-center whitespace-nowrap rounded-[2px] px-3 font-display font-bold leading-none transition-colors duration-300 sm:px-4',
             activeIndex === index
               ? 'text-background'
               : 'text-foreground hover:opacity-60'

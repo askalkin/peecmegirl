@@ -577,3 +577,29 @@ code {
     background: #666 !important;
   }
 }
+
+/* Reaction wall — "Super Bowl ad drops, socials go crazy" collage. Each
+   layer pops in on top of the previous one with a bouncy, staggered entrance. */
+.reaction-wall__layer {
+  object-fit: cover;
+  transform-origin: center center;
+  opacity: 0;
+  transform: translateY(14px) scale(0.55) rotate(0deg);
+  transition:
+    opacity 0.42s var(--ease-out),
+    transform 0.52s var(--ease-spring);
+  will-change: transform, opacity;
+}
+
+.reaction-wall__layer[data-played='true'] {
+  opacity: 1;
+  transform: translateY(0) scale(1) rotate(var(--rest-rotate, 0deg));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reaction-wall__layer {
+    transition: none;
+    transform: rotate(var(--rest-rotate, 0deg));
+    opacity: 1;
+  }
+}

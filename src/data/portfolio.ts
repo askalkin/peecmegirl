@@ -138,7 +138,28 @@ export type PortfolioProject = {
   process: PortfolioProcessStep[]
   team: string[]
   partners?: PortfolioPartner[]
+  /** "Super Bowl reactions" collage — layers pop in on top of each other. */
+  reactionWall?: ReactionWall
   gallery: PortfolioMediaItem[]
+}
+
+/** A single image in a reaction-wall collage, positioned as % of the frame. */
+export type ReactionLayer = {
+  src: string
+  alt: string
+  /** Position/size as a percentage of the wall (left, top, width, height). */
+  x: number
+  y: number
+  w: number
+  h: number
+  /** Resting rotation in degrees for a hand-pinned, scattered look. */
+  rotate?: number
+}
+
+export type ReactionWall = {
+  /** Aspect ratio of the collage frame, e.g. '4491/4177'. */
+  aspect: string
+  layers: ReactionLayer[]
 }
 
 export const portfolioData = {
@@ -978,6 +999,92 @@ export const portfolioData = {
         'Dmytro Satanovsky, AI Team',
         'Maksym Dolynchuk, Engineer',
       ],
+      reactionWall: {
+        aspect: '4491/4177',
+        layers: [
+          {
+            src: '/recovered/lun-hr-brand/reactions/reaction-1.webp',
+            alt: 'LUN Game press coverage',
+            x: 43.84,
+            y: 0,
+            w: 30.06,
+            h: 31.69,
+            rotate: -3,
+          },
+          {
+            src: '/recovered/lun-hr-brand/reactions/reaction-2.webp',
+            alt: 'LUN Game shared on iOS',
+            x: 0,
+            y: 13.68,
+            w: 24.05,
+            h: 45.99,
+            rotate: 2,
+          },
+          {
+            src: '/recovered/lun-hr-brand/reactions/reaction-3.webp',
+            alt: 'LUN Game landing screen',
+            x: 2.67,
+            y: 2.82,
+            w: 39.28,
+            h: 19.58,
+            rotate: -2,
+          },
+          {
+            src: '/recovered/lun-hr-brand/reactions/reaction-4.webp',
+            alt: 'LUN Game reaction screenshot',
+            x: 52.13,
+            y: 34.89,
+            w: 32.69,
+            h: 25.45,
+            rotate: 3,
+          },
+          {
+            src: '/recovered/lun-hr-brand/reactions/reaction-5.webp',
+            alt: 'LUN Game shared on iOS',
+            x: 2.12,
+            y: 67.27,
+            w: 27.66,
+            h: 26.38,
+            rotate: -4,
+          },
+          {
+            src: '/recovered/lun-hr-brand/reactions/reaction-6.webp',
+            alt: 'LUN Game reaction screenshot',
+            x: 75.8,
+            y: 5.17,
+            w: 24.2,
+            h: 32.05,
+            rotate: 4,
+          },
+          {
+            src: '/recovered/lun-hr-brand/reactions/reaction-7.webp',
+            alt: 'LUN Game Instagram story reaction',
+            x: 77.0,
+            y: 45.73,
+            w: 24.05,
+            h: 49.56,
+            rotate: 2,
+          },
+          {
+            src: '/recovered/lun-hr-brand/reactions/reaction-8.webp',
+            alt: 'LUN Game Instagram story reaction',
+            x: 25.94,
+            y: 25.23,
+            w: 24.05,
+            h: 49.56,
+            rotate: -3,
+          },
+          {
+            src: '/recovered/lun-hr-brand/reactions/reaction-9.webp',
+            alt: 'LUN Game reaction screenshot',
+            x: 42.8,
+            y: 66.6,
+            w: 32.16,
+            h: 24.57,
+            rotate: 3,
+          },
+        ],
+      },
       gallery: [
         {
           src: '/recovered/visual-design/6.webp',
@@ -1286,7 +1393,11 @@ export const portfolioData = {
           type: 'image',
           src: '/recovered/graphic-design/bachelor.webp',
           alt: 'Brand design work',
-          slides: ['/recovered/graphic-design/alty-merch.webp'],
+        },
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/alty-merch.webp',
+          alt: 'Alty merchandise concept',
         },
       ],
     },

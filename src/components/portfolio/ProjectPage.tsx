@@ -9,6 +9,7 @@ import {
   type PortfolioStoryParagraph,
   type PortfolioStorySection,
 } from '@/data/portfolio'
+import { ReactionWall } from './ReactionWall'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
 
@@ -338,6 +339,13 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
         ) : null}
       </div>
 
+      {/* Reaction wall — social screenshots pop in like a Super Bowl ad drop. */}
+      {project.reactionWall ? (
+        <section className="section-shell pb-[var(--space-section)]" data-fade>
+          <ReactionWall wall={project.reactionWall} />
+        </section>
+      ) : null}
+
       {/* Visuals — playground grid, bento grid, flex bento rows, a 30-col grid, or masonry. */}
       {galleryItems.length ? (
         <section className="section-shell pb-[var(--space-section)]" data-fade>
@@ -354,26 +362,29 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                 const spanStyle = { '--span': span } as React.CSSProperties
 
                 if (item.center) {
-                  // Full-bleed feature video (e.g. Farba walkthrough),
-                  // breaking out of the grid to span the viewport width.
+                  // Centred, cropped feature video (e.g. Farba walkthrough).
                   return (
                     <div
                       key={item.src}
-                      style={{ ...spanStyle, '--span': 30 } as React.CSSProperties}
-                      className="full-bleed"
+                      style={spanStyle}
+                      className="flex justify-center"
                     >
-                      <div className="media-loading-surface relative aspect-video w-full overflow-hidden">
-                        <video
-                          className="absolute inset-0 h-full w-full origin-top scale-[1.12] object-cover"
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          preload="none"
-                          aria-label={item.alt}
-                        >
-                          <source src={item.src} />
-                        </video>
+                      <div className="media-loading-surface aspect-video w-[70%] overflow-hidden rounded-xl shadow-[var(--shadow-float)]">
+                        {item.vimeoId ? (
+                          <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
+                        ) : (
+                          <video
+                            className="h-full w-full origin-top scale-[1.12] object-cover"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            preload="none"
+                            aria-label={item.alt}
+                          >
+                            <source src={item.src} />
+                          </video>
+                        )}
                       </div>
                     </div>
                   )
@@ -404,20 +415,19 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                       : 'w-full'
 
                 return item.type === 'video' ? (
-                  // Videos break out of the grid to span the full viewport
-                  // width, stacked one per row regardless of their `cols`.
                   <div
                     key={item.src}
-                    style={{ ...spanStyle, '--span': 30 } as React.CSSProperties}
-                    className="full-bleed"
+                    style={cellStyle}
+                    className={centred ? 'flex justify-center' : undefined}
                   >
                     {item.vimeoId ? (
-                      <div className="relative aspect-video w-full overflow-hidden">
+                      <div className={`relative overflow-hidden rounded-sm ${mediaFit}`} style={mediaStyle}>
                         <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
                       </div>
                     ) : (
                       <video
-                        className="media-loading-surface block w-full"
+                        className={`media-loading-surface block rounded-sm ${mediaFit}`}
+                        style={mediaStyle}
                         autoPlay
                         loop
                         muted
@@ -561,8 +571,25 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
     : null
   const media = active ? getPreviewMedia(active) : null
 
+  // Preview videos to warm into the browser cache while the page loads, so the
+  // hover preview plays instantly instead of fetching on first hover.
+  const preloadVideos = projects
+    .map((project) => getPreviewMedia(project))
+    .filter(
+      (item): item is { type: 'video'; src: string } => item?.type === 'video'
+    )
+
   return (
     <section className="section-shell section-y" data-fade>
+      {/* Off-screen warm-up: pulls the related-project hover videos into cache
+          at page load rather than on first hover. */}
+      <div aria-hidden className="pointer-events-none absolute h-0 w-0 overflow-hidden">
+        {preloadVideos.map((item) => (
+          <video key={item.src} preload="auto" muted playsInline>
+            <source src={item.src} />
+          </video>
+        ))}
+      </div>
       <div>
         {projects.map((relatedProject) => (
           <a

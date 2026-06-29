@@ -16,8 +16,8 @@ type VimeoPlayer = {
   destroy: () => Promise<void>
 }
 
-// Full-bleed Vimeo background player on a black stage. In `background=1` mode
-// the video autoplays muted, loops, and covers its container with no controls.
+// Full-bleed Vimeo background player. In `background=1` mode the video
+// autoplays muted, loops, and covers its container with no controls.
 // `loopSeconds` restarts playback at that mark; `active` toggles play/pause so
 // card covers can stay paused (and greyscale) until hovered.
 // The iframe is deferred until the container enters the viewport (300px margin).
@@ -28,6 +28,8 @@ export function VimeoBackground({
   active = true,
   grayscale = false,
   offsetX,
+  cropScale = 1,
+  stageClassName = 'bg-black',
 }: {
   url: string
   title: string
@@ -35,6 +37,8 @@ export function VimeoBackground({
   active?: boolean
   grayscale?: boolean
   offsetX?: string
+  cropScale?: number
+  stageClassName?: string
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -107,7 +111,8 @@ export function VimeoBackground({
     <div
       ref={containerRef}
       className={cn(
-        'absolute inset-0 overflow-hidden bg-black',
+        'absolute inset-0 overflow-hidden',
+        stageClassName,
         grayscale && 'md:grayscale transition duration-500 md:group-hover:grayscale-0'
       )}
     >
@@ -116,8 +121,11 @@ export function VimeoBackground({
           ref={iframeRef}
           src={url}
           title={title}
-          className="pointer-events-none absolute top-1/2 h-full -translate-x-1/2 -translate-y-1/2 aspect-video"
-          style={{ left: offsetX ? `calc(50% + ${offsetX})` : '50%' }}
+          className="pointer-events-none absolute top-1/2 h-auto min-h-full w-auto min-w-full aspect-video"
+          style={{
+            left: offsetX ? `calc(50% + ${offsetX})` : '50%',
+            transform: `translate(-50%, -50%) scale(${cropScale})`,
+          }}
           allow="autoplay; fullscreen; picture-in-picture"
         />
       )}
