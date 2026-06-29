@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -12,7 +12,6 @@ import {
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
 
-import { CoverMedia } from './CoverMedia'
 import { VimeoBackground } from './VimeoBackground'
 import { Lightbox } from './Lightbox'
 
@@ -187,24 +186,54 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   }
 
   return (
-    <main className="text-foreground">
+    <main className="overflow-x-clip text-foreground">
       {isFramed ? (
-        // Framed keynote-style hero on the shared page surface, padded clear
-        // of the nav and narrow enough to fit on screen.
-        <section className="w-full md:-mt-16 md:h-[calc(64vh+4rem)]">
-          <CoverMedia
-            videoSrc={framedVideoSrc}
-            embedUrl={project.embedUrl}
-            embedAspect={project.embedAspect}
-            title={project.title}
-            rounded="rounded-xl"
-            autoPlay
-            surface="bg-background"
-            frameWidth="58%"
-            padding="pt-8 pb-12 md:px-6 md:pb-6 md:pt-[5.5rem]"
-            mobileFull
-          />
-        </section>
+        framedVideoSrc && leadVideo?.fit === 'contain' ? (
+          // Contained (portrait) hero: sits beneath the nav, with the gutters
+          // filled by the video's own background colour so there's no seam
+          // against the page.
+          <section className="-mt-16" style={{ background: project.heroBg }}>
+            <div className="h-[calc(68vh+4rem)] w-full pt-16">
+              <video
+                className="h-full w-full object-contain"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                aria-label={`${project.title} preview`}
+              >
+                <source src={framedVideoSrc} />
+              </video>
+            </div>
+          </section>
+        ) : (
+          // Full-bleed hero: edge-to-edge, no rounding, no shadow.
+          <section className="-mt-16">
+            <div className="relative h-[calc(68vh+4rem)] w-full">
+              {project.embedUrl ? (
+                <VimeoBackground url={project.embedUrl} title={project.title} />
+              ) : leadVideo?.vimeoId ? (
+                <VimeoBackground
+                  url={vimeoEmbedUrl(leadVideo.vimeoId)}
+                  title={project.title}
+                />
+              ) : framedVideoSrc ? (
+                <video
+                  className="media-loading-surface absolute inset-0 h-full w-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-label={`${project.title} preview`}
+                >
+                  <source src={framedVideoSrc} />
+                </video>
+              ) : null}
+            </div>
+          </section>
+        )
       ) : hasEmbed && !noHero ? (
         // Full-bleed background video hero (e.g. Huawei), under the header.
         <section className="relative -mt-16 h-[calc(68vh+4rem)] w-full">
@@ -239,19 +268,25 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       ) : null}
 
       <div className={`section-shell space-y-16 md:space-y-24 ${noHero ? 'section-y-sm' : 'section-y'}`}>
-        {/* Description — client + year, then the hook and the situation/task. */}
-        <header>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-text-secondary">
-            <span className="font-bold text-text-primary">
-              {project.company ?? project.title}
-            </span>
-            <span className="font-bold tabular-nums">{project.year}</span>
-          </div>
-
-          <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-12 lg:gap-24 xl:gap-32">
-            <h1 className="text-h1 font-bold text-text-primary">
-              {project.focus}
-            </h1>
+        {/* Description — the hook and the situation/task. */}
+        <header data-fade>
+          <div className="grid gap-8 md:grid-cols-2 md:gap-12 lg:gap-24 xl:gap-32">
+            <div>
+              <h1 className="text-h1 font-bold text-text-primary">
+                {project.title}
+              </h1>
+              <p className="mt-4 text-h3 font-medium text-text-secondary">
+                {project.focus}
+              </p>
+              {project.role ? (
+                <div className="mt-6">
+                  <Label>What I did</Label>
+                  <p className="mt-1 text-base font-medium text-text-primary">
+                    {project.role}
+                  </p>
+                </div>
+              ) : null}
+            </div>
             {project.summary.length || project.liveLink ? (
               <div className="max-w-xl space-y-5">
                 {project.summary.map((paragraph) => (
@@ -280,7 +315,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
 
         {/* Outcomes — results table with uniform hairline dividers. */}
         {project.highlights.length ? (
-          <section>
+          <section data-fade>
             <div className="grid grid-cols-1 border-l border-t border-border sm:grid-cols-2 lg:grid-cols-3">
               {project.highlights.map((highlight) => (
                 <div
@@ -303,10 +338,12 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
         ) : null}
       </div>
 
-      {/* Visuals — bento grid, flex bento rows, a 30-col grid, or masonry depending on data. */}
+      {/* Visuals — playground grid, bento grid, flex bento rows, a 30-col grid, or masonry. */}
       {galleryItems.length ? (
-        <section className="section-shell pb-[var(--space-section)]">
-          {galleryItems.some((item) => item.colSpan != null) ? (
+        <section className="section-shell pb-[var(--space-section)]" data-fade>
+          {project.playgroundGrid ? (
+            <PlaygroundGrid items={galleryItems} />
+          ) : galleryItems.some((item) => item.colSpan != null) ? (
             <BentoGridGallery items={galleryItems} onImageClick={openImage} />
           ) : galleryItems.some((item) => item.flexRow != null) ? (
             <FlexBentoGallery items={galleryItems} onImageClick={openImage} />
@@ -317,16 +354,17 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                 const spanStyle = { '--span': span } as React.CSSProperties
 
                 if (item.center) {
-                  // Centred, cropped feature video (e.g. Farba walkthrough).
+                  // Full-bleed feature video (e.g. Farba walkthrough),
+                  // breaking out of the grid to span the viewport width.
                   return (
                     <div
                       key={item.src}
-                      style={spanStyle}
-                      className="flex justify-center"
+                      style={{ ...spanStyle, '--span': 30 } as React.CSSProperties}
+                      className="full-bleed"
                     >
-                      <div className="media-loading-surface aspect-video w-[70%] overflow-hidden rounded-xl shadow-[var(--shadow-float)]">
+                      <div className="media-loading-surface relative aspect-video w-full overflow-hidden">
                         <video
-                          className="h-full w-full origin-top scale-[1.12] object-cover"
+                          className="absolute inset-0 h-full w-full origin-top scale-[1.12] object-cover"
                           autoPlay
                           loop
                           muted
@@ -366,19 +404,20 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                       : 'w-full'
 
                 return item.type === 'video' ? (
+                  // Videos break out of the grid to span the full viewport
+                  // width, stacked one per row regardless of their `cols`.
                   <div
                     key={item.src}
-                    style={cellStyle}
-                    className={centred ? 'flex justify-center' : undefined}
+                    style={{ ...spanStyle, '--span': 30 } as React.CSSProperties}
+                    className="full-bleed"
                   >
                     {item.vimeoId ? (
-                      <div className={`relative overflow-hidden rounded-sm ${mediaFit}`} style={mediaStyle}>
+                      <div className="relative aspect-video w-full overflow-hidden">
                         <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
                       </div>
                     ) : (
                       <video
-                        className={`media-loading-surface block rounded-sm ${mediaFit}`}
-                        style={mediaStyle}
+                        className="media-loading-surface block w-full"
                         autoPlay
                         loop
                         muted
@@ -417,10 +456,11 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
             </div>
           ) : (
             <div className="columns-1 gap-4 sm:columns-2 md:gap-6 lg:columns-3">
-              {galleryItems.map((item) => (
+              {galleryItems.map((item, index) => (
                 <MasonryTile
                   key={item.src}
                   item={item}
+                  index={index}
                   onImageClick={() => openImage(item)}
                 />
               ))}
@@ -431,13 +471,13 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
 
       {/* Story — long-form narrative as an expandable list (closed by default). */}
       {project.story?.length ? (
-        <section className="section-shell pb-[var(--space-section)]">
+        <section className="section-shell pb-[var(--space-section)]" data-fade>
           <StorySections sections={project.story} />
         </section>
       ) : null}
 
       {project.process.length || project.team.length > 1 ? (
-      <div className="section-shell space-y-20 pb-16 md:space-y-28 md:pb-24">
+      <div className="section-shell space-y-20 pb-16 md:space-y-28 md:pb-24" data-fade>
         {/* Challenges — the approach / actions, as its own heading. */}
         {project.process.length ? (
           <section className="space-y-10">
@@ -522,7 +562,7 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
   const media = active ? getPreviewMedia(active) : null
 
   return (
-    <section className="section-shell section-y">
+    <section className="section-shell section-y" data-fade>
       <div>
         {projects.map((relatedProject) => (
           <a
@@ -542,7 +582,7 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
             <h3 className="text-h3 font-bold text-text-primary transition-opacity duration-200 group-hover:opacity-50">
               {relatedProject.title}
             </h3>
-            <span className="shrink-0 text-base font-bold tabular-nums text-text-secondary">
+            <span className="shrink-0 text-base tabular-nums text-text-secondary">
               {relatedProject.year}
             </span>
           </a>
@@ -589,6 +629,99 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
         </div>
       ) : null}
     </section>
+  )
+}
+
+function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
+  const srcs = [item.src, ...(item.slides ?? [])]
+  const [idx, setIdx] = useState(0)
+  // The incoming image layered on top; null when no transition is in progress.
+  const [nextIdx, setNextIdx] = useState<number | null>(null)
+  // Drives the opacity ramp of the incoming layer.
+  const [incomingVisible, setIncomingVisible] = useState(false)
+
+  // Preload all srcs so the crossfade is instant
+  useEffect(() => {
+    srcs.forEach((src) => {
+      if (/\.(mp4|webm|mov)$/i.test(src)) return
+      const img = new window.Image()
+      img.src = src
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (srcs.length <= 1) return
+    const offset = (idx * 130) % 400
+    const timer = setTimeout(() => {
+      // Mount the next image on top at opacity 0…
+      setNextIdx((idx + 1) % srcs.length)
+    }, 800 + offset)
+    return () => clearTimeout(timer)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idx, srcs.length])
+
+  // …then ramp it up to opacity 1 on the next frame so it fades in over the current image.
+  useEffect(() => {
+    if (nextIdx === null) return
+    const raf = requestAnimationFrame(() => setIncomingVisible(true))
+    return () => cancelAnimationFrame(raf)
+  }, [nextIdx])
+
+  const src = srcs[idx]
+
+  if (item.type === 'video') {
+    return (
+      <video
+        className="h-full w-full object-cover"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="none"
+        aria-label={item.alt}
+      >
+        <source src={src} />
+      </video>
+    )
+  }
+
+  return (
+    <div className="relative h-full w-full">
+      <img
+        src={src}
+        alt={item.alt}
+        className="absolute inset-0 block h-full w-full object-cover"
+      />
+      {nextIdx !== null && (
+        <img
+          src={srcs[nextIdx]}
+          alt={item.alt}
+          aria-hidden
+          onTransitionEnd={() => {
+            // Promote the incoming image to be the current one and reset the layer.
+            setIdx(nextIdx)
+            setNextIdx(null)
+            setIncomingVisible(false)
+          }}
+          className={`absolute inset-0 block h-full w-full object-cover transition-opacity duration-500 ease-out ${
+            incomingVisible ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
+    </div>
+  )
+}
+
+function PlaygroundGrid({ items }: { items: PortfolioMediaItem[] }) {
+  return (
+    <div className="grid grid-cols-3 gap-1">
+      {items.map((item) => (
+        <div key={item.src} className="aspect-square overflow-hidden">
+          <SlideshowCell item={item} />
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -717,14 +850,44 @@ function FlexBentoGallery({
 
 function MasonryTile({
   item,
+  index,
   onImageClick,
 }: {
   item: PortfolioMediaItem
+  index: number
   onImageClick: () => void
 }) {
+  const ref = useRef<HTMLElement>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.08 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  // Stagger by column position (3-col masonry)
+  const delay = (index % 3) * 80
+
+  const revealStyle: React.CSSProperties = {
+    opacity: visible ? 1 : 0,
+    transform: visible ? 'translateY(0)' : 'translateY(18px)',
+    transition: `opacity 0.55s ease ${delay}ms, transform 0.55s ease ${delay}ms`,
+  }
+
   if (item.type === 'video') {
     return (
-      <figure className="mb-4 break-inside-avoid md:mb-6">
+      <figure ref={ref} className="mb-4 break-inside-avoid md:mb-6" style={revealStyle}>
         {item.vimeoId ? (
           <div className="relative aspect-video w-full overflow-hidden">
             <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
@@ -750,18 +913,18 @@ function MasonryTile({
   }
 
   return (
-    <figure className="mb-4 break-inside-avoid md:mb-6">
+    <figure ref={ref} className="mb-4 break-inside-avoid md:mb-6" style={revealStyle}>
       <button
         type="button"
         onClick={onImageClick}
         aria-label={`Open ${item.alt}`}
-        className="group block w-full"
+        className="group block w-full overflow-hidden"
       >
         <img
           src={item.src}
           alt={item.alt}
           loading="lazy"
-          className="media-loading-surface block h-auto max-h-[80vh] w-full cursor-zoom-in object-cover transition-opacity duration-300 group-hover:opacity-90"
+          className="media-loading-surface block h-auto max-h-[80vh] w-full cursor-zoom-in object-cover transition-[opacity,transform] duration-300 group-hover:scale-[1.03] group-hover:opacity-90"
         />
       </button>
     </figure>

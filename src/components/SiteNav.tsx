@@ -61,14 +61,14 @@ export function SiteNav({ className = '' }: { className?: string }) {
   return (
     <nav
       className={cn(
-        'relative flex items-center gap-1 rounded-full border border-border/60 bg-background/55 p-1 text-xs shadow-sm backdrop-blur-md transition-all duration-300 hover:bg-background/40 hover:shadow-lg hover:backdrop-blur-xl sm:text-sm',
+        'relative flex items-center gap-1 rounded-[4px] border border-border/60 bg-background/55 p-1 text-[length:var(--text-body)] backdrop-blur-md transition-all duration-300 hover:bg-background/40 hover:backdrop-blur-xl',
         className
       )}
     >
       <span
         aria-hidden
         className={cn(
-          'nav-switch-indicator pointer-events-none absolute bottom-1 top-1 rounded-full bg-foreground',
+          'nav-switch-indicator pointer-events-none absolute bottom-1 top-1 rounded-[2px] bg-foreground',
           indicator.visible ? 'opacity-100' : 'opacity-0'
         )}
         style={{ left: indicator.left, width: indicator.width }}
@@ -81,7 +81,7 @@ export function SiteNav({ className = '' }: { className?: string }) {
           }}
           href={link.href}
           className={cn(
-            'relative z-10 rounded-full px-3 py-2 font-bold transition-colors duration-300 sm:px-4',
+            'relative z-10 rounded-[2px] px-3 py-2 font-display font-bold transition-colors duration-300 sm:px-4',
             activeIndex === index
               ? 'text-background'
               : 'text-foreground hover:opacity-60'
