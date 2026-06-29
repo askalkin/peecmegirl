@@ -332,38 +332,6 @@ export const portfolioData = {
       ],
       role: 'Lead Brand Designer, AI-Integrated Workflow Design',
       liveLink: { href: 'https://alty.co', label: 'Try Alty 2.0' },
-      story: [
-        {
-          heading: 'My role',
-          paragraphs: [
-            `As Brand Designer, I worked across both strategy and execution.`,
-            `On the strategic side, I helped define the brand core: who Alty is, how it speaks, who its clients are, what they need, and how the company should be positioned in the market.`,
-            `On the tactical side, I led the website design across UX/UI, visual design, interactions, animations, component logic, and handoff.`,
-            `The website redesign and rebrand were happening at the same time. My job was to make sure our core vision, the website experience, and our future growth perfectly matched the new visuals created by our external agency.`,
-            `To make the brand feel mature but not conservative, I defined two visual identity anchors, that created the right tension: sharp and alternative, but still mature, structured, and credible.`,
-            `Because the website had to move forward before identity was finalized, I created a redesign defence system: a scalable foundation built on semantic tokens, theme collections, adaptive components, and reusable interaction patterns.`,
-            `The workflow connected Figma → Storybook → Claude Code / Codex, allowing us to update color themes, layouts, components, animations, and interaction states without rebuilding the system from scratch.`,
-          ],
-        },
-        {
-          heading: 'Leadership',
-          paragraphs: [
-            `A big part of my role was helping the team think in systems.`,
-            `I mentored designers in design engineering principles and later created a course around this approach. I also had to accept that there would be more card and layout variations than a traditional system might usually allow. But the flexibility was intentional. The point was not to limit creativity. The point was to give creativity a reliable structure.`,
-          ],
-        },
-        {
-          heading: 'Impact',
-          paragraphs: [
-            `The full redesign is still in progress, but the rebrand is already showing early signs of impact.`,
-            `Alty now has a clearer way to communicate its value: not as a generic outsourcing team or creative agency, but as a transformation partner for complex, high-stakes digital products.`,
-            `The system foundation reduced repetitive production work and gave the team more space for visual experimentation, sharper storytelling, and more confident brand expression.`,
-            `The strongest signal is qualitative: the new positioning is attracting more relevant client inquiries from businesses that better match Alty's expertise, maturity, and way of working.`,
-            `While visual identity is continuous work in progress, now it has a system for how the brand thinks, speaks, looks, and scales.`,
-            `Stay updated for alty 2.1`,
-          ],
-        },
-      ],
       highlights: [
         {
           value: '73% → 64%',
@@ -381,7 +349,33 @@ export const portfolioData = {
           description: 'Agent-Native.',
         },
       ],
-      process: [],
+      process: [
+        {
+          title: 'Aligning strategy, execution, and external rebranding',
+          description:
+            'The website redesign and rebrand were happening at the same time. The challenge was making sure our core vision, the website experience (across UX/UI, visual design, and handoff), and our future growth perfectly matched the new visuals created by our external agency.',
+        },
+        {
+          title: 'Defining the right visual tension',
+          description:
+            'To make the brand feel mature but not conservative, the challenge was defining two visual identity anchors that created the exact right tension: sharp and alternative, but still mature, structured, and credible.',
+        },
+        {
+          title: 'Building a redesign defence system',
+          description:
+            'Because the website had to move forward before the identity was finalized, the challenge was creating a scalable foundation built on semantic tokens, adaptive components, and a Figma → Storybook → Claude Code workflow, allowing us to update themes and components without rebuilding the system from scratch.',
+        },
+        {
+          title: 'Fostering systems thinking without limiting creativity',
+          description:
+            'A big part of the role was mentoring designers in design engineering principles. The challenge was accepting more layout variations than a traditional system allows, giving creativity a reliable structure to reduce repetitive production work without limiting visual experimentation.',
+        },
+        {
+          title: 'Repositioning as a transformation partner',
+          description:
+            'Alty needed a clearer way to communicate its value. The challenge was shifting the brand perception from a generic outsourcing agency to a transformation partner for complex, high-stakes digital products, which successfully began attracting more relevant client inquiries.',
+        },
+      ],
       team: [
         'Alina Skalkina, Lead Brand Designer',
         'Kristina Olekh, Marketing Manager',
