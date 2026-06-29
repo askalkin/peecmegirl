@@ -132,23 +132,35 @@ function PortfolioPage() {
         }
       }
 
+      // The name must clear the "Brand designer" line *before* it has a chance
+      // to overlap it, so the morph is front-loaded: it lifts away fast at the
+      // start (easeOut) while the secondary text fades out more slowly (FADE_END
+      // sits well past where the name has already risen out of the way).
+      const FADE_END = 0.5
+      const easeOut = (value: number) => 1 - (1 - value) * (1 - value)
+
       const applyMorph = (nextProgress: number) => {
         progress = Math.max(0, Math.min(1, nextProgress))
-        const easedProgress = easeInOut(progress)
+
+        // Name travels on a fast-start curve so it's lifted clear almost
+        // immediately.
+        const easedProgress = easeOut(progress)
         morph.style.left = `${lerp(metrics.startLeft, metrics.endLeft, easedProgress)}px`
         morph.style.top = `${lerp(metrics.startTop, metrics.endTop, easedProgress)}px`
         morph.style.fontSize = `${lerp(metrics.startFontSize, metrics.endFontSize, easedProgress)}px`
         morph.style.lineHeight = `${lerp(metrics.startLineHeight, metrics.endLineHeight, easedProgress)}px`
         morph.style.letterSpacing = `${lerp(metrics.startLetterSpacing, metrics.endLetterSpacing, easedProgress)}px`
 
-        // Secondary hero text clears quickly so the moving name never crosses a
-        // visible "Brand designer" layer.
-        const fade = String(1 - Math.min(1, progress / 0.35))
+        // Secondary hero text fades more gradually, trailing behind the name
+        // that has already moved up.
+        const fade = String(1 - Math.min(1, progress / FADE_END))
         for (const el of fadeEls) if (el) el.style.opacity = fade
 
-        // Hand off to the header's own crisp wordmark over the final stretch.
+        // Hand off to the header's own crisp wordmark over the final stretch of
+        // the morph. The overlay is fully gone before the header wordmark
+        // reveals, so the two copies never overlap into a visible ghost.
         morph.style.opacity = String(
-          1 - Math.min(1, Math.max(0, (progress - 0.82) / 0.13))
+          1 - Math.min(1, Math.max(0, (progress - 0.78) / 0.12))
         )
       }
 
@@ -294,6 +306,8 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             grayscale
             offsetX={project.coverOffsetX}
             {...cardVimeoProps}
+            cropScale={project.coverCropScale ?? cardVimeoProps.cropScale}
+            alignTop={project.coverAlignTop}
           />
         ) : isFramed && coverVideo?.vimeoId ? (
           <VimeoBackground
@@ -304,6 +318,10 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             grayscale
             offsetX={project.coverOffsetX}
             {...cardVimeoProps}
+            cropScale={project.coverCropScale ?? cardVimeoProps.cropScale}
+            alignTop={project.coverAlignTop}
+            fit={project.coverFit}
+            aspect={project.coverFit === 'width' ? project.embedAspect : undefined}
           />
         ) : isFramed && coverVideo ? (
           <video
@@ -317,7 +335,10 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
           >
             <source src={coverVideo.src} />
           </video>
-        ) : hasEmbed ? (
+        ) : hasEmbed &&
+          !(
+            project.coverSrc && /\.(mp4|mov|webm)$/i.test(project.coverSrc)
+          ) ? (
           <>
             {project.coverSrc &&
               !/\.(mp4|mov|webm)$/i.test(project.coverSrc) && (

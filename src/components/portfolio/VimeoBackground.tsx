@@ -29,7 +29,11 @@ export function VimeoBackground({
   grayscale = false,
   offsetX,
   cropScale = 1,
+  alignTop = false,
   stageClassName = 'bg-black',
+  fit = 'cover',
+  aspect = 'aspect-video',
+  eager = false,
 }: {
   url: string
   title: string
@@ -38,14 +42,25 @@ export function VimeoBackground({
   grayscale?: boolean
   offsetX?: string
   cropScale?: number
+  alignTop?: boolean
   stageClassName?: string
+  fit?: 'cover' | 'contain' | 'width'
+  /**
+   * Aspect ratio of the iframe, as a Tailwind class. Set this to the video's
+   * true ratio so `fit="cover"` lands an exact fit with no crop or letterbox
+   * bars; defaults to 16:9.
+   */
+  aspect?: string
+  eager?: boolean
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<VimeoPlayer | undefined>(undefined)
-  const [inView, setInView] = useState(false)
+  const [inView, setInView] = useState(eager)
+  const needsPlayerApi = Boolean(loopSeconds) || !active
 
   useEffect(() => {
+    if (eager) return
     const el = containerRef.current
     if (!el) return
     const observer = new IntersectionObserver(
@@ -62,7 +77,7 @@ export function VimeoBackground({
   }, [])
 
   useEffect(() => {
-    if (!inView) return
+    if (!inView || !needsPlayerApi) return
     let cancelled = false
 
     const init = () => {
@@ -121,10 +136,23 @@ export function VimeoBackground({
           ref={iframeRef}
           src={url}
           title={title}
-          className="pointer-events-none absolute top-1/2 h-auto min-h-full w-auto min-w-full aspect-video"
+          loading="lazy"
+          className={cn(
+            'pointer-events-none absolute',
+            aspect,
+            fit === 'cover'
+              ? 'h-auto min-h-full w-auto min-w-full'
+              : fit === 'width'
+                ? 'h-auto w-full'
+                : 'h-full max-h-full w-full max-w-full',
+            alignTop ? 'top-0' : 'top-1/2'
+          )}
           style={{
             left: offsetX ? `calc(50% + ${offsetX})` : '50%',
-            transform: `translate(-50%, -50%) scale(${cropScale})`,
+            transformOrigin: alignTop ? 'top center' : 'center',
+            transform: alignTop
+              ? `translateX(-50%) scale(${cropScale})`
+              : `translate(-50%, -50%) scale(${cropScale})`,
           }}
           allow="autoplay; fullscreen; picture-in-picture"
         />

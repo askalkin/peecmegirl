@@ -27,8 +27,11 @@ export function ReactionWall({ wall }: { wall: ReactionWallData }) {
     let raf = 0
     const check = () => {
       const rect = node.getBoundingClientRect()
+      // Require the section to actually be scrolled into the viewport:
+      // its top must have risen above ~75% of the viewport height, and the
+      // section must still be on screen.
       const inView =
-        rect.top < window.innerHeight * 0.85 && rect.bottom > 0
+        rect.top < window.innerHeight * 0.75 && rect.bottom > 0
       if (inView) {
         setPlayed(true)
         cleanup()
@@ -45,14 +48,10 @@ export function ReactionWall({ wall }: { wall: ReactionWallData }) {
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
+    // Check once in case the section is already in view on mount (e.g. a
+    // short page with no scroll room, or a deep-link landing inside it).
     check()
-    // Safety net: never leave the collage stuck invisible if the scroll
-    // trigger can't fire (unusual viewport, no scroll room, etc.).
-    const fallback = window.setTimeout(() => setPlayed(true), 2500)
-    return () => {
-      cleanup()
-      clearTimeout(fallback)
-    }
+    return cleanup
   }, [played])
 
   return (

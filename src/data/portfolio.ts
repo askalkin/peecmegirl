@@ -88,8 +88,16 @@ export type PortfolioMediaItem = {
   vimeoId?: string
   /** Additional image srcs to cycle through in the playground grid slideshow cell. */
   slides?: string[]
+  /** Render this item centred beneath the playground grid at its real proportions. */
+  playgroundFeature?: boolean
   /** CSS object-position for the media (e.g. 'bottom') when using object-cover. */
   objectPosition?: string
+  /** Scale media inside an overflow-hidden frame to crop unwanted edges. */
+  cropScale?: number
+  /** Horizontal offset for cropped Vimeo media, e.g. '3%'. */
+  cropOffsetX?: string
+  /** Anchor cropped Vimeo media to the top so extra height is removed at bottom. */
+  cropAlignTop?: boolean
 }
 
 export type PortfolioProject = {
@@ -117,6 +125,9 @@ export type PortfolioProject = {
   embedUrl?: string
   /** Aspect-ratio class for a framed embed, e.g. 'aspect-[4/3]'. */
   embedAspect?: string
+  /** Static image used only for the framed case-study hero. */
+  framedHeroImageSrc?: string
+  framedHeroImageAlt?: string
   /** Dedicated cover/hover image, shown on the card and the hover preview but
    *  not in the case-study gallery. */
   coverSrc?: string
@@ -134,6 +145,12 @@ export type PortfolioProject = {
   audience?: string
   /** Horizontal offset for the cover embed/video (e.g. '3%'). Applied on the card. */
   coverOffsetX?: string
+  /** Zoom factor for the cover embed on the homepage card (default 1.18). */
+  coverCropScale?: number
+  /** Anchor the cover embed to the top of the card instead of centring it. */
+  coverAlignTop?: boolean
+  /** How the cover embed fills the card. 'width' spans the full card width (height by aspect). */
+  coverFit?: 'cover' | 'width'
   /** Long-form narrative sections (e.g. My role, Leadership, Result). */
   story?: PortfolioStorySection[]
   highlights: PortfolioHighlight[]
@@ -336,6 +353,8 @@ export const portfolioData = {
       title: 'Alty rebranding',
       navigationLabel: 'Alty Rebranding',
       cover: 'framed',
+      embedAspect: 'aspect-[1280/737]',
+      coverAlignTop: true,
       embedUrl: 'https://player.vimeo.com/video/1205368261?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
       year: '2026',
       businessSize: 'Scale-up',
@@ -451,6 +470,29 @@ export const portfolioData = {
           aspect: '1876/1080',
           vimeoId: '1205368260',
         },
+        // Slideshow row — three portrait containers crossfading through stills,
+        // playground-style, rendered as looping webm.
+        {
+          src: '/alty/slideshow-1.webm',
+          type: 'video',
+          alt: 'Alty social concepts slideshow',
+          cols: 10,
+          aspect: '1080/1350',
+        },
+        {
+          src: '/alty/slideshow-2.webm',
+          type: 'video',
+          alt: 'Alty social concepts slideshow',
+          cols: 10,
+          aspect: '1080/1350',
+        },
+        {
+          src: '/alty/slideshow-3.webm',
+          type: 'video',
+          alt: 'Alty social concepts slideshow',
+          cols: 10,
+          aspect: '1080/1350',
+        },
         // Concepts — centred at the same width as the framed hero (58%).
         {
           src: '/alty/alty-concepts.webp',
@@ -480,7 +522,7 @@ export const portfolioData = {
         'When communication is a lifeline, the unseen backbone of the network is everything. We crafted a strategic narrative to show that Huawei is much more than a device manufacturer in Ukraine.',
         'By highlighting 25 years of telecom infrastructure development—which now keeps the country connected under fire—alongside their eco-initiatives and inclusivity programs, we shifted the focus to their role as an essential, resilient partner.',
       ],
-      role: 'Motion / Video Design',
+      role: 'Motion, Video Design',
       highlights: [],
       process: [],
       team: ['Alina Skalkina, Motion Designer'],
@@ -489,6 +531,10 @@ export const portfolioData = {
     {
       id: 'comfort-map',
       cover: 'framed',
+      embedAspect: 'aspect-[1280/878]',
+      coverCropScale: 1,
+      coverAlignTop: true,
+      coverFit: 'width',
       title: 'Comfort Map',
       navigationLabel: 'Comfort Map',
       year: '2021',
@@ -595,6 +641,7 @@ export const portfolioData = {
           alt: 'Comfort Map desktop screen 1',
           cols: 15,
           aspect: '1084/743',
+          fit: 'contain',
         },
         {
           src: '/recovered/comfort-map/desktop-2.webp',
@@ -602,6 +649,7 @@ export const portfolioData = {
           alt: 'Comfort Map desktop screen 2',
           cols: 15,
           aspect: '1084/743',
+          fit: 'contain',
         },
         {
           src: '/recovered/comfort-map/mobile-1.webp',
@@ -725,6 +773,7 @@ export const portfolioData = {
           type: 'image',
           alt: 'LUN Misto city dashboard with air quality, traffic and weather',
           span: 'wide',
+          frameWidth: '70%',
         },
         {
           src: '/recovered/air-video.webm',
@@ -786,6 +835,7 @@ export const portfolioData = {
     {
       id: 'lunie',
       cover: 'framed',
+      embedAspect: 'aspect-[1395/907]',
       title: 'LUN HR System',
       navigationLabel: 'LUN HR System',
       year: '2018',
@@ -850,6 +900,7 @@ export const portfolioData = {
           alt: 'LUN HR System screen 1',
           cols: 10,
           aspect: '1395/907',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/2.webp',
@@ -857,6 +908,7 @@ export const portfolioData = {
           alt: 'LUN HR System screen 2',
           cols: 10,
           aspect: '1395/907',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/3.webp',
@@ -864,6 +916,7 @@ export const portfolioData = {
           alt: 'LUN HR System screen 3',
           cols: 10,
           aspect: '1395/907',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/4.webp',
@@ -871,6 +924,7 @@ export const portfolioData = {
           alt: 'LUN HR System screen 4',
           cols: 10,
           aspect: '1395/907',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/5.webp',
@@ -878,6 +932,7 @@ export const portfolioData = {
           alt: 'LUN HR System screen 5',
           cols: 10,
           aspect: '1395/907',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/6.webp',
@@ -885,6 +940,7 @@ export const portfolioData = {
           alt: 'LUN HR System screen 6',
           cols: 10,
           aspect: '1395/907',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/mobile-1.webp',
@@ -892,6 +948,7 @@ export const portfolioData = {
           alt: 'LUN HR System mobile screen 1',
           cols: 6,
           aspect: '333/719',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/mobile-2.webp',
@@ -899,6 +956,7 @@ export const portfolioData = {
           alt: 'LUN HR System mobile screen 2',
           cols: 6,
           aspect: '333/719',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/mobile-3.webp',
@@ -906,6 +964,7 @@ export const portfolioData = {
           alt: 'LUN HR System mobile screen 3',
           cols: 6,
           aspect: '333/719',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/mobile-4.webp',
@@ -913,6 +972,7 @@ export const portfolioData = {
           alt: 'LUN HR System mobile screen 4',
           cols: 6,
           aspect: '333/719',
+          fit: 'contain',
         },
         {
           src: '/recovered/lunie/mobile-5.webp',
@@ -920,6 +980,7 @@ export const portfolioData = {
           alt: 'LUN HR System mobile screen 5',
           cols: 6,
           aspect: '333/719',
+          fit: 'contain',
         },
       ],
     },
@@ -939,6 +1000,7 @@ export const portfolioData = {
       focus: 'The hiring game that built a community.',
       categories: [
         'Marketing Design',
+        'Events Art Direction',
         'Employer Branding',
         'Campaign Design',
         'HR Brand',
@@ -1095,7 +1157,15 @@ export const portfolioData = {
           src: '/recovered/visual-design/6.webp',
           type: 'image',
           alt: 'LUN HR Brand careers site',
-          span: 'wide',
+          colSpan: 12,
+          aspect: '893/720',
+          objectPosition: 'top',
+        },
+        {
+          src: '/recovered/lun-hr-brand/educational-hub-3.webp',
+          type: 'image',
+          alt: 'LUN HR community event at the Educational Hub',
+          colSpan: 12,
         },
         {
           src: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
@@ -1104,18 +1174,11 @@ export const portfolioData = {
           colSpan: 12,
         },
         {
-          src: '/recovered/lun-hr-brand/educational-hub-3.webp',
-          type: 'image',
-          alt: 'LUN HR community event at the Educational Hub',
-          colSpan: 12,
-          rowSpan: 2,
-        },
-        {
           src: '/recovered/lun-hr-brand/metro.webp',
           type: 'image',
           alt: 'LUN Game code puzzle on a Kyiv metro banner',
           colSpan: 6,
-          objectPosition: 'bottom',
+          objectPosition: 'center',
         },
         {
           src: '/recovered/lun-hr-brand/404.webp',
@@ -1147,6 +1210,7 @@ export const portfolioData = {
           type: 'image',
           alt: 'LUN HR brand merch',
           colSpan: 4,
+          aspect: '1/1',
           slides: [
             '/recovered/lun-hr-brand/merch-hackathon.webp',
             '/recovered/lun-hr-brand/merch-tote.webp',
@@ -1161,6 +1225,7 @@ export const portfolioData = {
           type: 'image',
           alt: 'Ficha the LUN mascot on TV',
           colSpan: 4,
+          aspect: '1/1',
           slides: ['/recovered/lun-hr-brand/ficha-birthday.webp'],
         },
         // Office & environmental branding — slideshow.
@@ -1169,6 +1234,7 @@ export const portfolioData = {
           type: 'image',
           alt: 'LUN office wall — “Hello, stranger! these fellows create.lun.ua”',
           colSpan: 4,
+          aspect: '1/1',
           slides: [
             '/recovered/lun-hr-brand/office-fly-me.webp',
             '/recovered/lun-hr-brand/anya-box.webp',
@@ -1187,31 +1253,51 @@ export const portfolioData = {
           colSpan: 6,
         },
         {
+          src: '/recovered/lun-hr-brand/frame-25.webp',
+          type: 'image',
+          alt: 'LUN team group hug at a summer open party',
+          colSpan: 4,
+          aspect: '1/1',
+        },
+        {
+          src: '/recovered/lun-hr-brand/frame-26.webp',
+          type: 'image',
+          alt: 'LUN themed party — costumed guests at the dragon set',
+          colSpan: 4,
+          aspect: '1/1',
+        },
+        {
+          src: '/recovered/lun-hr-brand/team-mem.webp',
+          type: 'image',
+          alt: 'LUN team as social platforms — LinkedIn, Facebook, Instagram, Tinder meme',
+          colSpan: 4,
+          aspect: '1/1',
+        },
+        {
           src: '/recovered/lun-hr-brand/team-lun.webm',
           type: 'video',
           alt: 'LUN team motion reel',
           vimeoId: '1205440887',
-          colSpan: 4,
+          colSpan: 6,
+          aspect: '16/9',
+          fit: 'cover',
         },
         {
           src: '/recovered/lun-hr-brand/invitation.webm',
           type: 'video',
           alt: 'LUN event invitation animation',
           vimeoId: '1205440886',
-          colSpan: 4,
-        },
-        {
-          src: '/recovered/lun-hr-brand/LUN-10.webm',
-          type: 'video',
-          alt: 'LUN 10 anniversary animation',
-          vimeoId: '1205441585',
-          colSpan: 4,
+          colSpan: 6,
+          aspect: '16/9',
+          fit: 'cover',
         },
       ],
     },
     {
       id: 'farba',
       cover: 'framed',
+      coverCropScale: 1.77,
+      coverAlignTop: true,
       heroBg: 'linear-gradient(to bottom, #f8fafb, #ebedf0)',
       title: 'Farba booking platform',
       navigationLabel: 'Farba',
@@ -1316,6 +1402,8 @@ export const portfolioData = {
           type: 'video',
           alt: 'Farba booking app walkthrough',
           center: true,
+          cropScale: 1.16,
+          cropAlignTop: true,
           vimeoId: '1205383073',
         },
       ],
@@ -1329,6 +1417,7 @@ export const portfolioData = {
       workType: 'Visual Design',
       hideLabels: true,
       embedUrl: 'https://player.vimeo.com/video/1205293954?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
+      coverSrc: '/recovered/graphic-design/graphic-design.webm',
       noHero: true,
       playgroundGrid: true,
       focus: 'Design moves fast, so I keep playing.',
@@ -1443,16 +1532,6 @@ export const portfolioData = {
           src: '/recovered/graphic-design/Lun-redesign.webp',
           alt: 'LUN "Try 3D buildings on the map" campaign',
         },
-        {
-          type: 'image',
-          src: '/recovered/graphic-design/bachelor.webp',
-          alt: 'Brand design work',
-        },
-        {
-          type: 'image',
-          src: '/recovered/graphic-design/alty-merch.webp',
-          alt: 'Alty merchandise concept',
-        },
         // Row 6
         {
           type: 'video',
@@ -1465,6 +1544,13 @@ export const portfolioData = {
           src: '',
           vimeoId: '1205441065',
           alt: 'Playground motion exploration',
+        },
+        // Featured poster — centred beneath the videos at its real proportions.
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/bachelor.webp',
+          alt: 'Bachelor dinner poster',
+          playgroundFeature: true,
         },
       ],
     },

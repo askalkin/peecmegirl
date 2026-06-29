@@ -20,14 +20,6 @@ import { Lightbox } from './Lightbox'
 const vimeoEmbedUrl = (id: string) =>
   `https://player.vimeo.com/video/${id}?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479`
 
-function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-sm font-medium text-text-secondary">
-      {children}
-    </span>
-  )
-}
-
 // Render a story paragraph: plain string, or a mix of text and inline links.
 function renderStoryParagraph(paragraph: PortfolioStoryParagraph) {
   if (typeof paragraph === 'string') return paragraph
@@ -149,10 +141,20 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   // the gallery below — unless the frame shows an embed, in which case the
   // gallery video stays.
   const framedVideoSrc = isFramed && !hasEmbed ? leadVideo?.src : undefined
+  const framedImage = isFramed && project.framedHeroImageSrc
+    ? {
+        src: project.framedHeroImageSrc,
+        alt:
+          project.framedHeroImageAlt ??
+          imageItems.find((item) => item.src === project.framedHeroImageSrc)
+            ?.alt ??
+          project.title,
+      }
+    : null
   // Framed heroes show the lead video in the keynote frame. Local .webm sources
   // were purged in the Vimeo migration, so prefer the embed: project-level
   // embedUrl, else the lead video's vimeoId.
-  const framedEmbedUrl = isFramed
+  const framedEmbedUrl = isFramed && !framedImage
     ? project.embedUrl ??
       (leadVideo?.vimeoId ? vimeoEmbedUrl(leadVideo.vimeoId) : undefined)
     : undefined
@@ -199,11 +201,14 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       {isFramed ? (
         // Framed keynote-style hero on the shared page surface, padded clear
         // of the nav and narrow enough to fit on screen.
-        <section className="w-full md:-mt-16 md:h-[calc(64vh+4rem)]">
+        <section className="w-full md:-mt-16 md:h-[calc(74vh+4rem)]">
           <CoverMedia
+            imageSrc={framedImage?.src}
+            imageAlt={framedImage?.alt}
             videoSrc={framedVideoSrc}
             embedUrl={framedEmbedUrl}
             embedAspect={project.embedAspect}
+            embedEager
             title={project.title}
             rounded="rounded-xl"
             autoPlay
@@ -211,6 +216,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
             frameWidth="58%"
             padding="pt-8 pb-12 md:px-6 md:pb-6 md:pt-[5.5rem]"
             mobileFull
+            fillHeight
           />
         </section>
       ) : hasEmbed && !noHero ? (
@@ -259,9 +265,15 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
               </p>
               {project.role ? (
                 <div className="mt-6">
-                  <Label>What I did</Label>
-                  <p className="mt-1 text-base font-medium text-text-primary">
+                  <p className="text-base font-medium text-text-secondary">
                     {project.role}
+                  </p>
+                </div>
+              ) : null}
+              {project.year ? (
+                <div className="mt-2">
+                  <p className="text-base font-medium text-text-secondary">
+                    {project.year}
                   </p>
                 </div>
               ) : null}
@@ -317,13 +329,6 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
         ) : null}
       </div>
 
-      {/* Reaction wall — social screenshots pop in like a Super Bowl ad drop. */}
-      {project.reactionWall ? (
-        <section className="section-shell pb-[var(--space-section)]" data-fade>
-          <ReactionWall wall={project.reactionWall} />
-        </section>
-      ) : null}
-
       {/* Visuals — playground grid, bento grid, flex bento rows, a 30-col grid, or masonry. */}
       {galleryItems.length ? (
         <section className="section-shell pb-[var(--space-section)]" data-fade>
@@ -349,10 +354,19 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     >
                       <div className="media-loading-surface relative aspect-video w-[70%] overflow-hidden rounded-xl shadow-[var(--shadow-float)]">
                         {item.vimeoId ? (
-                          <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
+                          <VimeoBackground
+                            url={vimeoEmbedUrl(item.vimeoId)}
+                            title={item.alt}
+                            cropScale={item.cropScale ?? 1.12}
+                            offsetX={item.cropOffsetX}
+                            alignTop={item.cropAlignTop ?? true}
+                          />
                         ) : (
                           <video
-                            className="h-full w-full origin-top scale-[1.12] object-cover"
+                            className="h-full w-full origin-top object-cover"
+                            style={{
+                              transform: `scale(${item.cropScale ?? 1.12})`,
+                            }}
                             autoPlay
                             loop
                             muted
@@ -381,7 +395,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                 const mediaStyle = capped
                   ? ({ maxHeight: `${item.maxVh}vh` } as React.CSSProperties)
                   : framed
-                    ? ({ width: item.frameWidth } as React.CSSProperties)
+                    ? ({ '--frame-width': item.frameWidth } as React.CSSProperties)
                     : undefined
                 const objectFit = item.fit === 'contain' ? 'object-contain' : 'object-cover'
                 const mediaFit = item.aspect
@@ -389,7 +403,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                   : capped
                     ? 'mx-auto h-auto w-auto max-w-full object-contain'
                     : framed
-                      ? 'h-auto max-w-full'
+                      ? 'h-auto w-full max-w-full lg:w-[var(--frame-width)]'
                       : 'w-full'
 
                 return item.type === 'video' ? (
@@ -400,7 +414,16 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                   >
                     {item.vimeoId ? (
                       <div className={`relative overflow-hidden rounded-sm ${mediaFit}`} style={mediaStyle}>
-                        <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
+                        <VimeoBackground
+                          url={vimeoEmbedUrl(item.vimeoId)}
+                          title={item.alt}
+                          // Over-cover by a hair so sub-pixel rounding on the
+                          // centred cover iframe can't leave a 1px black stage
+                          // line at the bottom edge.
+                          cropScale={item.cropScale ?? 1.01}
+                          offsetX={item.cropOffsetX}
+                          alignTop={item.cropAlignTop}
+                        />
                       </div>
                     ) : (
                       <video
@@ -434,7 +457,14 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                       />
                     </button>
                     {item.caption ? (
-                      <p className="mt-2 text-sm text-text-secondary">
+                      <p
+                        style={mediaStyle}
+                        className={`mt-2 text-sm text-text-secondary ${
+                          framed
+                            ? 'mx-auto w-full max-w-full text-left lg:w-[var(--frame-width)]'
+                            : ''
+                        }`}
+                      >
                         {item.caption}
                       </p>
                     ) : null}
@@ -454,6 +484,16 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
               ))}
             </div>
           )}
+        </section>
+      ) : null}
+
+      {/* Reaction wall — social screenshots pop in like a Super Bowl ad drop.
+          Sits at the end of the gallery, narrowed to 70% on large screens. */}
+      {project.reactionWall ? (
+        <section className="section-shell pb-[var(--space-section)]" data-fade>
+          <div className="mx-auto lg:w-[70%]">
+            <ReactionWall wall={project.reactionWall} />
+          </div>
         </section>
       ) : null}
 
@@ -524,18 +564,116 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   )
 }
 
-// Dedicated cover, else first video (else first image) — used for the hover preview.
+type PreviewMedia =
+  | { type: 'image'; src: string }
+  | { type: 'video'; src: string }
+  | {
+      type: 'embed'
+      src: string
+      title: string
+      cropScale?: number
+      offsetX?: string
+      alignTop?: boolean
+      aspect?: string
+    }
+
+function getHeroVideoPreview(project: PortfolioProject): PreviewMedia | null {
+  const video = project.gallery.find((item) => item.type === 'video')
+  if (!video) return null
+
+  if (video.vimeoId) {
+    return {
+      type: 'embed',
+      src: vimeoEmbedUrl(video.vimeoId),
+      title: video.alt,
+      cropScale: project.coverCropScale,
+      offsetX: project.coverOffsetX,
+      alignTop: project.coverAlignTop,
+    }
+  }
+
+  return { type: 'video', src: video.src }
+}
+
+// Projects whose card / "other cases" hover preview should mirror the hero
+// media shown at the top of the case study, rather than a dedicated cover.
+const HERO_PREVIEW_IDS = new Set([
+  'farba',
+  'air-quality-map',
+  'lunie',
+  'comfort-map',
+  'lun-hr-brand',
+  'alty-rebranding',
+])
+
+// Mirror ProjectPage's hero resolution so the hover preview matches what the
+// case study actually opens on (framed keynote frame, full-bleed embed, or the
+// lead gallery video).
+function getHeroPreviewMedia(project: PortfolioProject): PreviewMedia | null {
+  const isFramed = project.cover === 'framed'
+  const leadVideo = project.gallery.find((item) => item.type === 'video')
+  const embedOptions = {
+    title: project.title,
+    cropScale: project.coverCropScale,
+    offsetX: project.coverOffsetX,
+    alignTop: project.coverAlignTop,
+    aspect: project.embedAspect,
+  }
+
+  if (isFramed) {
+    if (project.framedHeroImageSrc) {
+      return { type: 'image', src: project.framedHeroImageSrc }
+    }
+    const framedEmbed =
+      project.embedUrl ??
+      (leadVideo?.vimeoId ? vimeoEmbedUrl(leadVideo.vimeoId) : undefined)
+    if (framedEmbed) return { type: 'embed', src: framedEmbed, ...embedOptions }
+  }
+
+  if (project.embedUrl) {
+    return { type: 'embed', src: project.embedUrl, ...embedOptions }
+  }
+
+  if (leadVideo) {
+    return leadVideo.vimeoId
+      ? { type: 'embed', src: vimeoEmbedUrl(leadVideo.vimeoId), ...embedOptions }
+      : { type: 'video', src: leadVideo.src }
+  }
+
+  return null
+}
+
+// Dedicated cover, else first image. Some projects are intentionally previewed
+// with their hero media so the card and "other cases" hover stay consistent
+// with what the case study opens on.
 function getPreviewMedia(project: PortfolioProject) {
+  if (HERO_PREVIEW_IDS.has(project.id)) {
+    const heroPreview = getHeroPreviewMedia(project)
+    if (heroPreview) return heroPreview
+  }
+
   if (project.coverSrc) {
     return /\.(mp4|mov|webm)$/i.test(project.coverSrc)
-      ? { type: 'video' as const, src: project.coverSrc }
-      : { type: 'image' as const, src: project.coverSrc }
+      ? ({ type: 'video', src: project.coverSrc } satisfies PreviewMedia)
+      : ({ type: 'image', src: project.coverSrc } satisfies PreviewMedia)
   }
-  if (project.embedUrl) return { type: 'embed' as const, src: project.embedUrl }
-  const video = project.gallery.find((item) => item.type === 'video')
-  if (video) return { type: 'video' as const, src: video.src }
   const image = project.gallery.find((item) => item.type === 'image')
-  if (image) return { type: 'image' as const, src: image.src }
+  if (image) return { type: 'image', src: image.src } satisfies PreviewMedia
+  if (project.embedUrl) {
+    return {
+      type: 'embed',
+      src: project.embedUrl,
+      title: project.title,
+      cropScale: project.coverCropScale,
+      offsetX: project.coverOffsetX,
+      alignTop: project.coverAlignTop,
+      aspect: project.embedAspect,
+    } satisfies PreviewMedia
+  }
+
+  const heroVideo = getHeroVideoPreview(project)
+  if (heroVideo) return heroVideo
+
   return null
 }
 
@@ -549,25 +687,8 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
     : null
   const media = active ? getPreviewMedia(active) : null
 
-  // Preview videos to warm into the browser cache while the page loads, so the
-  // hover preview plays instantly instead of fetching on first hover.
-  const preloadVideos = projects
-    .map((project) => getPreviewMedia(project))
-    .filter(
-      (item): item is { type: 'video'; src: string } => item?.type === 'video'
-    )
-
   return (
     <section className="section-shell section-y" data-fade>
-      {/* Off-screen warm-up: pulls the related-project hover videos into cache
-          at page load rather than on first hover. */}
-      <div aria-hidden className="pointer-events-none absolute h-0 w-0 overflow-hidden">
-        {preloadVideos.map((item) => (
-          <video key={item.src} preload="auto" muted playsInline>
-            <source src={item.src} />
-          </video>
-        ))}
-      </div>
       <div>
         {projects.map((relatedProject) => (
           <a
@@ -582,12 +703,12 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
                 current === relatedProject.id ? null : current
               )
             }
-            className="group flex items-baseline justify-between gap-6 border-b border-border py-6"
+            className="group -mx-3 flex items-baseline justify-between gap-6 border-b border-border px-3 py-6 transition-colors duration-200 hover:bg-foreground/[0.035]"
           >
-            <h3 className="text-h3 font-bold text-text-primary transition-opacity duration-200 group-hover:opacity-50">
+            <h3 className="text-h3 font-bold text-text-primary transition-[opacity,transform] duration-200 group-hover:translate-x-1 group-hover:opacity-50">
               {relatedProject.title}
             </h3>
-            <span className="shrink-0 text-base tabular-nums text-text-secondary">
+            <span className="shrink-0 text-base tabular-nums text-text-secondary transition-opacity duration-200 group-hover:opacity-60">
               {relatedProject.year}
             </span>
           </a>
@@ -612,17 +733,26 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
               loop
               muted
               playsInline
+              preload="metadata"
             >
               <source src={media.src} />
             </video>
           ) : media.type === 'embed' ? (
-            <iframe
+            <div
               key={media.src}
-              src={media.src}
-              title=""
-              className="block aspect-video w-full"
-              allow="autoplay; fullscreen; picture-in-picture"
-            />
+              className={`relative w-full overflow-hidden ${media.aspect ?? 'aspect-video'}`}
+            >
+              <VimeoBackground
+                url={media.src}
+                title={media.title}
+                cropScale={media.cropScale ?? 1.18}
+                offsetX={media.offsetX}
+                alignTop={media.alignTop}
+                aspect={media.aspect}
+                stageClassName="bg-card"
+                eager
+              />
+            </div>
           ) : (
             <img
               key={media.src}
@@ -679,13 +809,18 @@ function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
     if (item.vimeoId) {
       return (
         <div className="relative h-full w-full overflow-hidden">
-          <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
+          <VimeoBackground
+            url={vimeoEmbedUrl(item.vimeoId)}
+            title={item.alt}
+            cropScale={1.03}
+            stageClassName="bg-background"
+          />
         </div>
       )
     }
     return (
       <video
-        className="h-full w-full object-cover"
+        className="h-full w-full scale-[1.03] object-cover"
         autoPlay
         loop
         muted
@@ -728,11 +863,43 @@ function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
 }
 
 function PlaygroundGrid({ items }: { items: PortfolioMediaItem[] }) {
+  const featureItems = items.filter((item) => item.playgroundFeature)
+  const rest = items.filter((item) => !item.playgroundFeature)
+
+  const trailingVideoPair =
+    rest.length >= 2 && rest.slice(-2).every((item) => item.type === 'video')
+      ? rest.slice(-2)
+      : []
+  const squareItems = trailingVideoPair.length ? rest.slice(0, -2) : rest
+
   return (
-    <div className="grid grid-cols-3 gap-1">
-      {items.map((item) => (
-        <div key={item.src || item.vimeoId} className="aspect-square overflow-hidden">
-          <SlideshowCell item={item} />
+    <div className="space-y-1">
+      <div className="grid grid-cols-2 gap-1 sm:grid-cols-4 lg:grid-cols-3">
+        {squareItems.map((item) => (
+          <div key={item.src || item.vimeoId} className="aspect-square overflow-hidden">
+            <SlideshowCell item={item} />
+          </div>
+        ))}
+      </div>
+
+      {trailingVideoPair.length ? (
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+          {trailingVideoPair.map((item) => (
+            <div key={item.src || item.vimeoId} className="aspect-video overflow-hidden">
+              <SlideshowCell item={item} />
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      {featureItems.map((item) => (
+        <div key={item.src || item.vimeoId} className="flex justify-center pt-1">
+          <img
+            src={item.src}
+            alt={item.alt}
+            loading="lazy"
+            className="h-[60vh] w-auto max-w-full object-contain"
+          />
         </div>
       ))}
     </div>
@@ -761,13 +928,21 @@ function BentoGridGallery({
             style={{
               gridColumn: `span ${colSpan}`,
               gridRow: `span ${rowSpan}`,
-              aspectRatio: rowSpan > 1 ? `${colSpan} / ${rowSpan * 3}` : `${colSpan} / 3`,
+              aspectRatio: item.aspect
+                ? item.aspect.replace('/', ' / ')
+                : rowSpan > 1
+                  ? `${colSpan} / ${rowSpan * 3}`
+                  : `${colSpan} / 3`,
             }}
           >
             {item.slides && item.slides.length > 0 ? (
               <SlideshowCell item={item} />
             ) : item.vimeoId ? (
-              <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
+              <VimeoBackground
+                url={vimeoEmbedUrl(item.vimeoId)}
+                title={item.alt}
+                fit={item.fit ?? 'cover'}
+              />
             ) : item.type === 'image' ? (
               <button
                 type="button"
