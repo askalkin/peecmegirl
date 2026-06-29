@@ -116,7 +116,7 @@ export function VimeoBackground({
           ref={iframeRef}
           src={url}
           title={title}
-          className="absolute top-1/2 h-full -translate-x-1/2 -translate-y-1/2 aspect-video"
+          className="pointer-events-none absolute top-1/2 h-full -translate-x-1/2 -translate-y-1/2 aspect-video"
           style={{ left: offsetX ? `calc(50% + ${offsetX})` : '50%' }}
           allow="autoplay; fullscreen; picture-in-picture"
         />

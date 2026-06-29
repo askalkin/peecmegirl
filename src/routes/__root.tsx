@@ -2,6 +2,7 @@ import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 
 import Header from '../components/Header'
 import { ThemeProvider } from '../components/theme-provider'
+import { FadeObserver } from '../components/FadeObserver'
 
 import appCss from '../styles.css?url'
 
@@ -58,6 +59,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           Skip to content
         </a>
         <ThemeProvider defaultTheme="light" storageKey="portfolio-theme">
+          <FadeObserver />
           <Header />
           {children}
         </ThemeProvider>

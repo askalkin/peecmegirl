@@ -262,6 +262,16 @@ code {
   max-width: var(--container-max);
 }
 
+/* Break a child of a centered container out to the full viewport width.
+   Relies on the element's containing block being centered (e.g. inside
+   `.section-shell` or a full-width grid cell). Pair with `overflow-x: clip`
+   on an ancestor so the 100vw breakout never adds a horizontal scrollbar. */
+.full-bleed {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  border-radius: 0;
+}
+
 .section-y {
   padding-block: var(--space-section);
 }
@@ -331,7 +341,35 @@ code {
   }
 }
 
+/* --- Fade-in on scroll -----------------------------------------------
+   Mark any element with data-fade to opt in.
+   Optional data-fade-delay="1|2|3|4" staggers siblings.             */
+
+[data-fade] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+[data-fade].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-fade][data-fade-delay='1'] { transition-delay: 80ms; }
+[data-fade][data-fade-delay='2'] { transition-delay: 160ms; }
+[data-fade][data-fade-delay='3'] { transition-delay: 240ms; }
+[data-fade][data-fade-delay='4'] { transition-delay: 320ms; }
+
 @media (prefers-reduced-motion: reduce) {
+  [data-fade] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
   .hero-orb:hover {
     animation: none;
   }

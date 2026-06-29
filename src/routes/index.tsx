@@ -15,19 +15,6 @@ import { SiteFooter } from '@/components/SiteFooter'
 
 export const Route = createFileRoute('/')({ component: PortfolioPage })
 
-// Hero → nav wordmark morph mapping (viewport-heights scrolled). The next
-// section is 90% on screen at 0.9, where the morph finishes. Header.tsx mirrors
-// these so the pill/text hand-off stays in sync.
-const MORPH_START = 0.05
-const MORPH_END = 0.9
-// After the name lands, it cross-fades into the real nav wordmark over this
-// much extra scroll (no hard swap → no jump).
-const HANDOFF_LEN = 0.06
-
-// easeInOutCubic — smooth acceleration in and settle out.
-const easeInOut = (t: number) =>
-  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
-
 type CardMedia =
   | { type: 'video'; src: string }
   | { type: 'image'; src: string }
@@ -59,75 +46,95 @@ function PortfolioPage() {
   const brandRef = useRef<HTMLSpanElement>(null)
   const orbRef = useRef<HTMLSpanElement>(null)
   const questionsRef = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    const name = nameRef.current
-    if (!name) return
+    const heroName = nameRef.current
+    if (!heroName) return
 
-    // Natural (untransformed) geometry of the hero name + its font size.
-    let sourceTopDoc = 0
-    let sourceLeft = 0
-    let sourceFont = 1
+    let cancelled = false
+    let cleanup = () => {}
 
-    const measure = () => {
-      const prev = name.style.transform
-      name.style.transform = 'none'
-      const rect = name.getBoundingClientRect()
-      sourceTopDoc = rect.top + window.scrollY
-      sourceLeft = rect.left
-      sourceFont = parseFloat(getComputedStyle(name).fontSize) || 1
-      name.style.transform = prev
-    }
+    // GSAP Flip + ScrollTrigger are browser-only and ship as separate plugin
+    // modules, so load them lazily on the client.
+    void (async () => {
+      const [{ gsap }, { Flip }, { ScrollTrigger }] = await Promise.all([
+        import('gsap'),
+        import('gsap/Flip'),
+        import('gsap/ScrollTrigger'),
+      ])
+      if (cancelled) return
+      gsap.registerPlugin(Flip, ScrollTrigger)
 
-    const onScroll = () => {
-      const vh = window.innerHeight || 1
-      // The next section fills the viewport by scrollY/vh, so it is 90% on
-      // screen at 0.9. Morph from MORPH_START → MORPH_END, eased for a smooth
-      // premium settle.
-      const raw = Math.min(
-        1,
-        Math.max(0, (window.scrollY / vh - MORPH_START) / (MORPH_END - MORPH_START))
-      )
-      const p = easeInOut(raw)
+      const wordmark = document.querySelector<HTMLElement>('[data-nav-wordmark]')
+      if (!wordmark) return
 
-      // Secondary hero text clears out smoothly over the first half.
-      const fade = String(1 - easeInOut(Math.min(1, raw / 0.5)))
-      if (brandRef.current) brandRef.current.style.opacity = fade
-      if (orbRef.current) orbRef.current.style.opacity = fade
-      if (questionsRef.current) questionsRef.current.style.opacity = fade
+      // The header wordmark is the element that actually moves. The hero name
+      // becomes an invisible layout/measurement target it flips onto — kept in
+      // the DOM (transparent, not display:none) so the <h1> heading and its
+      // box are preserved for layout and screen readers.
+      heroName.style.opacity = '0'
 
-      const targetEl = document.querySelector('[data-nav-wordmark]')
-      if (targetEl) {
-        const target = targetEl.getBoundingClientRect()
-        const targetFont = parseFloat(getComputedStyle(targetEl).fontSize) || 1
-        const naturalTop = sourceTopDoc - window.scrollY
-        const scaleTarget = targetFont / sourceFont
-        const dx = (target.left - sourceLeft) * p
-        const dy = (target.top - naturalTop) * p
-        const scale = 1 + (scaleTarget - 1) * p
-        name.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`
-        // Once landed, cross-fade out as the real nav wordmark fades in.
-        const handoff = Math.min(
-          1,
-          Math.max(0, (window.scrollY / vh - MORPH_END) / HANDOFF_LEN)
-        )
-        name.style.opacity = String(1 - handoff)
+      let flip: GSAPTween | undefined
+
+      // Flip.fit transforms the wordmark to exactly cover the hero name (same
+      // font, weight and tracking → a clean uniform scale). Paused at progress
+      // 1, that "fitted" state is what shows at the top of the page.
+      const buildFlip = () => {
+        flip?.kill()
+        gsap.set(wordmark, { clearProps: 'transform' })
+        flip = Flip.fit(wordmark, heroName, {
+          scale: true,
+          duration: 1,
+          ease: 'none',
+        }) as GSAPTween
+        flip.pause(1)
       }
-    }
 
-    measure()
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', () => {
-      measure()
-      onScroll()
-    })
-    return () => window.removeEventListener('scroll', onScroll)
+      const fadeEls = [brandRef.current, orbRef.current, questionsRef.current]
+
+      const st = ScrollTrigger.create({
+        // Drive the morph off the hero section's own geometry: start when its
+        // top hits the viewport top, finish as its bottom scrolls past — robust
+        // regardless of window.innerHeight quirks.
+        trigger: heroRef.current ?? '#main',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+        // Rebuild the fit whenever ScrollTrigger recomputes (load, resize), so
+        // the target geometry stays correct across breakpoints.
+        onRefreshInit: buildFlip,
+        onUpdate: (self) => {
+          // progress 0 at the top → wordmark fitted over the hero (flip == 1);
+          // progress 1 once the hero has scrolled out → wordmark home in header.
+          const p = self.progress
+          flip?.progress(1 - p)
+          // Secondary hero text clears out over the first half of the morph.
+          const fade = String(1 - Math.min(1, p / 0.5))
+          for (const el of fadeEls) if (el) el.style.opacity = fade
+        },
+      })
+
+      buildFlip()
+      ScrollTrigger.refresh()
+
+      cleanup = () => {
+        st.kill()
+        flip?.kill()
+        gsap.set(wordmark, { clearProps: 'transform' })
+        heroName.style.opacity = ''
+      }
+    })()
+
+    return () => {
+      cancelled = true
+      cleanup()
+    }
   }, [])
 
   return (
     <main id="main" className="text-foreground">
-      <section aria-label="Introduction" className="section-shell relative z-40 flex h-[calc(100dvh-4rem)] flex-col justify-end py-12 md:py-16">
+      <section ref={heroRef} aria-label="Introduction" className="section-shell relative z-40 flex h-[calc(100dvh-4rem)] flex-col justify-end py-12 md:py-16">
         {/* Absolutely positioned so the typing text never shifts the layout. */}
         <div
           ref={questionsRef}
@@ -143,9 +150,11 @@ function PortfolioPage() {
             className="hero-orb size-[clamp(2.5rem,8vw,8.5rem)] shrink-0 rounded-full bg-foreground sm:order-2"
           />
           <h1 className="text-display font-black text-foreground sm:order-1">
+            {/* Kept on one line so it shares the header wordmark's aspect
+                ratio — GSAP Flip can then scale it uniformly (no distortion). */}
             <span
               ref={nameRef}
-              className="block origin-top-left will-change-transform pointer-events-none"
+              className="block origin-top-left whitespace-nowrap will-change-transform pointer-events-none"
             >
               Alina Skalkina
             </span>
@@ -158,8 +167,8 @@ function PortfolioPage() {
 
       <section id="work" aria-label="Selected works" className="section-shell section-y scroll-mt-20">
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:gap-x-8 xl:grid-cols-3">
-          {works.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+          {works.map((project, index) => (
+            <ProjectCard key={project.id} project={project} staggerIndex={index} />
           ))}
         </div>
       </section>
@@ -175,7 +184,7 @@ function PortfolioPage() {
   )
 }
 
-function ProjectCard({ project }: { project: PortfolioProject }) {
+function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject; staggerIndex?: number }) {
   const media = getCardMedia(project)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [hovered, setHovered] = useState(false)
@@ -201,14 +210,19 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
     ? []
     : [project.workType, project.businessSize, project.audience].filter(Boolean)
 
+  const colDelay = staggerIndex % 3
   return (
-    <div className="group flex flex-col gap-4">
+    <div
+      className="group flex flex-col overflow-hidden border border-neutral-300 dark:border-neutral-700"
+      data-fade
+      data-fade-delay={colDelay > 0 ? String(colDelay) : undefined}
+    >
       <a
         href={`/${project.id}`}
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
         className={cn(
-          'media-loading-surface relative block aspect-video overflow-hidden border border-border',
+          'media-loading-surface relative block aspect-video overflow-hidden',
           (hasEmbed || (isFramed && project.embedUrl)) && 'bg-black'
         )}
       >
@@ -275,12 +289,12 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
         ) : null}
       </a>
 
-      <a href={`/${project.id}`} className="flex flex-col">
+      <a href={`/${project.id}`} className="flex flex-col p-4">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="text-h3 font-semibold text-text-primary">
             {project.title}
           </h2>
-          <span className="shrink-0 text-base font-bold tabular-nums text-text-secondary">
+          <span className="shrink-0 text-base tabular-nums text-text-secondary">
             {project.year}
           </span>
         </div>

@@ -7,13 +7,18 @@ import { fileURLToPath, URL } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 
 const config = defineConfig({
+  server: {
+    port: Number(process.env.PORT) || 3000,
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   plugins: [
-    devtools(),
+    // The devtools event bus binds a fixed port, so allow opting out (e.g. to
+    // run a second dev server alongside one that's already running).
+    ...(process.env.NO_DEVTOOLS ? [] : [devtools()]),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],

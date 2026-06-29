@@ -13,7 +13,7 @@ function DownloadCvLink() {
       href={cvLink?.href ?? '/recovered/Alina-Skalkina-CV.pdf'}
       target="_blank"
       rel="noreferrer"
-      className="group/cv relative inline-flex w-fit items-center gap-2 text-sm font-medium text-foreground"
+      className="group/cv relative inline-flex w-fit items-center gap-2 text-base font-bold text-foreground"
     >
       Download CV
       <ArrowDown className="size-4" />
@@ -46,7 +46,7 @@ function ExperienceList() {
               className="flex w-full items-start justify-between gap-6 py-6 text-left"
             >
               <div className="grid flex-1 gap-2 md:grid-cols-[7rem_1fr] md:gap-8">
-                <span className="pt-1 text-base font-bold tabular-nums text-text-primary">
+                <span className="pt-1 text-base tabular-nums text-text-primary">
                   {role.years}
                 </span>
                 <span>
