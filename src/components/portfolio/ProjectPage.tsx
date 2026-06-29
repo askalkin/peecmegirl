@@ -347,7 +347,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                       style={spanStyle}
                       className="flex justify-center"
                     >
-                      <div className="media-loading-surface aspect-video w-[70%] overflow-hidden rounded-xl shadow-[var(--shadow-float)]">
+                      <div className="media-loading-surface relative aspect-video w-[70%] overflow-hidden rounded-xl shadow-[var(--shadow-float)]">
                         {item.vimeoId ? (
                           <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
                         ) : (
@@ -678,7 +678,7 @@ function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
   if (item.type === 'video') {
     if (item.vimeoId) {
       return (
-        <div className="h-full w-full overflow-hidden">
+        <div className="relative h-full w-full overflow-hidden">
           <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
         </div>
       )
@@ -757,7 +757,7 @@ function BentoGridGallery({
         return (
           <div
             key={item.src}
-            className="overflow-hidden"
+            className="relative overflow-hidden"
             style={{
               gridColumn: `span ${colSpan}`,
               gridRow: `span ${rowSpan}`,
