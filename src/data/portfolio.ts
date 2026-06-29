@@ -88,6 +88,8 @@ export type PortfolioMediaItem = {
   vimeoId?: string
   /** Additional image srcs to cycle through in the playground grid slideshow cell. */
   slides?: string[]
+  /** CSS object-position for the media (e.g. 'bottom') when using object-cover. */
+  objectPosition?: string
 }
 
 export type PortfolioProject = {
@@ -512,7 +514,7 @@ export const portfolioData = {
       role: 'Growth Design, UI/UX, Design System, Product Strategy',
       liveLink: {
         href: 'https://lun.ua/misto',
-        label: 'lun.ua/misto',
+        label: 'Try it here',
       },
       highlights: [
         {
@@ -928,6 +930,9 @@ export const portfolioData = {
       year: '2019',
       company: 'LUN',
       coverSrc: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
+      // LUN 10 anniversary film — full-bleed background hero.
+      embedUrl:
+        'https://player.vimeo.com/video/1205441585?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
       businessSize: 'Scale-up',
       audience: 'B2B',
       workType: 'Brand Design',
@@ -1106,10 +1111,11 @@ export const portfolioData = {
           rowSpan: 2,
         },
         {
-          src: '/recovered/lun-hr-brand/code-metro.webp',
+          src: '/recovered/lun-hr-brand/metro.webp',
           type: 'image',
-          alt: 'LUN Game metro ad code puzzle',
+          alt: 'LUN Game code puzzle on a Kyiv metro banner',
           colSpan: 6,
+          objectPosition: 'bottom',
         },
         {
           src: '/recovered/lun-hr-brand/404.webp',
@@ -1135,23 +1141,71 @@ export const portfolioData = {
           alt: 'Lunoteka lounge and bookshelves',
           colSpan: 4,
         },
+        // Branded merch — one container, slideshow like the playground grid.
+        {
+          src: '/recovered/lun-hr-brand/t-shirt.webp',
+          type: 'image',
+          alt: 'LUN HR brand merch',
+          colSpan: 4,
+          slides: [
+            '/recovered/lun-hr-brand/merch-hackathon.webp',
+            '/recovered/lun-hr-brand/merch-tote.webp',
+            '/recovered/lun-hr-brand/merch-mug.webp',
+            '/recovered/lun-hr-brand/merch-stickers.webp',
+            '/recovered/lun-hr-brand/shoppers.webp',
+          ],
+        },
+        // Ficha the mascot — slideshow.
+        {
+          src: '/recovered/lun-hr-brand/ficha-on-tv.webp',
+          type: 'image',
+          alt: 'Ficha the LUN mascot on TV',
+          colSpan: 4,
+          slides: ['/recovered/lun-hr-brand/ficha-birthday.webp'],
+        },
+        // Office & environmental branding — slideshow.
+        {
+          src: '/recovered/lun-hr-brand/office-create.webp',
+          type: 'image',
+          alt: 'LUN office wall — “Hello, stranger! these fellows create.lun.ua”',
+          colSpan: 4,
+          slides: [
+            '/recovered/lun-hr-brand/office-fly-me.webp',
+            '/recovered/lun-hr-brand/anya-box.webp',
+          ],
+        },
+        {
+          src: '/recovered/lun-hr-brand/business-cards.webp',
+          type: 'image',
+          alt: 'LUN Misto business cards',
+          colSpan: 6,
+        },
         {
           src: '/recovered/lun-hr-brand/lunoteka-award.webp',
           type: 'image',
           alt: 'Lunoteka award moment',
-          colSpan: 3,
+          colSpan: 6,
         },
         {
-          src: '/recovered/lun-hr-brand/shoppers.webp',
-          type: 'image',
-          alt: 'LUN HR brand shoppers',
-          colSpan: 2,
+          src: '/recovered/lun-hr-brand/team-lun.webm',
+          type: 'video',
+          alt: 'LUN team motion reel',
+          vimeoId: '1205440887',
+          colSpan: 4,
         },
         {
-          src: '/recovered/lun-hr-brand/t-shirt.webp',
-          type: 'image',
-          alt: 'LUN HR brand t-shirt',
-          colSpan: 2,
+          src: '/recovered/lun-hr-brand/invitation.webm',
+          type: 'video',
+          alt: 'LUN event invitation animation',
+          vimeoId: '1205440886',
+          colSpan: 4,
+        },
+        {
+          src: '/recovered/lun-hr-brand/LUN-10.webm',
+          type: 'video',
+          alt: 'LUN 10 anniversary animation',
+          vimeoId: '1205441585',
+          colSpan: 4,
         },
       ],
     },
@@ -1398,6 +1452,19 @@ export const portfolioData = {
           type: 'image',
           src: '/recovered/graphic-design/alty-merch.webp',
           alt: 'Alty merchandise concept',
+        },
+        // Row 6
+        {
+          type: 'video',
+          src: '',
+          vimeoId: '1205441064',
+          alt: 'Playground motion exploration',
+        },
+        {
+          type: 'video',
+          src: '',
+          vimeoId: '1205441065',
+          alt: 'Playground motion exploration',
         },
       ],
     },

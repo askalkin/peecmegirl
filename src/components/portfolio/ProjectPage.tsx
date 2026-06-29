@@ -13,6 +13,7 @@ import { ReactionWall } from './ReactionWall'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
 
+import { CoverMedia } from './CoverMedia'
 import { VimeoBackground } from './VimeoBackground'
 import { Lightbox } from './Lightbox'
 
@@ -148,6 +149,13 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   // the gallery below — unless the frame shows an embed, in which case the
   // gallery video stays.
   const framedVideoSrc = isFramed && !hasEmbed ? leadVideo?.src : undefined
+  // Framed heroes show the lead video in the keynote frame. Local .webm sources
+  // were purged in the Vimeo migration, so prefer the embed: project-level
+  // embedUrl, else the lead video's vimeoId.
+  const framedEmbedUrl = isFramed
+    ? project.embedUrl ??
+      (leadVideo?.vimeoId ? vimeoEmbedUrl(leadVideo.vimeoId) : undefined)
+    : undefined
   const galleryItems = project.gallery.filter(
     (item) =>
       item.src !== heroMedia?.src &&
@@ -189,52 +197,22 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
   return (
     <main className="overflow-x-clip text-foreground">
       {isFramed ? (
-        framedVideoSrc && leadVideo?.fit === 'contain' ? (
-          // Contained (portrait) hero: sits beneath the nav, with the gutters
-          // filled by the video's own background colour so there's no seam
-          // against the page.
-          <section className="-mt-16" style={{ background: project.heroBg }}>
-            <div className="h-[calc(68vh+4rem)] w-full pt-16">
-              <video
-                className="h-full w-full object-contain"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                aria-label={`${project.title} preview`}
-              >
-                <source src={framedVideoSrc} />
-              </video>
-            </div>
-          </section>
-        ) : (
-          // Full-bleed hero: edge-to-edge, no rounding, no shadow.
-          <section className="-mt-16">
-            <div className="relative h-[calc(68vh+4rem)] w-full">
-              {project.embedUrl ? (
-                <VimeoBackground url={project.embedUrl} title={project.title} />
-              ) : leadVideo?.vimeoId ? (
-                <VimeoBackground
-                  url={vimeoEmbedUrl(leadVideo.vimeoId)}
-                  title={project.title}
-                />
-              ) : framedVideoSrc ? (
-                <video
-                  className="media-loading-surface absolute inset-0 h-full w-full object-cover"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  aria-label={`${project.title} preview`}
-                >
-                  <source src={framedVideoSrc} />
-                </video>
-              ) : null}
-            </div>
-          </section>
-        )
+        // Framed keynote-style hero on the shared page surface, padded clear
+        // of the nav and narrow enough to fit on screen.
+        <section className="w-full md:-mt-16 md:h-[calc(64vh+4rem)]">
+          <CoverMedia
+            videoSrc={framedVideoSrc}
+            embedUrl={framedEmbedUrl}
+            embedAspect={project.embedAspect}
+            title={project.title}
+            rounded="rounded-xl"
+            autoPlay
+            surface="bg-background"
+            frameWidth="58%"
+            padding="pt-8 pb-12 md:px-6 md:pb-6 md:pt-[5.5rem]"
+            mobileFull
+          />
+        </section>
       ) : hasEmbed && !noHero ? (
         // Full-bleed background video hero (e.g. Huawei), under the header.
         <section className="relative -mt-16 h-[calc(68vh+4rem)] w-full">
@@ -303,7 +281,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     href={project.liveLink.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-base font-medium text-text-primary underline underline-offset-4 transition-opacity hover:opacity-60"
+                    className="inline-flex items-center gap-2 text-base font-bold text-text-primary underline underline-offset-4 transition-opacity hover:opacity-60"
                   >
                     {project.liveLink.label}
                     <ArrowUpRight className="size-5" />
@@ -698,6 +676,13 @@ function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
   const src = srcs[idx]
 
   if (item.type === 'video') {
+    if (item.vimeoId) {
+      return (
+        <div className="h-full w-full overflow-hidden">
+          <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
+        </div>
+      )
+    }
     return (
       <video
         className="h-full w-full object-cover"
@@ -718,6 +703,7 @@ function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
       <img
         src={src}
         alt={item.alt}
+        style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined}
         className="absolute inset-0 block h-full w-full object-cover"
       />
       {nextIdx !== null && (
@@ -725,6 +711,7 @@ function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
           src={srcs[nextIdx]}
           alt={item.alt}
           aria-hidden
+          style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined}
           onTransitionEnd={() => {
             // Promote the incoming image to be the current one and reset the layer.
             setIdx(nextIdx)
@@ -744,7 +731,7 @@ function PlaygroundGrid({ items }: { items: PortfolioMediaItem[] }) {
   return (
     <div className="grid grid-cols-3 gap-1">
       {items.map((item) => (
-        <div key={item.src} className="aspect-square overflow-hidden">
+        <div key={item.src || item.vimeoId} className="aspect-square overflow-hidden">
           <SlideshowCell item={item} />
         </div>
       ))}
@@ -777,7 +764,11 @@ function BentoGridGallery({
               aspectRatio: rowSpan > 1 ? `${colSpan} / ${rowSpan * 3}` : `${colSpan} / 3`,
             }}
           >
-            {item.type === 'image' ? (
+            {item.slides && item.slides.length > 0 ? (
+              <SlideshowCell item={item} />
+            ) : item.vimeoId ? (
+              <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
+            ) : item.type === 'image' ? (
               <button
                 type="button"
                 onClick={() => onImageClick(item)}
@@ -788,6 +779,7 @@ function BentoGridGallery({
                   src={item.src}
                   alt={item.alt}
                   loading="lazy"
+                  style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined}
                   className="block h-full w-full cursor-zoom-in object-cover transition-opacity duration-300 group-hover/img:opacity-90"
                 />
               </button>
