@@ -51,9 +51,13 @@ export default function Header() {
           {/* This wordmark is the element GSAP Flip physically moves: at the top
               of the home page it sits scaled-up over the hero name, then flies
               up into the header as you scroll. So it stays visible throughout. */}
+          {/* No will-change/layer promotion: GSAP scales this 14px wordmark up
+              ~9x over the hero. A cached transform layer would rasterize at the
+              natural size and upscale the bitmap (blurry). Without it the browser
+              re-rasterizes the vector text crisply at the displayed scale. */}
           <span
             data-nav-wordmark
-            className="relative inline-block origin-top-left font-display text-sm font-black leading-[0.92] tracking-[-0.03em] text-foreground will-change-transform"
+            className="relative inline-block origin-top-left font-display text-sm font-black leading-[0.92] tracking-[-0.03em] text-foreground"
           >
             Alina Skalkina
           </span>

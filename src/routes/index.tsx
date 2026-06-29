@@ -15,8 +15,12 @@ import { SiteFooter } from '@/components/SiteFooter'
 
 export const Route = createFileRoute('/')({ component: PortfolioPage })
 
+const vimeoEmbedUrl = (id: string) =>
+  `https://player.vimeo.com/video/${id}?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479`
+
 type CardMedia =
   | { type: 'video'; src: string }
+  | { type: 'embed'; vimeoId: string }
   | { type: 'image'; src: string }
   | null
 
@@ -28,7 +32,10 @@ function getCardMedia(project: PortfolioProject): CardMedia {
   }
 
   const video = project.gallery.find((item) => item.type === 'video')
-  if (video) return { type: 'video', src: video.src }
+  if (video)
+    return video.vimeoId
+      ? { type: 'embed', vimeoId: video.vimeoId }
+      : { type: 'video', src: video.src }
 
   const image = project.gallery.find((item) => item.type === 'image')
   if (image) return { type: 'image', src: image.src }
@@ -223,12 +230,25 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
         onMouseLeave={handleLeave}
         className={cn(
           'media-loading-surface relative block aspect-video overflow-hidden',
-          (hasEmbed || (isFramed && project.embedUrl)) && 'bg-black'
+          (hasEmbed ||
+            media?.type === 'embed' ||
+            coverVideo?.vimeoId ||
+            (isFramed && project.embedUrl)) &&
+            'bg-black'
         )}
       >
         {isFramed && project.embedUrl ? (
           <VimeoBackground
             url={project.embedUrl}
+            title={project.title}
+            loopSeconds={4}
+            active={hovered}
+            grayscale
+            offsetX={project.coverOffsetX}
+          />
+        ) : isFramed && coverVideo?.vimeoId ? (
+          <VimeoBackground
+            url={vimeoEmbedUrl(coverVideo.vimeoId)}
             title={project.title}
             loopSeconds={4}
             active={hovered}
@@ -267,6 +287,15 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
               offsetX={project.coverOffsetX}
             />
           </>
+        ) : media?.type === 'embed' ? (
+          <VimeoBackground
+            url={vimeoEmbedUrl(media.vimeoId)}
+            title={project.title}
+            loopSeconds={4}
+            active={hovered}
+            grayscale
+            offsetX={project.coverOffsetX}
+          />
         ) : media?.type === 'video' ? (
           <video
             ref={videoRef}
