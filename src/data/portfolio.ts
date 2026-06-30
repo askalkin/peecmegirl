@@ -366,7 +366,7 @@ export const portfolioData = {
         'Visual Communication',
       ],
       focus:
-        'From service provider to transformation partner: a brand system for clarity, scale, and high-stakes decisions.',
+        'From service provider to transformation partner',
       summary: [
         `Alty was already operating at a mature level: products shaped by the company had reached 60M+ users across 40+ markets, with 50+ clients, a 4.6 average client rating, ISO/IEC 27001 certification, and recognition from Red Dot, iF Design Award, Indigo Design Awards, and industry platforms.`,
         `But the brand had not yet caught up with the company's actual maturity.`,
@@ -517,7 +517,7 @@ export const portfolioData = {
       audience: 'B2B',
       workType: 'Motion Design',
       categories: ['Motion Design', '3D Design', 'Video'],
-      focus: 'The hidden infrastructure powering Ukraine’s resilience.',
+      focus: 'The hidden infrastructure powering Ukraine’s resilience',
       summary: [
         'When communication is a lifeline, the unseen backbone of the network is everything. We crafted a strategic narrative to show that Huawei is much more than a device manufacturer in Ukraine.',
         'By highlighting 25 years of telecom infrastructure development—which now keeps the country connected under fire—alongside their eco-initiatives and inclusivity programs, we shifted the focus to their role as an essential, resilient partner.',
@@ -589,7 +589,7 @@ export const portfolioData = {
         {
           title: 'National Accessibility & Barrier-Free Initiatives',
           description:
-            'Consolidated multiple national efforts by signing the accessibility declaration for the First Lady\'s "Business without Barriers," serving as the official technology partner for the Ministry of Regional Development, and co-launching a nationwide accessibility audit with the Ministry of Culture.',
+            'Started national urban accessibility initiative with the First Lady Olena Zelenska, Ministry of Culture and Ministry of Regional Development',
         },
         {
           title: 'KNU & Government Collaboration',
@@ -699,7 +699,7 @@ export const portfolioData = {
       businessSize: 'Scale-up',
       audience: 'B2C',
       workType: 'Growth Design',
-      focus: 'Turn invisible air data into visible action.',
+      focus: 'Turn invisible air data into visible action',
       categories: [
         'Growth Design',
         '3D Design',
@@ -844,7 +844,7 @@ export const portfolioData = {
       audience: 'B2B',
       workType: 'Product Design',
       focus:
-        'How we reduced operational cognitive load with a custom HR OS.',
+        'Reducing operational load with a custom HR OS',
       categories: ['Product Design', 'E2E', 'Design System'],
       summary: [
         'Lunie was an internal HR management system for LUN, a fast-scaling proptech company operating across multiple brands and countries.',
@@ -997,7 +997,7 @@ export const portfolioData = {
       businessSize: 'Scale-up',
       audience: 'B2B',
       workType: 'Brand Design',
-      focus: 'The hiring game that built a community.',
+      focus: 'The hiring game that built a community',
       categories: [
         'Marketing Design',
         'Events Art Direction',
@@ -1154,17 +1154,9 @@ export const portfolioData = {
       },
       gallery: [
         {
-          src: '/recovered/visual-design/6.webp',
+          src: '/recovered/lun-hr-brand/educational-hub-1.webp',
           type: 'image',
-          alt: 'LUN HR Brand careers site',
-          colSpan: 12,
-          aspect: '893/720',
-          objectPosition: 'top',
-        },
-        {
-          src: '/recovered/lun-hr-brand/educational-hub-3.webp',
-          type: 'image',
-          alt: 'LUN HR community event at the Educational Hub',
+          alt: 'Educational hub at Taras Shevchenko University, space view',
           colSpan: 12,
         },
         {
@@ -1187,9 +1179,9 @@ export const portfolioData = {
           colSpan: 6,
         },
         {
-          src: '/recovered/lun-hr-brand/educational-hub-1.webp',
+          src: '/recovered/lun-hr-brand/educational-hub-3.webp',
           type: 'image',
-          alt: 'Educational hub at Taras Shevchenko University, space view',
+          alt: 'LUN HR community event at the Educational Hub',
           colSpan: 4,
         },
         {
@@ -1281,6 +1273,10 @@ export const portfolioData = {
           colSpan: 6,
           aspect: '16/9',
           fit: 'cover',
+          // Zoom past the black side bars baked into the recording and anchor
+          // the top so the page nav stays in frame.
+          cropScale: 1.12,
+          cropAlignTop: true,
         },
         {
           src: '/recovered/lun-hr-brand/invitation.webm',
@@ -1420,7 +1416,7 @@ export const portfolioData = {
       coverSrc: '/recovered/graphic-design/graphic-design.webm',
       noHero: true,
       playgroundGrid: true,
-      focus: 'Design moves fast, so I keep playing.',
+      focus: 'Design moves fast, so I keep playing',
       categories: [
         'Brand Identity',
         'Typography',
@@ -1532,6 +1528,11 @@ export const portfolioData = {
           src: '/recovered/graphic-design/Lun-redesign.webp',
           alt: 'LUN "Try 3D buildings on the map" campaign',
         },
+        {
+          type: 'image',
+          src: '/recovered/graphic-design/bachelor.webp',
+          alt: 'Bachelor dinner poster',
+        },
         // Row 6
         {
           type: 'video',
@@ -1544,13 +1545,6 @@ export const portfolioData = {
           src: '',
           vimeoId: '1205441065',
           alt: 'Playground motion exploration',
-        },
-        // Featured poster — centred beneath the videos at its real proportions.
-        {
-          type: 'image',
-          src: '/recovered/graphic-design/bachelor.webp',
-          alt: 'Bachelor dinner poster',
-          playgroundFeature: true,
         },
       ],
     },

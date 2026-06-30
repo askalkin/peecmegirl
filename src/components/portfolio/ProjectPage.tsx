@@ -319,7 +319,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                   <div className="mt-3 text-base font-bold text-text-primary">
                     {highlight.title}
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                  <p className="mt-2 text-base leading-relaxed text-text-secondary">
                     {highlight.description}
                   </p>
                 </div>
@@ -459,7 +459,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     {item.caption ? (
                       <p
                         style={mediaStyle}
-                        className={`mt-2 text-sm text-text-secondary ${
+                        className={`mt-2 text-base text-text-secondary ${
                           framed
                             ? 'mx-auto w-full max-w-full text-left lg:w-[var(--frame-width)]'
                             : ''
@@ -942,6 +942,9 @@ function BentoGridGallery({
                 url={vimeoEmbedUrl(item.vimeoId)}
                 title={item.alt}
                 fit={item.fit ?? 'cover'}
+                cropScale={item.cropScale}
+                offsetX={item.cropOffsetX}
+                alignTop={item.cropAlignTop}
               />
             ) : item.type === 'image' ? (
               <button
@@ -1100,7 +1103,7 @@ function MasonryTile({
           </video>
         )}
         {item.caption && (
-          <figcaption className="mt-2 text-sm text-text-secondary">{item.caption}</figcaption>
+          <figcaption className="mt-2 text-base text-text-secondary">{item.caption}</figcaption>
         )}
       </figure>
     )

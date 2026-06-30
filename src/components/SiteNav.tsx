@@ -61,7 +61,7 @@ export function SiteNav({ className = '' }: { className?: string }) {
   return (
     <nav
       className={cn(
-        'relative flex h-11 max-w-full items-stretch gap-1 overflow-x-auto rounded-[4px] border border-border/60 bg-background/55 p-1 text-sm backdrop-blur-md transition-all duration-300 hover:bg-background/40 hover:backdrop-blur-xl lg:overflow-visible',
+        'relative flex h-11 max-w-full items-stretch gap-1 overflow-x-auto rounded-[4px] border border-border/60 bg-background/55 p-1 text-base backdrop-blur-md transition-all duration-300 hover:bg-background/40 hover:backdrop-blur-xl lg:overflow-visible',
         className
       )}
     >

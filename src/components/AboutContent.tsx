@@ -50,7 +50,7 @@ function ExperienceList() {
                   {role.years}
                 </span>
                 <span>
-                  <span className="block text-sm font-medium text-text-secondary">
+                  <span className="block text-base font-medium text-text-secondary">
                     {[role.employment, `${role.company}, ${role.country}`]
                       .filter(Boolean)
                       .join(' · ')}
@@ -75,14 +75,14 @@ function ExperienceList() {
             >
               <div className="overflow-hidden">
                 <div className="pb-8 md:pl-[calc(7rem+2rem)]">
-                  <p className="mb-4 max-w-2xl text-base leading-relaxed text-text-secondary">
+                  <p className="mb-4 max-w-2xl text-base text-text-secondary">
                     {role.companyAbout}
                   </p>
                   <ul className="space-y-2.5">
                     {role.highlights.map((highlight) => (
                       <li
                         key={highlight}
-                        className="flex max-w-2xl gap-3 text-base leading-relaxed text-text-primary"
+                        className="flex max-w-2xl gap-3 text-base text-text-primary"
                       >
                         <span className="mt-2 inline-block size-1 shrink-0 rounded-full bg-muted-foreground/60" />
                         <span>{highlight}</span>

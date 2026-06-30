@@ -148,7 +148,7 @@ export function CoverMedia({
         <div
           style={{ width: frameWidth }}
           className={cn(
-            'media-loading-surface flex aspect-video max-h-full items-center justify-center text-sm text-muted-foreground shadow-[var(--shadow-float)]',
+            'media-loading-surface flex aspect-video max-h-full items-center justify-center text-base text-muted-foreground shadow-[var(--shadow-float)]',
             rounded
           )}
         >

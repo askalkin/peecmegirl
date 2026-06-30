@@ -59,7 +59,7 @@ export default function Header() {
           <span
             data-nav-wordmark
             className={cn(
-              'relative inline-block origin-top-left font-display text-sm font-black leading-none tracking-[0.03em] text-foreground transition-opacity duration-200',
+              'relative inline-block origin-top-left font-display text-base font-black leading-none tracking-[0.03em] text-foreground transition-opacity duration-200',
               landed ? 'opacity-100' : 'opacity-0'
             )}
           >

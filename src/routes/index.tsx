@@ -400,7 +400,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             {project.year}
           </span>
         </div>
-        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-text-secondary">
+        <p className="mt-1 line-clamp-2 text-base text-text-secondary">
           {project.focus}
         </p>
       </a>

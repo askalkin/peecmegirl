@@ -61,7 +61,7 @@ export function Lightbox({
         className="mx-auto flex h-full w-[90vw] max-w-[90vw] flex-col"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between text-sm text-[var(--color-overlay-foreground-muted)]">
+        <div className="flex items-center justify-between text-base text-[var(--color-overlay-foreground-muted)]">
           <div>
             {activeIndex + 1} / {images.length}
           </div>
@@ -113,7 +113,7 @@ export function Lightbox({
           ) : null}
         </div>
 
-        <div className="text-sm text-[var(--color-overlay-foreground-muted)]">
+        <div className="text-base text-[var(--color-overlay-foreground-muted)]">
           {activeImage.alt}
         </div>
       </div>
