@@ -11,6 +11,8 @@ declare global {
 type VimeoPlayer = {
   on: (event: string, cb: (data: { seconds: number }) => void) => void
   setCurrentTime: (seconds: number) => Promise<number>
+  setMuted: (muted: boolean) => Promise<boolean>
+  setVolume: (volume: number) => Promise<number>
   play: () => Promise<void>
   pause: () => Promise<void>
   destroy: () => Promise<void>
@@ -34,6 +36,7 @@ export function VimeoBackground({
   fit = 'cover',
   aspect = 'aspect-video',
   eager = false,
+  sound = false,
 }: {
   url: string
   title: string
@@ -52,12 +55,18 @@ export function VimeoBackground({
    */
   aspect?: string
   eager?: boolean
+  /**
+   * When true, render a click-to-unmute button so the otherwise-muted
+   * background video can play audio on demand.
+   */
+  sound?: boolean
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<VimeoPlayer | undefined>(undefined)
   const [inView, setInView] = useState(eager)
-  const needsPlayerApi = Boolean(loopSeconds) || !active
+  const [muted, setMuted] = useState(true)
+  const needsPlayerApi = Boolean(loopSeconds) || !active || sound
 
   useEffect(() => {
     if (eager) return
@@ -81,7 +90,8 @@ export function VimeoBackground({
     let cancelled = false
 
     const init = () => {
-      if (cancelled || !iframeRef.current || !window.Vimeo) return
+      if (cancelled || playerRef.current || !iframeRef.current || !window.Vimeo)
+        return
       const player = new window.Vimeo.Player(iframeRef.current)
       playerRef.current = player
       if (loopSeconds) {
@@ -90,6 +100,12 @@ export function VimeoBackground({
         })
       }
       if (!active) player.pause().catch(() => {})
+      // Apply the current sound choice (the user may have toggled before the
+      // player finished loading).
+      if (sound) {
+        player.setMuted(muted).catch(() => {})
+        if (!muted) player.setVolume(1).catch(() => {})
+      }
     }
 
     if (window.Vimeo) {
@@ -105,7 +121,21 @@ export function VimeoBackground({
         script.dataset.vimeoPlayer = 'true'
         document.body.appendChild(script)
       }
+      // The script may already be loaded (cached from another player), in which
+      // case the `load` event never refires — poll for the global as a fallback.
       script.addEventListener('load', init)
+      const poll = window.setInterval(() => {
+        if (window.Vimeo) {
+          window.clearInterval(poll)
+          init()
+        }
+      }, 100)
+      return () => {
+        cancelled = true
+        window.clearInterval(poll)
+        playerRef.current?.destroy().catch(() => {})
+        playerRef.current = undefined
+      }
     }
 
     return () => {
@@ -121,6 +151,15 @@ export function VimeoBackground({
     if (active) player.play().catch(() => {})
     else player.pause().catch(() => {})
   }, [active])
+
+  const toggleSound = () => {
+    const next = !muted
+    setMuted(next)
+    const player = playerRef.current
+    if (!player) return
+    player.setMuted(next).catch(() => {})
+    if (!next) player.setVolume(1).catch(() => {})
+  }
 
   return (
     <div
@@ -156,6 +195,51 @@ export function VimeoBackground({
           }}
           allow="autoplay; fullscreen; picture-in-picture"
         />
+      )}
+      {sound && inView && (
+        <button
+          type="button"
+          onClick={toggleSound}
+          aria-label={muted ? 'Unmute video' : 'Mute video'}
+          aria-pressed={!muted}
+          className="absolute bottom-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        >
+          {muted ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M11 5 6 9H2v6h4l5 4z" />
+              <line x1="23" y1="9" x2="17" y2="15" />
+              <line x1="17" y1="9" x2="23" y2="15" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M11 5 6 9H2v6h4l5 4z" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
+          )}
+        </button>
       )}
     </div>
   )

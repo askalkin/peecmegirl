@@ -344,7 +344,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
               !/\.(mp4|mov|webm)$/i.test(project.coverSrc) && (
                 <img
                   src={project.coverSrc}
-                  alt=""
+                  alt={`${project.title} cover`}
                   className="absolute inset-0 h-full w-full object-cover transition-all duration-700 md:grayscale md:group-hover:grayscale-0"
                   loading="lazy"
                 />
@@ -384,7 +384,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
         ) : media?.type === 'image' ? (
           <img
             src={media.src}
-            alt=""
+            alt={`${project.title} cover`}
             className="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.04] md:grayscale md:group-hover:grayscale-0"
             loading="lazy"
           />

@@ -222,7 +222,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       ) : hasEmbed && !noHero ? (
         // Full-bleed background video hero (e.g. Huawei), under the header.
         <section className="relative -mt-16 h-[calc(68vh+4rem)] w-full">
-          <VimeoBackground url={project.embedUrl!} title={project.title} />
+          <VimeoBackground url={project.embedUrl!} title={project.title} sound />
         </section>
       ) : heroMedia ? (
         // Hero media, flush to the top with the header floating over it.

@@ -525,7 +525,13 @@ export const portfolioData = {
       role: 'Motion, Video Design',
       highlights: [],
       process: [],
-      team: ['Alina Skalkina, Motion Designer'],
+      team: [
+        'Alina Skalkina, Designer',
+        'Sofia Sytnik, Creative Lead',
+        'Oleksandr Veselov, COO',
+        'Oleksandra Lyashenko, Line Producer',
+        'Sofia Vorobyova, Creative Copywriter',
+      ],
       gallery: [],
     },
     {
@@ -1154,12 +1160,6 @@ export const portfolioData = {
       },
       gallery: [
         {
-          src: '/recovered/lun-hr-brand/educational-hub-1.webp',
-          type: 'image',
-          alt: 'Educational hub at Taras Shevchenko University, space view',
-          colSpan: 12,
-        },
-        {
           src: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
           type: 'image',
           alt: 'Lunoteka laptop sticker',
@@ -1286,6 +1286,9 @@ export const portfolioData = {
           colSpan: 6,
           aspect: '16/9',
           fit: 'cover',
+          // Zoom past the black bars baked into the recording and anchor the top.
+          cropScale: 1.12,
+          cropAlignTop: true,
         },
       ],
     },
