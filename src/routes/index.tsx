@@ -91,7 +91,6 @@ function PortfolioPage() {
       const fadeEls = [brandRef.current, orbRef.current, questionsRef.current]
       const lerp = (start: number, end: number, progress: number) =>
         start + (end - start) * progress
-      const easeInOut = (value: number) => value * value * (3 - 2 * value)
       const parsePx = (value: string) => {
         const parsed = Number.parseFloat(value)
         return Number.isFinite(parsed) ? parsed : 0

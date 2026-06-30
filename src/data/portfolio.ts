@@ -590,7 +590,7 @@ export const portfolioData = {
         {
           title: 'DOU Award',
           description:
-            "Best social IT initiative by Ukraine's largest IT community.",
+            'Awarded best social IT initiative by Ukraine’s largest IT community for turning urban data into practical, everyday city tools.',
         },
         {
           title: 'National Accessibility & Barrier-Free Initiatives',
@@ -1021,20 +1021,20 @@ export const portfolioData = {
       highlights: [
         {
           value: '1M+',
-          title: 'Global game attempts',
+          title: 'Global coding game attempts',
           description:
-            'The metro banners drove traffic to the game, which unexpectedly went viral globally. Only the top percentile who beat every level reached the final stage: a direct meeting with the team at our weekly open parties.',
+            'Viral metro banners linked to an online game. Beating every level unlocked our weekly parties.',
         },
         {
           value: '86% → 99%',
           title: 'Target recognition',
           description:
-            'Saturated the target engineering market entirely without using a single traditional corporate hiring ad.',
+            'Successfully reached the entire target engineering community without relying on standard corporate job ads.',
         },
         {
-          title: 'Physical IT infrastructure',
+          title: 'Lunoteka and Chytalka IT Hubs',
           description:
-            'Built and launched two major IT hubs, establishing a physical center of gravity that accelerated the growth of the local tech industry.',
+            'Built two IT hubs on KNU campus, creating physical spaces that helped the local tech scene to connect and thrive.',
         },
       ],
       process: [
