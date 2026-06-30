@@ -371,7 +371,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                             loop
                             muted
                             playsInline
-                            preload="none"
+                            preload="auto"
                             aria-label={item.alt}
                           >
                             <source src={item.src} />
@@ -433,7 +433,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                         loop
                         muted
                         playsInline
-                        preload="none"
+                        preload="auto"
                         aria-label={item.alt}
                       >
                         <source src={item.src} />
@@ -451,7 +451,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                       <img
                         src={item.src}
                         alt={item.alt}
-                        loading="lazy"
+                        loading="eager"
                         style={mediaStyle}
                         className={`media-loading-surface block cursor-zoom-in rounded-sm transition-opacity duration-300 group-hover/img:opacity-90 ${mediaFit}`}
                       />
@@ -733,7 +733,7 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
               loop
               muted
               playsInline
-              preload="metadata"
+              preload="auto"
             >
               <source src={media.src} />
             </video>
@@ -825,7 +825,7 @@ function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
         loop
         muted
         playsInline
-        preload="none"
+        preload="auto"
         aria-label={item.alt}
       >
         <source src={src} />
@@ -897,7 +897,7 @@ function PlaygroundGrid({ items }: { items: PortfolioMediaItem[] }) {
           <img
             src={item.src}
             alt={item.alt}
-            loading="lazy"
+            loading="eager"
             className="h-[60vh] w-auto max-w-full object-contain"
           />
         </div>
@@ -956,7 +956,7 @@ function BentoGridGallery({
                 <img
                   src={item.src}
                   alt={item.alt}
-                  loading="lazy"
+                  loading="eager"
                   style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined}
                   className="block h-full w-full cursor-zoom-in object-cover transition-opacity duration-300 group-hover/img:opacity-90"
                 />
@@ -968,7 +968,7 @@ function BentoGridGallery({
                 loop
                 muted
                 playsInline
-                preload="none"
+                preload="auto"
                 aria-label={item.alt}
               >
                 <source src={item.src} />
@@ -1020,7 +1020,7 @@ function FlexBentoGallery({
                   <img
                     src={item.src}
                     alt={item.alt}
-                    loading="lazy"
+                    loading="eager"
                     className="block h-full w-full cursor-zoom-in object-contain transition-opacity duration-300 group-hover/img:opacity-90"
                   />
                 </button>
@@ -1031,7 +1031,7 @@ function FlexBentoGallery({
                   loop
                   muted
                   playsInline
-                  preload="none"
+                  preload="auto"
                   aria-label={item.alt}
                 >
                   <source src={item.src} />
@@ -1096,7 +1096,7 @@ function MasonryTile({
             loop
             muted
             playsInline
-            preload="none"
+            preload="auto"
             aria-label={item.alt}
           >
             <source src={item.src} />
@@ -1120,7 +1120,7 @@ function MasonryTile({
         <img
           src={item.src}
           alt={item.alt}
-          loading="lazy"
+          loading="eager"
           className="media-loading-surface block h-auto max-h-[80vh] w-full cursor-zoom-in object-cover transition-[opacity,transform] duration-300 group-hover:scale-[1.03] group-hover:opacity-90"
         />
       </button>

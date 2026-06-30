@@ -329,7 +329,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             loop
             muted
             playsInline
-            preload="none"
+            preload="auto"
             aria-label={`${project.title} preview`}
           >
             <source src={coverVideo.src} />
@@ -345,7 +345,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
                   src={project.coverSrc}
                   alt={`${project.title} cover`}
                   className="absolute inset-0 h-full w-full object-cover transition-all duration-700 md:grayscale md:group-hover:grayscale-0"
-                  loading="lazy"
+                  loading="eager"
                 />
               )}
             <VimeoBackground
@@ -375,7 +375,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             loop
             muted
             playsInline
-            preload="none"
+            preload="auto"
             aria-label={`${project.title} preview`}
           >
             <source src={media.src} />
@@ -385,7 +385,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             src={media.src}
             alt={`${project.title} cover`}
             className="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.04] md:grayscale md:group-hover:grayscale-0"
-            loading="lazy"
+            loading="eager"
           />
         ) : null}
       </a>

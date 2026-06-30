@@ -22,7 +22,7 @@ type VimeoPlayer = {
 // autoplays muted, loops, and covers its container with no controls.
 // `loopSeconds` restarts playback at that mark; `active` toggles play/pause so
 // card covers can stay paused (and greyscale) until hovered.
-// The iframe is deferred until the container enters the viewport (300px margin).
+// The iframe loads eagerly so every video is ready as soon as the page loads.
 export function VimeoBackground({
   url,
   title,
@@ -35,7 +35,6 @@ export function VimeoBackground({
   stageClassName = 'bg-black',
   fit = 'cover',
   aspect = 'aspect-video',
-  eager = false,
   sound = false,
 }: {
   url: string
@@ -64,26 +63,11 @@ export function VimeoBackground({
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<VimeoPlayer | undefined>(undefined)
-  const [inView, setInView] = useState(eager)
+  // Load every player up front so all videos are ready the moment the page
+  // loads, rather than waiting for each to scroll into view.
+  const [inView] = useState(true)
   const [muted, setMuted] = useState(true)
   const needsPlayerApi = Boolean(loopSeconds) || !active || sound
-
-  useEffect(() => {
-    if (eager) return
-    const el = containerRef.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: '300px' }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
 
   useEffect(() => {
     if (!inView || !needsPlayerApi) return
@@ -175,7 +159,7 @@ export function VimeoBackground({
           ref={iframeRef}
           src={url}
           title={title}
-          loading="lazy"
+          loading="eager"
           className={cn(
             'pointer-events-none absolute',
             aspect,
