@@ -65,7 +65,7 @@ export function ReactionWall({ wall }: { wall: ReactionWallData }) {
           key={layer.src}
           src={layer.src}
           alt={layer.alt}
-          loading="lazy"
+          loading="eager"
           decoding="async"
           className="reaction-wall__layer absolute rounded-xl shadow-2xl"
           data-played={played}
