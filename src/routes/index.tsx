@@ -2,8 +2,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
 import { getHeroMorphDistance } from '@/lib/heroMorph'
-import { cn } from '@/lib/utils'
-
 import {
   getProjectsNewestFirst,
   type PortfolioProject,
@@ -374,10 +372,6 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
   const isFramed = project.cover === 'framed'
   const hasEmbed = Boolean(project.embedUrl)
   const coverVideo = project.gallery.find((item) => item.type === 'video')
-  const cardAspect =
-    project.coverFit === 'width' && project.embedAspect
-      ? project.embedAspect
-      : 'aspect-video'
 
   const colDelay = staggerIndex % 3
   return (
@@ -390,10 +384,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
         to={`/${project.id}` as '/'}
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
-        className={cn(
-          'media-loading-surface relative block overflow-hidden',
-          cardAspect
-        )}
+        className="media-loading-surface relative block aspect-video overflow-hidden"
       >
         {isFramed && project.embedUrl ? (
           <VideoBackground
