@@ -17,6 +17,10 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
+        name: 'theme-color',
+        content: '#191A18',
+      },
+      {
         title: 'Alina Skalkina | Lead Brand Designer portfolio',
       },
       {
@@ -86,20 +90,23 @@ export const Route = createRootRoute({
         rel: 'stylesheet',
         href: appCss,
       },
+      // `?v=` cache-busts the browser favicon cache, which is keyed by URL and
+      // holds onto a previously-seen icon indefinitely. Bump this whenever the
+      // icon art changes so browsers pick up the new favicon instead of a stale one.
       {
         rel: 'icon',
         type: 'image/svg+xml',
-        href: '/favicon.svg',
+        href: '/favicon.svg?v=3',
       },
       {
         rel: 'icon',
         type: 'image/x-icon',
-        href: '/favicon.ico',
+        href: '/favicon.ico?v=3',
       },
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',
-        href: '/apple-touch-icon.png',
+        href: '/apple-touch-icon.png?v=3',
       },
     ],
   }),
