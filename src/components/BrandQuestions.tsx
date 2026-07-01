@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -20,11 +20,49 @@ const HOLD_SELECTED = 700 // how long the selection highlight shows before delet
 type Phase = 'typing' | 'selected'
 
 export function BrandQuestions({ className }: { className?: string }) {
+  const textRef = useRef<HTMLParagraphElement>(null)
   const [index, setIndex] = useState(0)
   const [charCount, setCharCount] = useState(0)
   const [phase, setPhase] = useState<Phase>('typing')
 
   const current = questions[index]
+
+  useLayoutEffect(() => {
+    const text = textRef.current
+    if (!text) return
+    let frame = 0
+
+    const fitText = () => {
+      text.style.fontSize = ''
+      const available = text.parentElement?.clientWidth ?? 0
+      const natural = text.scrollWidth
+      if (available > 0 && natural > available) {
+        const base = Number.parseFloat(getComputedStyle(text).fontSize)
+        if (Number.isFinite(base) && base > 0) {
+          text.style.fontSize = `${(base * available) / natural}px`
+        }
+      }
+    }
+
+    const schedule = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(fitText)
+    }
+
+    schedule()
+    const observer = new ResizeObserver(schedule)
+    observer.observe(text)
+    if (text.parentElement) observer.observe(text.parentElement)
+    void document.fonts?.ready.then(schedule)
+    window.addEventListener('resize', schedule)
+
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+      window.removeEventListener('resize', schedule)
+      text.style.fontSize = ''
+    }
+  }, [current])
 
   useEffect(() => {
     if (phase === 'typing') {
@@ -53,6 +91,7 @@ export function BrandQuestions({ className }: { className?: string }) {
 
   return (
     <p
+      ref={textRef}
       className={cn(
         'flex flex-col overflow-hidden font-medium text-foreground',
         className
@@ -70,13 +109,13 @@ export function BrandQuestions({ className }: { className?: string }) {
           !isSelecting && charCount >= start && charCount <= start + line.length
 
         return (
-          <span key={lineIndex} className="block whitespace-nowrap">
+          <span key={lineIndex} className="block whitespace-nowrap leading-[1.259]">
             {/* The full line is always laid out — the untyped part is just
                 transparent — so typing never reflows the text. */}
             <span
               className={
                 isSelecting
-                  ? 'box-decoration-clone rounded-[2px] bg-foreground/15'
+                  ? 'box-decoration-clone bg-foreground/15'
                   : undefined
               }
             >

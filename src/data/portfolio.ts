@@ -68,6 +68,10 @@ export type PortfolioMediaItem = {
   /** CSS aspect-ratio (e.g. '16/10') for the grid cell. Items sharing a row
    *  with the same aspect + width render at identical heights. */
   aspect?: string
+  /** Tailwind aspect-ratio class for a framed background video (e.g.
+   *  'aspect-[426/230]'). Sets the frame's ratio so the cover video fills it
+   *  with no letterbox bars. */
+  embedAspect?: string
   /** Cap the cell at this share of viewport height (vh), contained & centred. */
   maxVh?: number
   /** Render this item centred at a fixed width (e.g. '58%' to match the hero). */
@@ -84,8 +88,10 @@ export type PortfolioMediaItem = {
   colSpan?: number
   /** Row span in a 12-column bento grid (default 1). */
   rowSpan?: number
-  /** Vimeo video ID — when set, the gallery renders this via Vimeo instead of a local file. */
-  vimeoId?: string
+  /** When true, the gallery renders this local video with the full-bleed,
+   *  cropped background-cover treatment (via VideoBackground) instead of a
+   *  plain, fully-visible <video>. */
+  background?: boolean
   /** Additional image srcs to cycle through in the playground grid slideshow cell. */
   slides?: string[]
   /** Render this item centred beneath the playground grid at its real proportions. */
@@ -94,9 +100,9 @@ export type PortfolioMediaItem = {
   objectPosition?: string
   /** Scale media inside an overflow-hidden frame to crop unwanted edges. */
   cropScale?: number
-  /** Horizontal offset for cropped Vimeo media, e.g. '3%'. */
+  /** Horizontal offset for cropped background video, e.g. '3%'. */
   cropOffsetX?: string
-  /** Anchor cropped Vimeo media to the top so extra height is removed at bottom. */
+  /** Anchor cropped background video to the top so extra height is removed at bottom. */
   cropAlignTop?: boolean
 }
 
@@ -121,7 +127,7 @@ export type PortfolioProject = {
   liveLink?: PortfolioLink
   /** 'framed' centres the cover/hero media on a white card (Apple-keynote vibe). */
   cover?: 'framed'
-  /** Background-player embed URL (e.g. Vimeo) used as the framed media. */
+  /** Local video src rendered as the full-bleed background/framed media. */
   embedUrl?: string
   /** Aspect-ratio class for a framed embed, e.g. 'aspect-[4/3]'. */
   embedAspect?: string
@@ -355,7 +361,7 @@ export const portfolioData = {
       cover: 'framed',
       embedAspect: 'aspect-[1280/737]',
       coverAlignTop: true,
-      embedUrl: 'https://player.vimeo.com/video/1205368261?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
+      embedUrl: '/alty/new-products.webm',
       year: '2026',
       businessSize: 'Scale-up',
       audience: 'B2B',
@@ -434,7 +440,7 @@ export const portfolioData = {
           src: '/alty/new-products.webm',
           type: 'video',
           alt: 'Alty new products section',
-          vimeoId: '1205368261',
+          background: true,
         },
         // Exploration pair — two images side by side on lg/xl, stacked below.
         {
@@ -460,7 +466,7 @@ export const portfolioData = {
           alt: 'Alty homepage walkthrough',
           cols: 15,
           aspect: '1876/1080',
-          vimeoId: '1205368259',
+          background: true,
         },
         {
           src: '/alty/cards.webm',
@@ -468,7 +474,7 @@ export const portfolioData = {
           alt: 'Alty cards interaction',
           cols: 15,
           aspect: '1876/1080',
-          vimeoId: '1205368260',
+          background: true,
         },
         // Slideshow row — three portrait containers crossfading through stills,
         // playground-style, rendered as looping webm.
@@ -509,8 +515,7 @@ export const portfolioData = {
       title: 'Huawei',
       navigationLabel: 'Huawei',
       coverOffsetX: '3%',
-      embedUrl:
-        'https://player.vimeo.com/video/1204428080?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
+      embedUrl: '/recovered/huawei.webm',
       year: '2024',
       company: 'Huawei',
       businessSize: 'Enterprise',
@@ -639,7 +644,7 @@ export const portfolioData = {
           type: 'video',
           alt: 'Comfort Map walkthrough video',
           span: 'wide',
-          vimeoId: '1205293955',
+          background: true,
         },
         {
           src: '/recovered/comfort-map/desktop-1.webp',
@@ -684,7 +689,7 @@ export const portfolioData = {
           alt: 'Comfort Map campaign video 1',
           cols: 15,
           aspect: '16/9',
-          vimeoId: '1205294149',
+          background: true,
         },
         {
           src: '/recovered/visual-design/3.webm',
@@ -692,7 +697,7 @@ export const portfolioData = {
           alt: 'Comfort Map campaign video 2',
           cols: 15,
           aspect: '16/9',
-          vimeoId: '1205294148',
+          background: true,
         },
       ],
     },
@@ -786,7 +791,7 @@ export const portfolioData = {
           type: 'video',
           alt: 'Air Quality Map walkthrough video',
           span: 'wide',
-          vimeoId: '1205293956',
+          background: true,
         },
         {
           src: '/recovered/lun-misto-air/jpg/map-1.webp',
@@ -842,6 +847,9 @@ export const portfolioData = {
       id: 'lunie',
       cover: 'framed',
       embedAspect: 'aspect-[1395/907]',
+      coverCropScale: 1,
+      coverAlignTop: true,
+      coverFit: 'width',
       title: 'LUN HR System',
       navigationLabel: 'LUN HR System',
       year: '2018',
@@ -898,7 +906,7 @@ export const portfolioData = {
           type: 'video',
           alt: 'Lunie walkthrough video',
           span: 'wide',
-          vimeoId: '1205293953',
+          background: true,
         },
         {
           src: '/recovered/lunie/1.webp',
@@ -998,8 +1006,7 @@ export const portfolioData = {
       company: 'LUN',
       coverSrc: '/recovered/lun-hr-brand/lunoteka-sticker.webp',
       // LUN 10 anniversary film — full-bleed background hero.
-      embedUrl:
-        'https://player.vimeo.com/video/1205441585?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
+      embedUrl: '/recovered/lun-hr-brand/lun-10.webm',
       businessSize: 'Scale-up',
       audience: 'B2B',
       workType: 'Brand Design',
@@ -1269,7 +1276,7 @@ export const portfolioData = {
           src: '/recovered/lun-hr-brand/team-lun.webm',
           type: 'video',
           alt: 'LUN team motion reel',
-          vimeoId: '1205440887',
+          background: true,
           colSpan: 6,
           aspect: '16/9',
           fit: 'cover',
@@ -1282,7 +1289,7 @@ export const portfolioData = {
           src: '/recovered/lun-hr-brand/invitation.webm',
           type: 'video',
           alt: 'LUN event invitation animation',
-          vimeoId: '1205440886',
+          background: true,
           colSpan: 6,
           aspect: '16/9',
           fit: 'cover',
@@ -1366,7 +1373,7 @@ export const portfolioData = {
           type: 'video',
           alt: 'Farba booking flow',
           fit: 'contain',
-          vimeoId: '1204610863',
+          background: true,
         },
         {
           src: '/farba/onboarding.webp',
@@ -1401,9 +1408,13 @@ export const portfolioData = {
           type: 'video',
           alt: 'Farba booking app walkthrough',
           center: true,
-          cropScale: 1.16,
+          // Native video is 426×230 (~1.85:1), wider than the 16:9 frame. Without
+          // this the background player letterboxes it, leaving a black gutter that
+          // alignTop pins to the top. The hair of overscan hides sub-pixel edges.
+          embedAspect: 'aspect-[426/230]',
+          cropScale: 1.01,
           cropAlignTop: true,
-          vimeoId: '1205383073',
+          background: true,
         },
       ],
     },
@@ -1415,7 +1426,7 @@ export const portfolioData = {
       businessSize: 'Personal',
       workType: 'Visual Design',
       hideLabels: true,
-      embedUrl: 'https://player.vimeo.com/video/1205293954?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479',
+      embedUrl: '/recovered/graphic-design/graphic-design.webm',
       coverSrc: '/recovered/graphic-design/graphic-design.webm',
       noHero: true,
       playgroundGrid: true,
@@ -1506,8 +1517,8 @@ export const portfolioData = {
         // Row 4
         {
           type: 'video',
-          src: '/recovered/graphic-design/house2.webm',
-          alt: '3D apartment tour walkthrough',
+          src: '/recovered/graphic-design/playground-2.webm',
+          alt: 'Playground motion exploration',
         },
         {
           type: 'image',
@@ -1539,15 +1550,15 @@ export const portfolioData = {
         // Row 6
         {
           type: 'video',
-          src: '',
-          vimeoId: '1205441064',
+          src: '/recovered/graphic-design/playground-1.webm',
+          background: true,
           alt: 'Playground motion exploration',
         },
         {
           type: 'video',
-          src: '',
-          vimeoId: '1205441065',
-          alt: 'Playground motion exploration',
+          src: '/recovered/graphic-design/house2.webm',
+          background: true,
+          alt: '3D apartment tour walkthrough',
         },
       ],
     },

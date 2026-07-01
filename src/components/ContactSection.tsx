@@ -92,6 +92,8 @@ function ContactFigures() {
       homeX: number
       homeY: number
       angle: number
+      va: number
+      jump: number
     }
     const make = (el: HTMLDivElement): Figure => ({
       el,
@@ -105,10 +107,22 @@ function ContactFigures() {
       homeX: 0,
       homeY: 0,
       angle: 0,
+      va: 0,
+      jump: 1,
     })
     const disc = make(discEl)
     const triangle = make(triangleEl)
+    // Lighter shapes overshoot more when the page slams to a stop.
+    disc.jump = 0.85
+    triangle.jump = 1.15
     const figures = [disc, triangle]
+
+    // Sibling content block — given a subtler bounce so the whole page reads
+    // as recoiling off the bottom of the screen.
+    const contentEl =
+      (container.parentElement?.querySelector('.section-shell') as HTMLElement | null) ?? null
+    let contentY = 0
+    let contentVy = 0
 
     let width = 0
     let height = 0
@@ -179,8 +193,44 @@ function ContactFigures() {
     const DAMPING = 0.86 // velocity retained per frame (smooth settle)
     const REPEL_RADIUS = 260
     const REPEL_FORCE = 2.2
-    const MAX_OFFSET = 96 // keep the motion close to the original composition
+    const MAX_OFFSET = 260 // headroom for the bounce; pointer motion stays small
     const ROT_FACTOR = 0.00045 // faint tilt tied to horizontal offset
+
+    // Scroll-into-the-floor bounce: when the page reaches the very bottom while
+    // scrolling down, the shapes keep moving (inertia) and spring back home.
+    let lastScrollY = window.scrollY
+    let lastTime = performance.now()
+    let wasAtBottom = false
+    let bounceCooldown = 0
+    const atBottom = () =>
+      window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 2
+
+    const triggerBounce = (scrollVel: number) => {
+      // scrollVel ~ px/frame downward. Map to an upward kick, capped.
+      const impulse = Math.min(26, 6 + scrollVel * 0.45)
+      for (const figure of figures) {
+        figure.vy -= impulse * figure.jump
+        figure.vx += (Math.random() - 0.5) * impulse * 0.4
+        figure.va += (Math.random() - 0.5) * 0.06 * figure.jump
+      }
+      contentVy -= Math.min(10, impulse * 0.45)
+    }
+
+    const onScroll = () => {
+      const now = performance.now()
+      const dt = Math.max(1, now - lastTime)
+      const scrollVel = ((window.scrollY - lastScrollY) / dt) * 16
+      lastScrollY = window.scrollY
+      lastTime = now
+      const nowBottom = atBottom()
+      if (nowBottom && !wasAtBottom && scrollVel > 4 && bounceCooldown <= 0) {
+        triggerBounce(scrollVel)
+        bounceCooldown = 30
+      }
+      wasAtBottom = nowBottom
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
 
     // Soft, position-only separation so the two shapes never overlap.
     const separate = () => {
@@ -209,6 +259,7 @@ function ContactFigures() {
     let raf = 0
     const tick = () => {
       if (width === 0) measure()
+      if (bounceCooldown > 0) bounceCooldown -= 1
 
       for (const figure of figures) {
         let ax = (figure.homeX - figure.x) * STIFFNESS
@@ -246,9 +297,22 @@ function ContactFigures() {
       separate()
 
       for (const figure of figures) {
+        // Spring the tilt toward its horizontal-offset rest value, with angular
+        // velocity so a bounce gives a brief decaying wobble.
         const targetAngle = (figure.x - figure.homeX) * ROT_FACTOR
-        figure.angle += (targetAngle - figure.angle) * 0.1
+        figure.va = (figure.va + (targetAngle - figure.angle) * 0.08) * 0.9
+        figure.angle += figure.va
         figure.el.style.transform = `translate(${figure.x}px, ${figure.y}px) rotate(${figure.angle}rad)`
+      }
+
+      // Subtle whole-content recoil.
+      if (contentEl) {
+        contentVy = (contentVy + (0 - contentY) * 0.08) * 0.84
+        contentY += contentVy
+        contentEl.style.transform =
+          Math.abs(contentY) < 0.05 && Math.abs(contentVy) < 0.05
+            ? ''
+            : `translateY(${contentY}px)`
       }
 
       raf = requestAnimationFrame(tick)
@@ -259,6 +323,7 @@ function ContactFigures() {
       cancelAnimationFrame(raf)
       window.removeEventListener('pointermove', onPointerMove)
       window.removeEventListener('resize', measure)
+      window.removeEventListener('scroll', onScroll)
     }
   }, [])
 

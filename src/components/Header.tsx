@@ -42,7 +42,8 @@ export default function Header() {
           aria-hidden={!landed}
           tabIndex={landed ? undefined : -1}
           className={cn(
-            'group relative inline-flex h-11 shrink-0 items-center rounded-[4px] px-4 sm:px-5',
+            // Hidden below lg, where the nav's own "Home" tab replaces it.
+            'group relative hidden h-11 shrink-0 items-center px-4 lg:inline-flex sm:px-5',
             !landed && 'pointer-events-none'
           )}
         >
@@ -50,7 +51,7 @@ export default function Header() {
           <span
             aria-hidden
             className={cn(
-              'absolute inset-0 rounded-[4px] border border-border/60 bg-background/55 backdrop-blur-md transition-all duration-500 ease-out group-hover:bg-background/40',
+              'absolute inset-0 border border-border/60 bg-background/55 backdrop-blur-md transition-all duration-500 ease-out group-hover:bg-background/40',
               landed ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
             )}
           />
@@ -59,7 +60,7 @@ export default function Header() {
           <span
             data-nav-wordmark
             className={cn(
-              'relative inline-block origin-top-left font-display text-base font-black leading-none tracking-[0.03em] text-foreground transition-opacity duration-200',
+              'relative inline-block origin-top-left font-display text-base font-bold leading-none tracking-[0.03em] text-foreground transition-opacity duration-200',
               landed ? 'opacity-100' : 'opacity-0'
             )}
           >
@@ -68,10 +69,9 @@ export default function Header() {
         </a>
         <div
           className={cn(
-            'flex min-w-0 justify-end',
-            landed
-              ? 'ml-auto lg:absolute lg:left-1/2 lg:top-1/2 lg:ml-0 lg:-translate-x-1/2 lg:-translate-y-1/2'
-              : 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+            // Below lg the nav is centered in flow (no wordmark beside it); on
+            // lg it stays centered in the header as before.
+            'flex min-w-0 mx-auto justify-center lg:absolute lg:left-1/2 lg:top-1/2 lg:mx-0 lg:-translate-x-1/2 lg:-translate-y-1/2'
           )}
         >
           <SiteNav />
