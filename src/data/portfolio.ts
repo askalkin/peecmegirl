@@ -213,7 +213,7 @@ export const portfolioData = {
         label: 'LinkedIn',
       },
       {
-        href: '/recovered/Alina-Skalkina-CV-Lead-Brand-Designer.pdf',
+        href: '/Alina-Skalkina-CV-Lead-Brand-Designer.pdf',
         label: 'Download CV',
       },
     ] satisfies PortfolioLink[],
