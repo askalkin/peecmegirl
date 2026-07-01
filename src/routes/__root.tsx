@@ -24,6 +24,48 @@ export const Route = createRootRoute({
         content:
           '6+ years in UI/UX, Visual & Mobile Design, creating experiences in prop-tech, marketing, environmental, and employer branding.',
       },
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        property: 'og:title',
+        content: 'Alina Skalkina | Lead Brand Designer portfolio',
+      },
+      {
+        property: 'og:description',
+        content:
+          'Helping B2B products explain themselves better, make visuals less generic, and design systems less likely to become archaeological sites.',
+      },
+      {
+        property: 'og:image',
+        content: '/og-image.png',
+      },
+      {
+        property: 'og:image:width',
+        content: '1200',
+      },
+      {
+        property: 'og:image:height',
+        content: '630',
+      },
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        name: 'twitter:title',
+        content: 'Alina Skalkina | Lead Brand Designer portfolio',
+      },
+      {
+        name: 'twitter:description',
+        content:
+          'Helping B2B products explain themselves better, make visuals less generic, and design systems less likely to become archaeological sites.',
+      },
+      {
+        name: 'twitter:image',
+        content: '/og-image.png',
+      },
     ],
     links: [
       {
