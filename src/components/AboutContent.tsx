@@ -6,13 +6,14 @@ import { cvRoles } from '@/data/cv'
 import { portfolioData } from '@/data/portfolio'
 
 const cvLink = portfolioData.person.links.find((l) => l.label === 'Download CV')
+const cvHref = cvLink?.href ?? '/recovered/Alina-Skalkina-CV.pdf'
+const cvFilename = cvHref.split('/').pop() ?? 'Alina-Skalkina-CV.pdf'
 
 function DownloadCvLink() {
   return (
     <a
-      href={cvLink?.href ?? '/recovered/Alina-Skalkina-CV.pdf'}
-      target="_blank"
-      rel="noreferrer"
+      href={cvHref}
+      download={cvFilename}
       className="group/cv relative inline-flex w-fit items-center gap-2 text-base font-bold text-foreground"
     >
       Download CV

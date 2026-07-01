@@ -27,6 +27,9 @@ const config = defineConfig({
     tanstackStart({
       prerender: {
         enabled: true,
+        // Route discovery covers app pages; link crawling can corrupt binary
+        // assets by writing fetched PDF/video/image responses as text.
+        crawlLinks: false,
       },
     }),
     viteReact(),

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react'
@@ -114,6 +114,14 @@ function MetricValue({ value }: { value: string }) {
 }
 
 export function ProjectPage({ project }: { project: PortfolioProject }) {
+  // Jump to the top instantly when a project page mounts. Without this, the
+  // router restores the previous (index) scroll position and the global
+  // `scroll-behavior: smooth` animates the reset down to the top — passing
+  // `behavior: 'instant'` overrides that CSS so the page opens fully at the top.
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [project.id])
+
   const imageItems = useMemo(
     () =>
       project.gallery.filter(
