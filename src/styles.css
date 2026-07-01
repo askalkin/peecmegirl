@@ -241,6 +241,13 @@ code {
   gap: var(--gallery-gap-mobile);
 }
 
+/* Keep grid items from overflowing their track: an item's automatic minimum
+   size (min-width: auto) can grow the column past the container — most visibly
+   on md/sm/xs where each item is the single full-width column. */
+.gallery-grid > * {
+  min-width: 0;
+}
+
 @media (min-width: 1024px) {
   .gallery-grid {
     grid-template-columns: repeat(var(--gallery-columns), minmax(0, 1fr));

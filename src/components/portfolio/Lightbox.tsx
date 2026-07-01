@@ -3,14 +3,16 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 
-type LightboxImage = {
+// Lightbox-able media: images and local video files.
+type LightboxMedia = {
   alt: string
   src: string
+  type: 'image' | 'video'
 }
 
 type LightboxProps = {
   activeIndex: number | null
-  images: LightboxImage[]
+  items: LightboxMedia[]
   onClose: () => void
   onNext: () => void
   onPrevious: () => void
@@ -18,13 +20,13 @@ type LightboxProps = {
 
 export function Lightbox({
   activeIndex,
-  images,
+  items,
   onClose,
   onNext,
   onPrevious,
 }: LightboxProps) {
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null)
-  const activeImage = activeIndex === null ? null : images[activeIndex]
+  const activeItem = activeIndex === null ? null : items[activeIndex]
 
   useEffect(() => {
     if (activeIndex === null) return
@@ -48,9 +50,9 @@ export function Lightbox({
 
   useEffect(() => {
     setLoadedSrc(null)
-  }, [activeImage?.src])
+  }, [activeItem?.src])
 
-  if (activeIndex === null || !activeImage) return null
+  if (activeIndex === null || !activeItem) return null
 
   return (
     <div
@@ -63,7 +65,7 @@ export function Lightbox({
       >
         <div className="flex items-center justify-between text-base text-[var(--color-overlay-foreground-muted)]">
           <div>
-            {activeIndex + 1} / {images.length}
+            {activeIndex + 1} / {items.length}
           </div>
           <Button
             variant="ghost"
@@ -76,8 +78,8 @@ export function Lightbox({
           </Button>
         </div>
 
-        <div className="relative flex flex-1 items-center justify-center py-6">
-          {images.length > 1 ? (
+        <div className="relative flex min-h-0 flex-1 items-center justify-center py-6">
+          {items.length > 1 ? (
             <Button
               variant="ghost"
               size="icon"
@@ -89,18 +91,30 @@ export function Lightbox({
             </Button>
           ) : null}
 
-          <div className="flex h-[75vh] max-h-[75vh] w-full max-w-[90vw] items-center justify-center overflow-hidden">
-            <img
-              src={activeImage.src}
-              alt={activeImage.alt}
-              onLoad={() => setLoadedSrc(activeImage.src)}
-              className={`h-[75vh] w-auto max-w-full object-contain transition-opacity duration-300 ${
-                loadedSrc === activeImage.src ? 'opacity-100' : 'opacity-0'
-              }`}
-            />
+          <div className="flex h-full max-h-full w-full max-w-[90vw] items-center justify-center overflow-hidden">
+            {activeItem.type === 'video' ? (
+              <video
+                key={activeItem.src}
+                src={activeItem.src}
+                className="h-auto max-h-full w-auto max-w-full object-contain"
+                controls
+                autoPlay
+                loop
+                playsInline
+              />
+            ) : (
+              <img
+                src={activeItem.src}
+                alt={activeItem.alt}
+                onLoad={() => setLoadedSrc(activeItem.src)}
+                className={`h-auto max-h-full w-auto max-w-full object-contain transition-opacity duration-300 ${
+                  loadedSrc === activeItem.src ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+            )}
           </div>
 
-          {images.length > 1 ? (
+          {items.length > 1 ? (
             <Button
               variant="ghost"
               size="icon"
@@ -114,7 +128,7 @@ export function Lightbox({
         </div>
 
         <div className="text-base text-[var(--color-overlay-foreground-muted)]">
-          {activeImage.alt}
+          {activeItem.alt}
         </div>
       </div>
     </div>

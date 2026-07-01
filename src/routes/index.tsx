@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
 import { getHeroMorphDistance } from '@/lib/heroMorph'
+import { cn } from '@/lib/utils'
 
 import {
   getProjectsNewestFirst,
@@ -9,23 +10,21 @@ import {
 } from '@/data/portfolio'
 import { AboutContent } from '@/components/AboutContent'
 import { BrandQuestions } from '@/components/BrandQuestions'
-import { VimeoBackground } from '@/components/portfolio/VimeoBackground'
+import { VideoBackground } from '@/components/portfolio/VideoBackground'
 import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
 
 export const Route = createFileRoute('/')({ component: PortfolioPage })
 
-const vimeoEmbedUrl = (id: string) =>
-  `https://player.vimeo.com/video/${id}?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479`
-
-const cardVimeoProps = {
+const cardVideoProps = {
   cropScale: 1.18,
   stageClassName: 'bg-card',
+  hoverZoom: true,
 }
 
 type CardMedia =
   | { type: 'video'; src: string }
-  | { type: 'embed'; vimeoId: string }
+  | { type: 'embed'; src: string }
   | { type: 'image'; src: string }
   | null
 
@@ -38,8 +37,8 @@ function getCardMedia(project: PortfolioProject): CardMedia {
 
   const video = project.gallery.find((item) => item.type === 'video')
   if (video)
-    return video.vimeoId
-      ? { type: 'embed', vimeoId: video.vimeoId }
+    return video.background
+      ? { type: 'embed', src: video.src }
       : { type: 'video', src: video.src }
 
   const image = project.gallery.find((item) => item.type === 'image')
@@ -60,11 +59,98 @@ function PortfolioPage() {
   const orbRef = useRef<HTMLSpanElement>(null)
   const questionsRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLElement>(null)
+  const headlineRef = useRef<HTMLHeadingElement>(null)
+
+  // The morph hands the name off to the header wordmark, which only exists on
+  // lg+. Below that the hero name just scrolls away normally.
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 1024px)')
+    const update = () => setIsDesktop(mql.matches)
+    update()
+    mql.addEventListener('change', update)
+    return () => mql.removeEventListener('change', update)
+  }, [])
+
+  useLayoutEffect(() => {
+    const headline = headlineRef.current
+    const hero = heroRef.current
+    const orb = orbRef.current
+    if (!headline || !hero) return
+    let frame = 0
+
+    const parsePx = (value: string) => {
+      const parsed = Number.parseFloat(value)
+      return Number.isFinite(parsed) ? parsed : 0
+    }
+
+    const fitHeadline = () => {
+      headline.style.fontSize = ''
+      if (orb) {
+        orb.style.width = ''
+        orb.style.height = ''
+      }
+
+      const group = headline.parentElement
+      const groupStyles = group ? getComputedStyle(group) : null
+      const available = group?.clientWidth ?? hero.clientWidth
+      const naturalTextWidth = headline.scrollWidth
+      const headlineStyles = getComputedStyle(headline)
+      const baseFontSize = parsePx(headlineStyles.fontSize)
+      const baseLineHeight = parsePx(headlineStyles.lineHeight)
+      const isCompactHero = window.matchMedia('(max-width: 1023px)').matches
+      const isRow = groupStyles?.flexDirection.startsWith('row') ?? false
+      const gap = isCompactHero && isRow && groupStyles
+        ? parsePx(groupStyles.columnGap || groupStyles.gap)
+        : 0
+
+      if (available <= 0 || naturalTextWidth <= 0 || baseFontSize <= 0) return
+
+      const requiredWidth =
+        isCompactHero && isRow && orb && baseLineHeight > 0
+          ? naturalTextWidth + baseLineHeight + gap
+          : naturalTextWidth
+      const scale = Math.min(1, available / requiredWidth)
+
+      if (scale < 1) {
+        headline.style.fontSize = `${baseFontSize * scale}px`
+      }
+
+      if (isCompactHero && orb && baseLineHeight > 0) {
+        const fittedLineHeight = baseLineHeight * scale
+        orb.style.width = `${fittedLineHeight}px`
+        orb.style.height = `${fittedLineHeight}px`
+      }
+    }
+
+    const schedule = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(fitHeadline)
+    }
+
+    schedule()
+    const observer = new ResizeObserver(schedule)
+    observer.observe(hero)
+    if (headline.parentElement) observer.observe(headline.parentElement)
+    void document.fonts?.ready.then(schedule)
+    window.addEventListener('resize', schedule)
+
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+      window.removeEventListener('resize', schedule)
+      headline.style.fontSize = ''
+      if (orb) {
+        orb.style.width = ''
+        orb.style.height = ''
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const heroName = nameRef.current
     const morph = morphRef.current
-    if (!heroName || !morph) return
+    if (!heroName || !morph || !isDesktop) return
 
     let cancelled = false
     let cleanup = () => {}
@@ -197,7 +283,7 @@ function PortfolioPage() {
       cancelled = true
       cleanup()
     }
-  }, [])
+  }, [isDesktop])
 
   return (
     <main id="main" className="text-foreground">
@@ -207,26 +293,32 @@ function PortfolioPage() {
       <span
         ref={morphRef}
         aria-hidden
-        className="text-display font-black text-foreground fixed left-0 top-0 z-50 block origin-top-left whitespace-nowrap pointer-events-none opacity-0"
+        className="text-display font-black text-foreground fixed left-0 top-0 z-50 hidden origin-top-left whitespace-nowrap pointer-events-none opacity-0 lg:block"
       >
         Alina Skalkina
       </span>
-      <section ref={heroRef} aria-label="Introduction" className="section-shell relative z-40 -mt-16 flex min-h-dvh flex-col justify-end py-12 md:py-16">
-        {/* Absolutely positioned so the typing text never shifts the layout. */}
+      <section ref={heroRef} aria-label="Introduction" className="section-shell relative z-40 -mt-16 flex min-h-[50dvh] flex-col justify-center gap-4 pb-12 pt-[calc(4rem+3rem)] md:min-h-dvh md:pb-16 md:pt-[calc(4rem+4rem)] lg:justify-end lg:py-16">
+        {/* On lg+ this is absolutely positioned (so the typing text never shifts
+            the layout) and lowered 12% of the viewport height. On md and below it
+            sits in normal flow, below the display name, separated only by the
+            section's small gap. */}
         <div
           ref={questionsRef}
-          className="absolute inset-x-0 top-12 flex justify-start sm:justify-end md:top-16"
+          className="order-2 flex justify-start lg:absolute lg:inset-x-0 lg:top-16 lg:translate-y-[12vh] lg:justify-end"
         >
-          <BrandQuestions className="max-w-full text-left sm:text-right lg:max-w-none text-h1" />
+          <BrandQuestions className="max-w-full text-left lg:max-w-none lg:text-right text-h2 md:text-h1" />
         </div>
 
-        <div className="flex w-full flex-col items-start gap-5 sm:flex-row sm:items-end sm:gap-6">
+        <div className="order-1 flex w-full flex-col items-start gap-5 sm:flex-row sm:items-end sm:gap-6">
           <span
             ref={orbRef}
             aria-hidden
             className="hero-orb size-[clamp(2.5rem,8vw,8.5rem)] shrink-0 rounded-full bg-foreground sm:order-2"
           />
-          <h1 className="text-display font-black text-foreground sm:order-1">
+          <h1
+            ref={headlineRef}
+            className="text-display max-w-full font-black text-foreground sm:order-1"
+          >
             {/* Kept on one line so the overlay can measure a stable text box. */}
             <span
               ref={nameRef}
@@ -234,7 +326,7 @@ function PortfolioPage() {
             >
               Alina Skalkina
             </span>
-            <span ref={brandRef} className="block">
+            <span ref={brandRef} className="block whitespace-nowrap">
               Brand designer
             </span>
           </h1>
@@ -282,6 +374,10 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
   const isFramed = project.cover === 'framed'
   const hasEmbed = Boolean(project.embedUrl)
   const coverVideo = project.gallery.find((item) => item.type === 'video')
+  const cardAspect =
+    project.coverFit === 'width' && project.embedAspect
+      ? project.embedAspect
+      : 'aspect-video'
 
   const colDelay = staggerIndex % 3
   return (
@@ -290,34 +386,37 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
       data-fade
       data-fade-delay={colDelay > 0 ? String(colDelay) : undefined}
     >
-      <a
-        href={`/${project.id}`}
+      <Link
+        to={`/${project.id}` as '/'}
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
-        className="media-loading-surface relative block aspect-video overflow-hidden"
+        className={cn(
+          'media-loading-surface relative block overflow-hidden',
+          cardAspect
+        )}
       >
         {isFramed && project.embedUrl ? (
-          <VimeoBackground
-            url={project.embedUrl}
+          <VideoBackground
+            src={project.embedUrl}
             title={project.title}
             loopSeconds={4}
             active={hovered}
             grayscale
             offsetX={project.coverOffsetX}
-            {...cardVimeoProps}
-            cropScale={project.coverCropScale ?? cardVimeoProps.cropScale}
+            {...cardVideoProps}
+            cropScale={project.coverCropScale ?? cardVideoProps.cropScale}
             alignTop={project.coverAlignTop}
           />
-        ) : isFramed && coverVideo?.vimeoId ? (
-          <VimeoBackground
-            url={vimeoEmbedUrl(coverVideo.vimeoId)}
+        ) : isFramed && coverVideo?.background ? (
+          <VideoBackground
+            src={coverVideo.src}
             title={project.title}
             loopSeconds={4}
             active={hovered}
             grayscale
             offsetX={project.coverOffsetX}
-            {...cardVimeoProps}
-            cropScale={project.coverCropScale ?? cardVimeoProps.cropScale}
+            {...cardVideoProps}
+            cropScale={project.coverCropScale ?? cardVideoProps.cropScale}
             alignTop={project.coverAlignTop}
             fit={project.coverFit}
             aspect={project.coverFit === 'width' ? project.embedAspect : undefined}
@@ -344,29 +443,29 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
                 <img
                   src={project.coverSrc}
                   alt={`${project.title} cover`}
-                  className="absolute inset-0 h-full w-full object-cover transition-all duration-700 md:grayscale md:group-hover:grayscale-0"
+                  className="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.04] md:grayscale md:group-hover:grayscale-0"
                   loading="eager"
                 />
               )}
-            <VimeoBackground
-              url={project.embedUrl!}
+            <VideoBackground
+              src={project.embedUrl!}
               title={project.title}
               loopSeconds={4}
               active={hovered}
               grayscale
               offsetX={project.coverOffsetX}
-              {...cardVimeoProps}
+              {...cardVideoProps}
             />
           </>
         ) : media?.type === 'embed' ? (
-          <VimeoBackground
-            url={vimeoEmbedUrl(media.vimeoId)}
+          <VideoBackground
+            src={media.src}
             title={project.title}
             loopSeconds={4}
             active={hovered}
             grayscale
             offsetX={project.coverOffsetX}
-            {...cardVimeoProps}
+            {...cardVideoProps}
           />
         ) : media?.type === 'video' ? (
           <video
@@ -388,9 +487,9 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
             loading="eager"
           />
         ) : null}
-      </a>
+      </Link>
 
-      <a href={`/${project.id}`} className="flex flex-col p-4">
+      <Link to={`/${project.id}` as '/'} className="flex flex-col p-4">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="text-h3 font-semibold text-text-primary">
             {project.title}
@@ -402,7 +501,7 @@ function ProjectCard({ project, staggerIndex = 0 }: { project: PortfolioProject;
         <p className="mt-1 line-clamp-2 text-base text-text-secondary">
           {project.focus}
         </p>
-      </a>
+      </Link>
     </div>
   )
 }

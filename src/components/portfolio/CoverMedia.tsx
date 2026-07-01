@@ -2,7 +2,7 @@ import type { Ref } from 'react'
 
 import { cn } from '@/lib/utils'
 
-import { VimeoBackground } from './VimeoBackground'
+import { VideoBackground } from './VideoBackground'
 
 // Apple-keynote style cover: the media floats centred on a surface, shown in
 // full (no cropping) with a rounded frame and soft shadow. `frameWidth` caps
@@ -104,8 +104,8 @@ export function CoverMedia({
             rounded
           )}
         >
-          <VimeoBackground
-            url={embedUrl}
+          <VideoBackground
+            src={embedUrl}
             title={title}
             active={embedActive}
             grayscale={grayscale}

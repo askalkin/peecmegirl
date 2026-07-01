@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { Link } from '@tanstack/react-router'
 import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -14,11 +16,8 @@ import { ContactSection } from '@/components/ContactSection'
 import { SiteFooter } from '@/components/SiteFooter'
 
 import { CoverMedia } from './CoverMedia'
-import { VimeoBackground } from './VimeoBackground'
+import { VideoBackground } from './VideoBackground'
 import { Lightbox } from './Lightbox'
-
-const vimeoEmbedUrl = (id: string) =>
-  `https://player.vimeo.com/video/${id}?background=1&autopause=0&muted=1&autoplay=1&loop=1&app_id=58479`
 
 // Render a story paragraph: plain string, or a mix of text and inline links.
 function renderStoryParagraph(paragraph: PortfolioStoryParagraph) {
@@ -151,12 +150,10 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
           project.title,
       }
     : null
-  // Framed heroes show the lead video in the keynote frame. Local .webm sources
-  // were purged in the Vimeo migration, so prefer the embed: project-level
-  // embedUrl, else the lead video's vimeoId.
+  // Framed heroes show the lead video in the keynote frame: the project-level
+  // embedUrl video, else the lead gallery video's own src.
   const framedEmbedUrl = isFramed && !framedImage
-    ? project.embedUrl ??
-      (leadVideo?.vimeoId ? vimeoEmbedUrl(leadVideo.vimeoId) : undefined)
+    ? project.embedUrl ?? leadVideo?.src
     : undefined
   const galleryItems = project.gallery.filter(
     (item) =>
@@ -165,94 +162,108 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       item.src !== project.coverSrc
   )
 
-  const imageIndexBySrc = useMemo(
-    () => new Map(imageItems.map((item, index) => [item.src, index])),
-    [imageItems]
+  // Everything that opens in the lightbox: images and videos alike, in gallery
+  // order, so the arrows step through the full set of media.
+  const lightboxItems = useMemo(
+    () =>
+      project.gallery.filter(
+        (item) => item.type === 'image' || item.type === 'video'
+      ),
+    [project.gallery]
   )
-  const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null)
+  const mediaKey = (item: PortfolioMediaItem) => item.src
+  const lightboxIndexByKey = useMemo(
+    () => new Map(lightboxItems.map((item, index) => [mediaKey(item), index])),
+    [lightboxItems]
+  )
+  const [activeMediaIndex, setActiveMediaIndex] = useState<number | null>(null)
 
   const moreProjects = getProjectsNewestFirst().filter(
     (currentProject) =>
       currentProject.id !== project.id && currentProject.kind !== 'blog'
   )
 
-  function openImage(item: PortfolioMediaItem) {
-    const imageIndex = imageIndexBySrc.get(item.src)
-    if (imageIndex === undefined) return
-    setActiveImageIndex(imageIndex)
+  function openMedia(item: PortfolioMediaItem) {
+    const mediaIndex = lightboxIndexByKey.get(mediaKey(item))
+    if (mediaIndex === undefined) return
+    setActiveMediaIndex(mediaIndex)
   }
 
-  function showPreviousImage() {
-    setActiveImageIndex((currentIndex) => {
-      if (currentIndex === null || imageItems.length === 0) return currentIndex
-      return (currentIndex - 1 + imageItems.length) % imageItems.length
+  function showPreviousMedia() {
+    setActiveMediaIndex((currentIndex) => {
+      if (currentIndex === null || lightboxItems.length === 0) return currentIndex
+      return (currentIndex - 1 + lightboxItems.length) % lightboxItems.length
     })
   }
 
-  function showNextImage() {
-    setActiveImageIndex((currentIndex) => {
-      if (currentIndex === null || imageItems.length === 0) return currentIndex
-      return (currentIndex + 1) % imageItems.length
+  function showNextMedia() {
+    setActiveMediaIndex((currentIndex) => {
+      if (currentIndex === null || lightboxItems.length === 0) return currentIndex
+      return (currentIndex + 1) % lightboxItems.length
     })
   }
+
+  // Every project page opens on the same Farba-style framed keynote card: the
+  // hero media floats centred on the page surface inside a rounded card with a
+  // soft shadow. The only difference between projects is the media source.
+  const renderFramedHero = (media: {
+    imageSrc?: string
+    imageAlt?: string
+    videoSrc?: string
+    embedUrl?: string
+    embedAspect?: string
+  }) => (
+    <section className="w-full md:-mt-16 md:h-[calc(74vh+4rem)]">
+      <CoverMedia
+        imageSrc={media.imageSrc}
+        imageAlt={media.imageAlt}
+        videoSrc={media.videoSrc}
+        embedUrl={media.embedUrl}
+        embedAspect={media.embedAspect}
+        embedEager
+        title={project.title}
+        rounded="rounded-xl"
+        autoPlay
+        surface="bg-background"
+        frameWidth="58%"
+        padding="pt-8 pb-12 md:px-6 md:pb-6 md:pt-[5.5rem]"
+        mobileFull
+        fillHeight
+      />
+    </section>
+  )
 
   return (
     <main className="overflow-x-clip text-foreground">
       {isFramed ? (
-        // Framed keynote-style hero on the shared page surface, padded clear
-        // of the nav and narrow enough to fit on screen.
-        <section className="w-full md:-mt-16 md:h-[calc(74vh+4rem)]">
-          <CoverMedia
-            imageSrc={framedImage?.src}
-            imageAlt={framedImage?.alt}
-            videoSrc={framedVideoSrc}
-            embedUrl={framedEmbedUrl}
-            embedAspect={project.embedAspect}
-            embedEager
-            title={project.title}
-            rounded="rounded-xl"
-            autoPlay
-            surface="bg-background"
-            frameWidth="58%"
-            padding="pt-8 pb-12 md:px-6 md:pb-6 md:pt-[5.5rem]"
-            mobileFull
-            fillHeight
-          />
-        </section>
+        renderFramedHero({
+          imageSrc: framedImage?.src,
+          imageAlt: framedImage?.alt,
+          videoSrc: framedVideoSrc,
+          embedUrl: framedEmbedUrl,
+          embedAspect: project.embedAspect,
+        })
       ) : hasEmbed && !noHero ? (
-        // Full-bleed background video hero (e.g. Huawei), under the header.
-        <section className="relative -mt-16 h-[calc(68vh+4rem)] w-full">
-          <VimeoBackground url={project.embedUrl!} title={project.title} sound />
-        </section>
+        // Background video hero (e.g. Huawei) in the shared framed card.
+        renderFramedHero({
+          embedUrl: project.embedUrl,
+          embedAspect: project.embedAspect,
+        })
       ) : heroMedia ? (
-        // Hero media, flush to the top with the header floating over it.
-        <section className="-mt-16">
-          {heroMedia.vimeoId ? (
-            <div className="relative h-[calc(68vh+4rem)] w-full">
-              <VimeoBackground url={vimeoEmbedUrl(heroMedia.vimeoId)} title={heroMedia.alt} />
-            </div>
-          ) : heroMedia.type === 'video' ? (
-            <video
-              className="media-loading-surface h-[calc(68vh+4rem)] w-full object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
-            >
-              <source src={heroMedia.src} />
-            </video>
-          ) : (
-            <img
-              src={heroMedia.src}
-              alt={heroMedia.alt}
-              className="media-loading-surface h-[calc(68vh+4rem)] w-full object-cover"
-            />
-          )}
-        </section>
+        // Lead gallery media in the shared framed card.
+        heroMedia.background ? (
+          renderFramedHero({
+            embedUrl: heroMedia.src,
+            embedAspect: heroMedia.embedAspect,
+          })
+        ) : heroMedia.type === 'video' ? (
+          renderFramedHero({ videoSrc: heroMedia.src })
+        ) : (
+          renderFramedHero({ imageSrc: heroMedia.src, imageAlt: heroMedia.alt })
+        )
       ) : null}
 
-      <div className={`section-shell space-y-16 md:space-y-24 ${noHero ? 'section-y-sm' : 'section-y'}`}>
+      <div className={`section-shell space-y-16 md:space-y-24 ${noHero ? 'section-y-sm' : 'pb-[var(--space-section)] pt-[calc(var(--space-section)/2)]'}`}>
         {/* Description — the hook and the situation/task. */}
         <header data-fade>
           <div className="grid gap-8 md:grid-cols-2 md:gap-12 lg:gap-24 xl:gap-32">
@@ -333,11 +344,11 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       {galleryItems.length ? (
         <section className="section-shell pb-[var(--space-section)]" data-fade>
           {project.playgroundGrid ? (
-            <PlaygroundGrid items={galleryItems} />
+            <PlaygroundGrid items={galleryItems} onMediaClick={openMedia} />
           ) : galleryItems.some((item) => item.colSpan != null) ? (
-            <BentoGridGallery items={galleryItems} onImageClick={openImage} />
+            <BentoGridGallery items={galleryItems} onMediaClick={openMedia} />
           ) : galleryItems.some((item) => item.flexRow != null) ? (
-            <FlexBentoGallery items={galleryItems} onImageClick={openImage} />
+            <FlexBentoGallery items={galleryItems} onMediaClick={openMedia} />
           ) : galleryItems.some((item) => item.cols || item.center) ? (
             <div className="gallery-grid">
               {galleryItems.map((item) => {
@@ -352,11 +363,17 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                       style={spanStyle}
                       className="flex justify-center"
                     >
-                      <div className="media-loading-surface relative aspect-video w-[70%] overflow-hidden rounded-xl shadow-[var(--shadow-float)]">
-                        {item.vimeoId ? (
-                          <VimeoBackground
-                            url={vimeoEmbedUrl(item.vimeoId)}
+                      <button
+                        type="button"
+                        onClick={() => openMedia(item)}
+                        aria-label={`Open ${item.alt}`}
+                        className="media-loading-surface group/vid relative aspect-video w-full cursor-zoom-in overflow-hidden rounded-xl shadow-[var(--shadow-float)] lg:w-[70%]"
+                      >
+                        {item.background ? (
+                          <VideoBackground
+                            src={item.src}
                             title={item.alt}
+                            aspect={item.embedAspect}
                             cropScale={item.cropScale ?? 1.12}
                             offsetX={item.cropOffsetX}
                             alignTop={item.cropAlignTop ?? true}
@@ -377,7 +394,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                             <source src={item.src} />
                           </video>
                         )}
-                      </div>
+                      </button>
                     </div>
                   )
                 }
@@ -412,39 +429,52 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                     style={cellStyle}
                     className={centred ? 'flex justify-center' : undefined}
                   >
-                    {item.vimeoId ? (
-                      <div className={`relative overflow-hidden rounded-sm ${mediaFit}`} style={mediaStyle}>
-                        <VimeoBackground
-                          url={vimeoEmbedUrl(item.vimeoId)}
+                    {item.background ? (
+                      <button
+                        type="button"
+                        onClick={() => openMedia(item)}
+                        aria-label={`Open ${item.alt}`}
+                        className={`relative block cursor-zoom-in overflow-hidden rounded-sm ${mediaFit}`}
+                        style={mediaStyle}
+                      >
+                        <VideoBackground
+                          src={item.src}
                           title={item.alt}
                           // Over-cover by a hair so sub-pixel rounding on the
-                          // centred cover iframe can't leave a 1px black stage
+                          // centred cover video can't leave a 1px black stage
                           // line at the bottom edge.
                           cropScale={item.cropScale ?? 1.01}
                           offsetX={item.cropOffsetX}
                           alignTop={item.cropAlignTop}
                         />
-                      </div>
+                      </button>
                     ) : (
-                      <video
-                        className={`media-loading-surface block rounded-sm ${mediaFit}`}
-                        style={mediaStyle}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
-                        aria-label={item.alt}
+                      <button
+                        type="button"
+                        onClick={() => openMedia(item)}
+                        aria-label={`Open ${item.alt}`}
+                        className={centred ? 'flex w-full justify-center' : 'block w-full'}
                       >
-                        <source src={item.src} />
-                      </video>
+                        <video
+                          className={`media-loading-surface block cursor-zoom-in rounded-sm ${mediaFit}`}
+                          style={mediaStyle}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload="auto"
+                          aria-label={item.alt}
+                        >
+                          <source src={item.src} />
+                        </video>
+                      </button>
                     )}
                   </div>
                 ) : (
                   <div key={item.src} style={cellStyle}>
                     <button
                       type="button"
-                      onClick={() => openImage(item)}
+                      onClick={() => openMedia(item)}
                       className={`group/img block ${centred ? 'flex w-full justify-center' : 'w-full'} ${item.aspect ? 'h-full' : ''}`}
                       aria-label={`Open ${item.alt}`}
                     >
@@ -453,7 +483,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                         alt={item.alt}
                         loading="eager"
                         style={mediaStyle}
-                        className={`media-loading-surface block cursor-zoom-in rounded-sm transition-opacity duration-300 group-hover/img:opacity-90 ${mediaFit}`}
+                        className={`media-loading-surface block cursor-zoom-in transition-opacity duration-300 group-hover/img:opacity-90 ${mediaFit}`}
                       />
                     </button>
                     {item.caption ? (
@@ -479,7 +509,7 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
                   key={item.src}
                   item={item}
                   index={index}
-                  onImageClick={() => openImage(item)}
+                  onMediaClick={() => openMedia(item)}
                 />
               ))}
             </div>
@@ -554,11 +584,11 @@ export function ProjectPage({ project }: { project: PortfolioProject }) {
       <SiteFooter />
 
       <Lightbox
-        activeIndex={activeImageIndex}
-        images={imageItems}
-        onClose={() => setActiveImageIndex(null)}
-        onNext={showNextImage}
-        onPrevious={showPreviousImage}
+        activeIndex={activeMediaIndex}
+        items={lightboxItems}
+        onClose={() => setActiveMediaIndex(null)}
+        onNext={showNextMedia}
+        onPrevious={showPreviousMedia}
       />
     </main>
   )
@@ -581,10 +611,10 @@ function getHeroVideoPreview(project: PortfolioProject): PreviewMedia | null {
   const video = project.gallery.find((item) => item.type === 'video')
   if (!video) return null
 
-  if (video.vimeoId) {
+  if (video.background) {
     return {
       type: 'embed',
-      src: vimeoEmbedUrl(video.vimeoId),
+      src: video.src,
       title: video.alt,
       cropScale: project.coverCropScale,
       offsetX: project.coverOffsetX,
@@ -624,9 +654,7 @@ function getHeroPreviewMedia(project: PortfolioProject): PreviewMedia | null {
     if (project.framedHeroImageSrc) {
       return { type: 'image', src: project.framedHeroImageSrc }
     }
-    const framedEmbed =
-      project.embedUrl ??
-      (leadVideo?.vimeoId ? vimeoEmbedUrl(leadVideo.vimeoId) : undefined)
+    const framedEmbed = project.embedUrl ?? leadVideo?.src
     if (framedEmbed) return { type: 'embed', src: framedEmbed, ...embedOptions }
   }
 
@@ -635,8 +663,8 @@ function getHeroPreviewMedia(project: PortfolioProject): PreviewMedia | null {
   }
 
   if (leadVideo) {
-    return leadVideo.vimeoId
-      ? { type: 'embed', src: vimeoEmbedUrl(leadVideo.vimeoId), ...embedOptions }
+    return leadVideo.background
+      ? { type: 'embed', src: leadVideo.src, ...embedOptions }
       : { type: 'video', src: leadVideo.src }
   }
 
@@ -682,19 +710,34 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [position, setPosition] = useState({ x: 0, y: 0 })
 
-  const active = activeId
-    ? projects.find((project) => project.id === activeId) ?? null
-    : null
-  const media = active ? getPreviewMedia(active) : null
+  // Resolve every list item's hover-preview media up front. Native video/image
+  // previews are mounted persistently below so they load on page load and stay
+  // decoded — no re-fetch or loading flash on (re)hover.
+  const previews = useMemo(
+    () =>
+      projects
+        .map((project) => {
+          const media = getPreviewMedia(project)
+          return media ? { id: project.id, media } : null
+        })
+        .filter(
+          (entry): entry is { id: string; media: PreviewMedia } =>
+            entry !== null
+        ),
+    [projects]
+  )
 
   return (
     <section className="section-shell section-y" data-fade>
       <div>
         {projects.map((relatedProject) => (
-          <a
+          <Link
             key={relatedProject.id}
-            href={`/${relatedProject.id}`}
-            onMouseEnter={() => setActiveId(relatedProject.id)}
+            to={`/${relatedProject.id}` as '/'}
+            onMouseEnter={(event) => {
+              setActiveId(relatedProject.id)
+              setPosition({ x: event.clientX, y: event.clientY })
+            }}
             onMouseMove={(event) =>
               setPosition({ x: event.clientX, y: event.clientY })
             }
@@ -705,64 +748,81 @@ function MoreProjects({ projects }: { projects: PortfolioProject[] }) {
             }
             className="group -mx-3 flex items-baseline justify-between gap-6 border-b border-border px-3 py-6 transition-colors duration-200 hover:bg-foreground/[0.035]"
           >
-            <h3 className="text-h3 font-bold text-text-primary transition-[opacity,transform] duration-200 group-hover:translate-x-1 group-hover:opacity-50">
+            <h3 className="text-h3 font-bold text-text-primary translate-x-0 transition-[opacity,translate] duration-200 ease-out group-hover:translate-x-1 group-hover:opacity-50">
               {relatedProject.title}
             </h3>
             <span className="shrink-0 text-base tabular-nums text-text-secondary transition-opacity duration-200 group-hover:opacity-60">
               {relatedProject.year}
             </span>
-          </a>
+          </Link>
         ))}
       </div>
 
-      {media ? (
-        <div
-          aria-hidden
-          className="media-loading-surface pointer-events-none fixed z-40 hidden w-64 overflow-hidden rounded-lg shadow-[var(--shadow-surface)] md:block"
-          style={{
-            left: position.x,
-            top: position.y,
-            transform: 'translate(-50%, -112%)',
-          }}
-        >
-          {media.type === 'video' ? (
-            <video
-              key={media.src}
-              className="block aspect-[4/3] w-full object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
-            >
-              <source src={media.src} />
-            </video>
-          ) : media.type === 'embed' ? (
+      {typeof document !== 'undefined'
+        ? createPortal(
             <div
-              key={media.src}
-              className={`relative w-full overflow-hidden ${media.aspect ?? 'aspect-video'}`}
+              aria-hidden
+              className="pointer-events-none fixed z-40 hidden w-64 md:block"
+              style={{
+                left: position.x,
+                top: position.y,
+                transform: 'translate(36px, 36px)',
+              }}
             >
-              <VimeoBackground
-                url={media.src}
-                title={media.title}
-                cropScale={media.cropScale ?? 1.18}
-                offsetX={media.offsetX}
-                alignTop={media.alignTop}
-                aspect={media.aspect}
-                stageClassName="bg-card"
-                eager
-              />
-            </div>
-          ) : (
-            <img
-              key={media.src}
-              src={media.src}
-              alt=""
-              className="block aspect-[4/3] w-full object-cover"
-            />
-          )}
-        </div>
-      ) : null}
+              <div className="relative aspect-[4/3] w-full">
+                {previews.map(({ id, media }) => {
+                  const isActive = id === activeId
+                  const cellClass = `media-loading-surface absolute inset-0 overflow-hidden rounded-lg shadow-[var(--shadow-surface)] transition-opacity duration-150 ${
+                    isActive ? 'opacity-100' : 'opacity-0'
+                  }`
+
+                  if (media.type === 'embed') {
+                    return isActive ? (
+                      <div key={id} className={cellClass}>
+                        <VideoBackground
+                          src={media.src}
+                          title={media.title}
+                          cropScale={media.cropScale ?? 1.18}
+                          offsetX={media.offsetX}
+                          alignTop={media.alignTop}
+                          aspect={media.aspect}
+                          stageClassName="bg-card"
+                          eager
+                        />
+                      </div>
+                    ) : null
+                  }
+
+                  // Native video/image: mounted persistently so they load once
+                  // on page load and never re-fetch or flash on rehover.
+                  return (
+                    <div key={id} className={cellClass}>
+                      {media.type === 'video' ? (
+                        <video
+                          className="block h-full w-full object-cover"
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload="auto"
+                        >
+                          <source src={media.src} />
+                        </video>
+                      ) : (
+                        <img
+                          src={media.src}
+                          alt=""
+                          className="block h-full w-full object-cover"
+                        />
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </section>
   )
 }
@@ -806,11 +866,11 @@ function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
   const src = srcs[idx]
 
   if (item.type === 'video') {
-    if (item.vimeoId) {
+    if (item.background) {
       return (
         <div className="relative h-full w-full overflow-hidden">
-          <VimeoBackground
-            url={vimeoEmbedUrl(item.vimeoId)}
+          <VideoBackground
+            src={item.src}
             title={item.alt}
             cropScale={1.03}
             stageClassName="bg-background"
@@ -862,7 +922,13 @@ function SlideshowCell({ item }: { item: PortfolioMediaItem }) {
   )
 }
 
-function PlaygroundGrid({ items }: { items: PortfolioMediaItem[] }) {
+function PlaygroundGrid({
+  items,
+  onMediaClick,
+}: {
+  items: PortfolioMediaItem[]
+  onMediaClick: (item: PortfolioMediaItem) => void
+}) {
   const featureItems = items.filter((item) => item.playgroundFeature)
   const rest = items.filter((item) => !item.playgroundFeature)
 
@@ -872,35 +938,88 @@ function PlaygroundGrid({ items }: { items: PortfolioMediaItem[] }) {
       : []
   const squareItems = trailingVideoPair.length ? rest.slice(0, -2) : rest
 
+  // The final square item fills the full grid width at its natural proportions on
+  // xs/sm; on lg it stays a square grid cell like the rest.
+  const leadingSquares = squareItems.slice(0, -1)
+  const lastSquare = squareItems[squareItems.length - 1]
+
   return (
     <div className="space-y-1">
       <div className="grid grid-cols-2 gap-1 sm:grid-cols-4 lg:grid-cols-3">
-        {squareItems.map((item) => (
-          <div key={item.src || item.vimeoId} className="aspect-square overflow-hidden">
+        {leadingSquares.map((item) => (
+          <button
+            key={item.src}
+            type="button"
+            onClick={() => onMediaClick(item)}
+            aria-label={`Open ${item.alt}`}
+            className="block aspect-square cursor-zoom-in overflow-hidden"
+          >
             <SlideshowCell item={item} />
-          </div>
+          </button>
         ))}
+        {lastSquare ? (
+          <>
+            <button
+              type="button"
+              onClick={() => onMediaClick(lastSquare)}
+              aria-label={`Open ${lastSquare.alt}`}
+              className="col-span-2 block cursor-zoom-in overflow-hidden sm:col-span-4 lg:hidden"
+            >
+              <img
+                src={lastSquare.src}
+                alt={lastSquare.alt}
+                loading="eager"
+                className="block h-auto w-full"
+              />
+            </button>
+            <button
+              type="button"
+              onClick={() => onMediaClick(lastSquare)}
+              aria-label={`Open ${lastSquare.alt}`}
+              className="hidden aspect-square cursor-zoom-in overflow-hidden lg:block"
+            >
+              <SlideshowCell item={lastSquare} />
+            </button>
+          </>
+        ) : null}
       </div>
 
       {trailingVideoPair.length ? (
         <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
-          {trailingVideoPair.map((item) => (
-            <div key={item.src || item.vimeoId} className="aspect-video overflow-hidden">
+          {trailingVideoPair.map((item, index) => (
+            <button
+              key={item.src}
+              type="button"
+              onClick={() => onMediaClick(item)}
+              aria-label={`Open ${item.alt}`}
+              className={cn(
+                'block aspect-video cursor-zoom-in overflow-hidden',
+                // Swap the two videos' positions on lg/xl only; source order is
+                // kept on smaller screens.
+                index === 0 ? 'lg:order-2' : 'lg:order-1'
+              )}
+            >
               <SlideshowCell item={item} />
-            </div>
+            </button>
           ))}
         </div>
       ) : null}
 
       {featureItems.map((item) => (
-        <div key={item.src || item.vimeoId} className="flex justify-center pt-1">
+        <button
+          key={item.src}
+          type="button"
+          onClick={() => onMediaClick(item)}
+          aria-label={`Open ${item.alt}`}
+          className="flex w-full cursor-zoom-in justify-center pt-1"
+        >
           <img
             src={item.src}
             alt={item.alt}
             loading="eager"
             className="h-[60vh] w-auto max-w-full object-contain"
           />
-        </div>
+        </button>
       ))}
     </div>
   )
@@ -908,10 +1027,10 @@ function PlaygroundGrid({ items }: { items: PortfolioMediaItem[] }) {
 
 function BentoGridGallery({
   items,
-  onImageClick,
+  onMediaClick,
 }: {
   items: PortfolioMediaItem[]
-  onImageClick: (item: PortfolioMediaItem) => void
+  onMediaClick: (item: PortfolioMediaItem) => void
 }) {
   return (
     <div
@@ -936,20 +1055,34 @@ function BentoGridGallery({
             }}
           >
             {item.slides && item.slides.length > 0 ? (
-              <SlideshowCell item={item} />
-            ) : item.vimeoId ? (
-              <VimeoBackground
-                url={vimeoEmbedUrl(item.vimeoId)}
-                title={item.alt}
-                fit={item.fit ?? 'cover'}
-                cropScale={item.cropScale}
-                offsetX={item.cropOffsetX}
-                alignTop={item.cropAlignTop}
-              />
+              <button
+                type="button"
+                onClick={() => onMediaClick(item)}
+                aria-label={`Open ${item.alt}`}
+                className="block h-full w-full cursor-zoom-in"
+              >
+                <SlideshowCell item={item} />
+              </button>
+            ) : item.background ? (
+              <button
+                type="button"
+                onClick={() => onMediaClick(item)}
+                aria-label={`Open ${item.alt}`}
+                className="block h-full w-full cursor-zoom-in"
+              >
+                <VideoBackground
+                  src={item.src}
+                  title={item.alt}
+                  fit={item.fit ?? 'cover'}
+                  cropScale={item.cropScale}
+                  offsetX={item.cropOffsetX}
+                  alignTop={item.cropAlignTop}
+                />
+              </button>
             ) : item.type === 'image' ? (
               <button
                 type="button"
-                onClick={() => onImageClick(item)}
+                onClick={() => onMediaClick(item)}
                 aria-label={`Open ${item.alt}`}
                 className="group/img block h-full w-full"
               >
@@ -962,17 +1095,24 @@ function BentoGridGallery({
                 />
               </button>
             ) : (
-              <video
-                className="block h-full w-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                aria-label={item.alt}
+              <button
+                type="button"
+                onClick={() => onMediaClick(item)}
+                aria-label={`Open ${item.alt}`}
+                className="block h-full w-full cursor-zoom-in"
               >
-                <source src={item.src} />
-              </video>
+                <video
+                  className="block h-full w-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-label={item.alt}
+                >
+                  <source src={item.src} />
+                </video>
+              </button>
             )}
           </div>
         )
@@ -983,10 +1123,10 @@ function BentoGridGallery({
 
 function FlexBentoGallery({
   items,
-  onImageClick,
+  onMediaClick,
 }: {
   items: PortfolioMediaItem[]
-  onImageClick: (item: PortfolioMediaItem) => void
+  onMediaClick: (item: PortfolioMediaItem) => void
 }) {
   const rowMap = new Map<number, PortfolioMediaItem[]>()
   for (const item of items) {
@@ -1013,7 +1153,7 @@ function FlexBentoGallery({
               {item.type === 'image' ? (
                 <button
                   type="button"
-                  onClick={() => onImageClick(item)}
+                  onClick={() => onMediaClick(item)}
                   aria-label={`Open ${item.alt}`}
                   className="group/img block h-full w-full"
                 >
@@ -1025,17 +1165,24 @@ function FlexBentoGallery({
                   />
                 </button>
               ) : (
-                <video
-                  className="block h-full w-full object-contain"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  aria-label={item.alt}
+                <button
+                  type="button"
+                  onClick={() => onMediaClick(item)}
+                  aria-label={`Open ${item.alt}`}
+                  className="block h-full w-full cursor-zoom-in"
                 >
-                  <source src={item.src} />
-                </video>
+                  <video
+                    className="block h-full w-full object-contain"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    aria-label={item.alt}
+                  >
+                    <source src={item.src} />
+                  </video>
+                </button>
               )}
             </div>
           ))}
@@ -1048,11 +1195,11 @@ function FlexBentoGallery({
 function MasonryTile({
   item,
   index,
-  onImageClick,
+  onMediaClick,
 }: {
   item: PortfolioMediaItem
   index: number
-  onImageClick: () => void
+  onMediaClick: () => void
 }) {
   const ref = useRef<HTMLElement>(null)
   const [visible, setVisible] = useState(false)
@@ -1085,23 +1232,30 @@ function MasonryTile({
   if (item.type === 'video') {
     return (
       <figure ref={ref} className="mb-4 break-inside-avoid md:mb-6" style={revealStyle}>
-        {item.vimeoId ? (
-          <div className="relative aspect-video w-full overflow-hidden">
-            <VimeoBackground url={vimeoEmbedUrl(item.vimeoId)} title={item.alt} />
-          </div>
-        ) : (
-          <video
-            className="media-loading-surface block h-auto max-h-[80vh] w-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            aria-label={item.alt}
-          >
-            <source src={item.src} />
-          </video>
-        )}
+        <button
+          type="button"
+          onClick={onMediaClick}
+          aria-label={`Open ${item.alt}`}
+          className="block w-full cursor-zoom-in"
+        >
+          {item.background ? (
+            <div className="relative aspect-video w-full overflow-hidden">
+              <VideoBackground src={item.src} title={item.alt} />
+            </div>
+          ) : (
+            <video
+              className="media-loading-surface block h-auto max-h-[80vh] w-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              aria-label={item.alt}
+            >
+              <source src={item.src} />
+            </video>
+          )}
+        </button>
         {item.caption && (
           <figcaption className="mt-2 text-base text-text-secondary">{item.caption}</figcaption>
         )}
@@ -1113,7 +1267,7 @@ function MasonryTile({
     <figure ref={ref} className="mb-4 break-inside-avoid md:mb-6" style={revealStyle}>
       <button
         type="button"
-        onClick={onImageClick}
+        onClick={onMediaClick}
         aria-label={`Open ${item.alt}`}
         className="group block w-full overflow-hidden"
       >
